@@ -4,24 +4,49 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import DashboardView from './views/DashboardView';
 import CampaignsView from './views/CampaignsView';
+import CampaignDetailView from './views/CampaignDetailView';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail'>('dashboard');
+  const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
+
+  const handleCampaignClick = (name: string) => {
+    setSelectedCampaign(name);
+    setCurrentView('campaign-detail');
+  };
 
   return (
     <div className="flex h-screen bg-[#F8F6F4] overflow-hidden text-brand-dark">
-      <Sidebar currentView={currentView} setView={setCurrentView} />
+      {/* Fix: Pass currentView directly as the Sidebar component now handles 'campaign-detail' */}
+      <Sidebar 
+        currentView={currentView} 
+        setView={(view) => {
+          setCurrentView(view);
+          if (view !== 'campaign-detail') setSelectedCampaign(null);
+        }} 
+      />
       
       <main className="flex-1 overflow-y-auto scrollbar-hide flex flex-col">
+        {/* Fix: Pass currentView directly as the Header component now handles 'campaign-detail' */}
         <Header 
           userName="Andrew Tweedie" 
           userInitials="AT" 
           currentView={currentView} 
-          setView={setCurrentView} 
+          setView={(view) => {
+            setCurrentView(view);
+            if (view !== 'campaign-detail') setSelectedCampaign(null);
+          }} 
         />
 
         <div className="p-6 md:p-10 max-w-7xl w-full mx-auto">
-          {currentView === 'dashboard' ? <DashboardView /> : <CampaignsView />}
+          {currentView === 'dashboard' && <DashboardView />}
+          {currentView === 'campaigns' && <CampaignsView onCampaignClick={handleCampaignClick} />}
+          {currentView === 'campaign-detail' && (
+            <CampaignDetailView 
+              campaignName={selectedCampaign || 'Campaign'} 
+              onBack={() => setCurrentView('campaigns')}
+            />
+          )}
         </div>
 
         <footer className="mt-auto p-10 bg-white border-t border-gray-100 flex flex-col md:flex-row justify-between items-center text-xs font-semibold text-brand-dark gap-6">

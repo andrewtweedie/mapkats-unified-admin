@@ -14,8 +14,10 @@ import {
 } from './icons/UiIcons';
 
 interface SidebarProps {
-  currentView: 'dashboard' | 'campaigns';
-  setView: (view: 'dashboard' | 'campaigns') => void;
+  // Fix: Extended currentView type to include 'campaign-detail'
+  currentView: 'dashboard' | 'campaigns' | 'campaign-detail';
+  // Fix: Extended setView type to include 'campaign-detail'
+  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail') => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
@@ -69,7 +71,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView }) => {
                 key={item.name}
                 onClick={() => { if(item.id === 'campaigns') setView('campaigns'); }}
                 className={`w-full flex items-center gap-3 px-1 py-2 transition-all font-semibold text-[13px] ${
-                  (item.id === 'campaigns' && currentView === 'campaigns')
+                  // Fix: Campaign nav item should be active for both 'campaigns' and 'campaign-detail' views
+                  (item.id === 'campaigns' && (currentView === 'campaigns' || currentView === 'campaign-detail'))
                     ? 'text-brand-accent'
                     : 'text-brand-gray hover:text-brand-accent'
                 }`}

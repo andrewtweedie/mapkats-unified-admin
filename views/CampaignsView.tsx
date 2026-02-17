@@ -2,7 +2,11 @@
 import React from 'react';
 import { SearchIcon } from '../components/icons/UiIcons';
 
-const CampaignsView: React.FC = () => {
+interface CampaignsViewProps {
+  onCampaignClick?: (name: string) => void;
+}
+
+const CampaignsView: React.FC<CampaignsViewProps> = ({ onCampaignClick }) => {
   const campaigns = [
     { name: 'Collection', posts: 0, stories: 0, media: 0.00, type: 'GIFTED', target: 0, confirmed: 0, need: 0, activity: { new: 4, email: 4, requested: 0 } },
     { name: 'GOFAR', posts: 0, stories: 0, media: 0.00, type: 'GIFTED', target: 0, confirmed: 0, need: 0, activity: { new: 0, email: 0, requested: 0 } },
@@ -79,7 +83,10 @@ const CampaignsView: React.FC = () => {
                   </td>
                   <td className="px-6 py-5">
                     <div className="space-y-1">
-                      <button className="text-sm font-bold text-brand-accent hover:underline block text-left">
+                      <button 
+                        onClick={() => onCampaignClick?.(camp.name)}
+                        className="text-sm font-bold text-brand-accent hover:underline block text-left"
+                      >
                         {camp.name}
                       </button>
                       <div className="flex items-center gap-4 text-[10px] text-brand-gray font-bold">

@@ -4,8 +4,10 @@ import React from 'react';
 interface HeaderProps {
   userName: string;
   userInitials: string;
-  currentView: 'dashboard' | 'campaigns';
-  setView: (view: 'dashboard' | 'campaigns') => void;
+  // Fix: Extended currentView type to include 'campaign-detail'
+  currentView: 'dashboard' | 'campaigns' | 'campaign-detail';
+  // Fix: Extended setView type to include 'campaign-detail'
+  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ userName, currentView, setView }) => {
@@ -33,7 +35,8 @@ const Header: React.FC<HeaderProps> = ({ userName, currentView, setView }) => {
           <button 
             onClick={() => setView('campaigns')}
             className={`transition-colors border-b-2 pb-1 ${
-              currentView === 'campaigns' 
+              // Fix: Highlight 'Campaigns' when in 'campaigns' or 'campaign-detail' view
+              (currentView === 'campaigns' || currentView === 'campaign-detail') 
                 ? 'text-brand-dark font-bold border-brand-accent' 
                 : 'border-transparent hover:text-brand-accent'
             }`}
