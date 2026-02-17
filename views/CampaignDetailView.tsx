@@ -1,7 +1,8 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SearchIcon, PencilSquareIcon } from '../components/icons/UiIcons';
 import UniversalSocialSearch from '../components/UniversalSocialSearch';
+import InfluencerDetailPopup from '../components/InfluencerDetailPopup';
 
 interface CampaignDetailViewProps {
   campaignName: string;
@@ -11,14 +12,94 @@ interface CampaignDetailViewProps {
 const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, onBack }) => {
   const tabs = ['Campaigns', 'Profiles', 'List', 'Post', 'Story', 'Insights'];
   const activeTab = 'Profiles';
+  const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
 
   const influencers = [
-    { name: 'avriltreasure', username: 'avriltreasure', imageUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400', category: 'Media', audience: '4,053', value: '70.72' },
-    { name: 'georgiamay._', username: 'Georgia May', imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400', category: 'Wellness Lifestyle', audience: '6,329', value: '110.44' },
-    { name: 'helenaandvikki', username: 'Helena and Vikki', imageUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400', category: 'Home Cooking', audience: '26,482', value: '462.11' },
-    { name: 'nicolamdale', username: 'Nicola Dale', imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400', category: 'Media', audience: '3,257', value: '56.84' },
-    { name: 'sallycrinis', username: 'Sally Crinis', imageUrl: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=400', category: 'Media', audience: '35,962', value: '627.53' },
-    { name: 'tee_smyth', username: 'Tully Smyth', imageUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400', category: 'Lifestyle Media', audience: '209,618', value: '3,657.84' },
+    { 
+      name: 'avriltreasure', 
+      username: 'avriltreasure', 
+      imageUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400', 
+      category: 'Media', 
+      audience: '4,053', 
+      value: '70.72',
+      totalAudience: '261,265',
+      totalValue: '$4,559.08',
+      channels: [
+        { platform: 'instagram', count: '210,655', value: '$3,675.93' },
+        { platform: 'youtube', count: '9,510', value: '$165.95' },
+        { platform: 'tiktok', count: '41,100', value: '$717.20' }
+      ]
+    },
+    { 
+      name: 'georgiamay._', 
+      username: 'georgiamay._', 
+      imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400', 
+      category: 'Wellness Lifestyle', 
+      audience: '6,329', 
+      value: '110.44',
+      totalAudience: '12,500',
+      totalValue: '$210.00',
+      channels: [
+        { platform: 'instagram', count: '6,329', value: '$110.44' },
+        { platform: 'tiktok', count: '6,171', value: '$99.56' }
+      ]
+    },
+    { 
+      name: 'helenaandvikki', 
+      username: 'helenaandvikki', 
+      imageUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400', 
+      category: 'Home Cooking', 
+      audience: '26,482', 
+      value: '462.11',
+      totalAudience: '45,200',
+      totalValue: '$820.50',
+      channels: [
+        { platform: 'instagram', count: '26,482', value: '$462.11' },
+        { platform: 'youtube', count: '18,718', value: '$358.39' }
+      ]
+    },
+    { 
+      name: 'nicolamdale', 
+      username: 'nicolamdale', 
+      imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400', 
+      category: 'Media', 
+      audience: '3,257', 
+      value: '56.84',
+      totalAudience: '3,257',
+      totalValue: '$56.84',
+      channels: [
+        { platform: 'instagram', count: '3,257', value: '$56.84' }
+      ]
+    },
+    { 
+      name: 'sallycrinis', 
+      username: 'sallycrinis', 
+      imageUrl: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=400', 
+      category: 'Media', 
+      audience: '35,962', 
+      value: '627.53',
+      totalAudience: '50,100',
+      totalValue: '$912.00',
+      channels: [
+        { platform: 'instagram', count: '35,962', value: '$627.53' },
+        { platform: 'tiktok', count: '14,138', value: '$284.47' }
+      ]
+    },
+    { 
+      name: 'tee_smyth', 
+      username: 'tee_smyth', 
+      imageUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400', 
+      category: 'Lifestyle Media', 
+      audience: '209,618', 
+      value: '3,657.84',
+      totalAudience: '550,000',
+      totalValue: '$9,200.00',
+      channels: [
+        { platform: 'instagram', count: '209,618', value: '$3,657.84' },
+        { platform: 'youtube', count: '140,382', value: '$2,542.16' },
+        { platform: 'tiktok', count: '200,000', value: '$3,000.00' }
+      ]
+    },
   ];
 
   return (
@@ -102,9 +183,23 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       {/* Influencer Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {influencers.map((inf, idx) => (
-          <InfluencerProfileCard key={idx} {...inf} />
+          <div 
+            key={idx} 
+            className="cursor-pointer" 
+            onClick={() => setSelectedInfluencer(inf)}
+          >
+            <InfluencerProfileCard {...inf} />
+          </div>
         ))}
       </div>
+
+      {/* Influencer Detail Popup */}
+      {selectedInfluencer && (
+        <InfluencerDetailPopup 
+          influencer={selectedInfluencer} 
+          onClose={() => setSelectedInfluencer(null)} 
+        />
+      )}
 
       {/* Pagination Placeholder */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-gray-100 text-[11px] font-bold text-brand-gray">
@@ -147,7 +242,7 @@ const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, catego
   const categoryBgColor = getCategoryColor(category);
 
   return (
-    <div className="bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden group hover:shadow-panel transition-all hover:-translate-y-1">
+    <div className="bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden group hover:shadow-panel transition-all hover:-translate-y-1 h-full">
       <div className="relative h-64 bg-gray-100">
          <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60"></div>
@@ -182,10 +277,10 @@ const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, catego
                <p className="text-[11px] font-bold text-brand-dark opacity-60">{username}</p>
             </div>
             <div className="flex gap-2">
-               <button className="text-gray-300 hover:text-brand-accent transition-colors">
+               <button className="text-gray-300 hover:text-brand-accent transition-colors" onClick={(e) => e.stopPropagation()}>
                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                </button>
-               <button className="text-teal-500 hover:scale-110 transition-transform">
+               <button className="text-teal-500 hover:scale-110 transition-transform" onClick={(e) => e.stopPropagation()}>
                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                </button>
             </div>
@@ -211,10 +306,10 @@ const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, catego
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
             </button>
             <div className="flex gap-2">
-               <button className="p-1.5 hover:bg-gray-50 rounded-lg text-red-500 transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg></button>
-               <button className="p-1.5 hover:bg-gray-50 rounded-lg text-teal-600 transition-colors"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" /></svg></button>
-               <button className="p-1.5 hover:bg-gray-50 rounded-lg text-brand-gray transition-colors hover:text-brand-accent"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
-               <button className="p-1.5 hover:bg-gray-50 rounded-lg text-brand-gray transition-colors hover:text-brand-accent"><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg></button>
+               <button className="p-1.5 hover:bg-gray-50 rounded-lg text-red-500 transition-colors" onClick={(e) => e.stopPropagation()}><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg></button>
+               <button className="p-1.5 hover:bg-gray-50 rounded-lg text-teal-600 transition-colors" onClick={(e) => e.stopPropagation()}><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" /></svg></button>
+               <button className="p-1.5 hover:bg-gray-50 rounded-lg text-brand-gray transition-colors hover:text-brand-accent" onClick={(e) => e.stopPropagation()}><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+               <button className="p-1.5 hover:bg-gray-50 rounded-lg text-brand-gray transition-colors hover:text-brand-accent" onClick={(e) => e.stopPropagation()}><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg></button>
             </div>
          </div>
       </div>
