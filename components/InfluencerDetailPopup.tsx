@@ -43,6 +43,10 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
   // Sub-tabs for the INFO section
   const [infoSubTab, setInfoSubTab] = React.useState<'Key Stats' | 'Audience' | 'Content'>('Key Stats');
   
+  // State for the expanded ranking rows
+  const [expandedInfluencerRank, setExpandedInfluencerRank] = React.useState<number | null>(null);
+  const [activeRankingSubTab, setActiveRankingSubTab] = React.useState<'Recent Posts' | 'Key Stats' | 'Audience' | 'Content'>('Recent Posts');
+
   // Platform filter for RATES section
   const [ratesPlatform, setRatesPlatform] = React.useState<'ALL' | 'IG' | 'YT' | 'TT'>('ALL');
 
@@ -75,7 +79,7 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
     { id: '3', currency: 'British pound', fee: '£100.00', detail: '1 video', platform: 'youtube' },
   ];
 
-  // Mock Ranking Data based on screenshot
+  // Mock Ranking Data
   const rankingList: RankingInfluencer[] = [
     { rank: 1, name: 'Edd Kimber', imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200', location: 'London, United Kingdom', category: 'Dessert Chef', followers: '517.1K Followers', badges: ['Top 10 Viewed', 'Top 10 Saved', 'Top 10 Viewed (London)', 'Top 10 Saved (London)'] },
     { rank: 2, name: influencer.name, imageUrl: influencer.imageUrl, location: 'Sydney, Australia', category: influencer.category || 'Dessert Chef', followers: `${totalAudience} Followers`, badges: ['Top 10 Viewed', 'Top 10 Viewed', 'Top 10 Saved', 'Top 10 Viewed (Sydney)', 'Top 10 Saved (Sydney)'], isCurrent: true },
@@ -83,7 +87,16 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
     { rank: 4, name: 'Native Empire', imageUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200', location: 'Australia', category: 'Dessert Chef', followers: '6.4K Followers', badges: ['Top 10 Viewed'] },
   ];
 
-  const recentPosts = Array.from({ length: 6 }, (_, i) => `https://picsum.photos/seed/post-${i + 120}/150/150`);
+  const recentPosts = Array.from({ length: 6 }, (_, i) => `https://picsum.photos/seed/post-${i + 150}/150/150`);
+
+  const toggleExpand = (rank: number) => {
+    if (expandedInfluencerRank === rank) {
+      setExpandedInfluencerRank(null);
+    } else {
+      setExpandedInfluencerRank(rank);
+      setActiveRankingSubTab('Recent Posts'); // Reset to first tab on expand
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
@@ -229,49 +242,151 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                 <div className="bg-white border border-gray-100 rounded-2xl shadow-soft overflow-hidden">
                   <div className="divide-y divide-gray-100">
                     {rankingList.map((item) => (
-                      <div key={item.rank} className={`flex items-center p-6 gap-6 transition-colors min-h-[100px] ${item.isCurrent ? 'bg-orange-50/20' : 'hover:bg-gray-50'}`}>
-                        {/* Rank */}
-                        <div className="w-10 flex-shrink-0 text-center">
-                          <span className="text-lg font-serif font-black text-brand-dark">{item.rank}.</span>
-                        </div>
-                        
-                        {/* Avatar */}
-                        <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border-2 border-white ring-1 ring-gray-100">
-                          <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
-                        </div>
+                      <div key={item.rank} className="flex flex-col">
+                        <div 
+                          className={`flex items-center p-6 gap-6 transition-colors min-h-[100px] cursor-pointer ${item.isCurrent ? 'bg-orange-50/20' : 'hover:bg-gray-50'}`}
+                          onClick={() => toggleExpand(item.rank)}
+                        >
+                          {/* Rank */}
+                          <div className="w-10 flex-shrink-0 text-center">
+                            <span className="text-lg font-serif font-black text-brand-dark">{item.rank}.</span>
+                          </div>
+                          
+                          {/* Avatar */}
+                          <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border-2 border-white ring-1 ring-gray-100">
+                            <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                          </div>
 
-                        {/* Details */}
-                        <div className="flex-1 min-w-0">
-                          <h4 className="text-base font-serif font-black text-brand-dark hover:text-brand-accent transition-colors cursor-pointer">{item.name}</h4>
-                          <div className="flex items-center gap-3 text-[11px] font-bold text-brand-gray mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
-                            <span className="flex items-center gap-1.5"><span className="text-base">🇦🇺</span> {item.category}</span>
-                            <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
-                            <span>{item.location}</span>
-                            <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
-                            <span>{item.followers}</span>
+                          {/* Details */}
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-base font-serif font-black text-brand-dark hover:text-brand-accent transition-colors">{item.name}</h4>
+                            <div className="flex items-center gap-3 text-[11px] font-bold text-brand-gray mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                              <span className="flex items-center gap-1.5"><span className="text-base">🇦🇺</span> {item.category}</span>
+                              <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
+                              <span>{item.location}</span>
+                              <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
+                              <span>{item.followers}</span>
+                            </div>
+                          </div>
+
+                          {/* Badges */}
+                          <div className="flex flex-wrap gap-x-2 gap-y-2 max-w-[340px] justify-end">
+                            {item.badges.map((badge, idx) => {
+                              const isSaved = badge.includes('Saved');
+                              const bgColor = isSaved ? 'bg-[#82A3C4]' : 'bg-[#404040]';
+
+                              return (
+                                <span key={idx} className={`${bgColor} text-white px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-tight whitespace-nowrap shadow-sm`}>
+                                  {badge}
+                                </span>
+                              );
+                            })}
+                          </div>
+
+                          {/* Plus Button */}
+                          <div className="ml-4 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                             <button 
+                               className="bg-brand-accent text-white p-2 rounded-lg shadow-md hover:brightness-110 active:scale-95 transition-all flex items-center justify-center group"
+                               title="Add to current campaign"
+                             >
+                               <PlusIcon className="w-4 h-4 group-hover:rotate-90 transition-transform duration-300" />
+                             </button>
                           </div>
                         </div>
 
-                        {/* Badges */}
-                        <div className="flex flex-wrap gap-x-2 gap-y-2 max-w-[340px] justify-end">
-                          {item.badges.map((badge, idx) => {
-                            const isSaved = badge.includes('Saved');
-                            const bgColor = isSaved ? 'bg-[#82A3C4]' : 'bg-[#404040]';
+                        {/* Expanded Display Area */}
+                        {expandedInfluencerRank === item.rank && (
+                          <div className="bg-[#FDFCFB] border-t border-gray-100 px-10 py-8 animate-in slide-in-from-top-4 duration-300">
+                            <div className="flex gap-4 mb-6">
+                              {['Recent Posts', 'Key Stats', 'Audience', 'Content'].map((sub) => (
+                                <button
+                                  key={sub}
+                                  onClick={() => setActiveRankingSubTab(sub as any)}
+                                  className={`px-5 py-2 rounded-full text-[10px] font-black tracking-widest uppercase transition-all border ${
+                                    activeRankingSubTab === sub 
+                                      ? 'bg-brand-accent text-white border-brand-accent shadow-md' 
+                                      : 'bg-white text-brand-gray border-gray-200 hover:border-brand-accent/30'
+                                  }`}
+                                >
+                                  {sub}
+                                </button>
+                              ))}
+                            </div>
 
-                            return (
-                              <span key={idx} className={`${bgColor} text-white px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-tight whitespace-nowrap shadow-sm`}>
-                                {badge}
-                              </span>
-                            );
-                          })}
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex items-center gap-5 ml-4 text-brand-accent/70">
-                           <button className="hover:text-brand-accent hover:scale-110 transition-all"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg></button>
-                           <button className="hover:text-brand-accent hover:scale-110 transition-all"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg></button>
-                           <button className="hover:text-brand-accent hover:scale-110 transition-all"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg></button>
-                        </div>
+                            <div className="min-h-[140px]">
+                              {activeRankingSubTab === 'Recent Posts' && (
+                                <div className="grid grid-cols-6 gap-3 animate-in fade-in duration-200">
+                                  {recentPosts.map((url, i) => (
+                                    <div key={i} className="aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm group cursor-default">
+                                      <img src={url} alt={`Post ${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              {activeRankingSubTab === 'Key Stats' && (
+                                <div className="animate-in fade-in duration-200 grid grid-cols-3 gap-8">
+                                  <div className="flex flex-col">
+                                    <span className="text-[10px] font-black text-brand-gray uppercase tracking-widest mb-2 opacity-60">Brand Fit</span>
+                                    <span className="text-base font-serif font-black text-brand-dark">{item.category}</span>
+                                  </div>
+                                  <div className="flex flex-col">
+                                    <span className="text-[10px] font-black text-brand-gray uppercase tracking-widest mb-2 opacity-60">Location</span>
+                                    <span className="text-base font-serif font-black text-brand-dark">{item.location}</span>
+                                  </div>
+                                  <div className="flex flex-col">
+                                    <span className="text-[10px] font-black text-brand-gray uppercase tracking-widest mb-2 opacity-60">Ranking Badges</span>
+                                    <div className="flex flex-wrap gap-2">
+                                      {item.badges.slice(0, 2).map((b, i) => (
+                                        <span key={i} className="bg-brand-dark/5 text-brand-dark px-2 py-1 rounded text-[10px] font-bold">{b}</span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                              {activeRankingSubTab === 'Audience' && (
+                                <div className="animate-in fade-in duration-200 grid grid-cols-2 gap-12">
+                                  <div className="space-y-4">
+                                    <div>
+                                      <div className="flex justify-between items-center mb-1.5">
+                                        <p className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Women</p>
+                                        <p className="text-[11px] font-black text-brand-accent">27.9%</p>
+                                      </div>
+                                      <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                                        <div className="bg-brand-accent h-full" style={{ width: '27.9%' }}></div>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <div className="flex justify-between items-center mb-1.5">
+                                        <p className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Men</p>
+                                        <p className="text-[11px] font-black text-[#82A3C4]">72.1%</p>
+                                      </div>
+                                      <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                                        <div className="bg-[#82A3C4] h-full" style={{ width: '72.1%' }}></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center justify-center">
+                                     <span className="text-[11px] font-bold text-brand-gray italic">Audience demographics insights for {item.name}</span>
+                                  </div>
+                                </div>
+                              )}
+                              {activeRankingSubTab === 'Content' && (
+                                <div className="animate-in fade-in duration-200 grid grid-cols-3 gap-6">
+                                  {[
+                                    { label: 'Avg Likes', value: '4.2K' },
+                                    { label: 'Avg Comments', value: '184' },
+                                    { label: 'Eng. Rate', value: '3.12%' }
+                                  ].map((stat, i) => (
+                                    <div key={i} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm text-center">
+                                      <p className="text-[9px] font-black text-brand-gray uppercase tracking-widest mb-1.5">{stat.label}</p>
+                                      <p className="text-xl font-serif font-black text-brand-dark">{stat.value}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
