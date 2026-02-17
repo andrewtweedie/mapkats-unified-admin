@@ -45,8 +45,8 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
               key={tab}
               className={`px-6 py-2.5 text-[11px] font-bold rounded-lg transition-all whitespace-nowrap ${
                 tab === activeTab 
-                  ? 'bg-teal-600 text-white shadow-md' 
-                  : 'text-brand-gray hover:text-brand-dark'
+                  ? 'bg-black text-white shadow-md' 
+                  : 'text-brand-gray hover:bg-gray-100 hover:text-brand-dark'
               }`}
             >
               {tab.toUpperCase()}
