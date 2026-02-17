@@ -29,6 +29,13 @@ interface RankingInfluencer {
   isCurrent?: boolean;
 }
 
+interface GalleryPost {
+  id: string;
+  imageUrl: string;
+  caption: string;
+  type: 'image' | 'video';
+}
+
 interface InfluencerDetailPopupProps {
   influencer: any;
   onClose: () => void;
@@ -46,6 +53,9 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
   // State for the expanded ranking rows
   const [expandedInfluencerRank, setExpandedInfluencerRank] = React.useState<number | null>(null);
   const [activeRankingSubTab, setActiveRankingSubTab] = React.useState<'Recent Posts' | 'Key Stats' | 'Audience' | 'Content'>('Recent Posts');
+
+  // State for Gallery Detail View
+  const [selectedPost, setSelectedPost] = React.useState<GalleryPost | null>(null);
 
   // Platform filter for RATES section
   const [ratesPlatform, setRatesPlatform] = React.useState<'ALL' | 'IG' | 'YT' | 'TT'>('ALL');
@@ -87,7 +97,17 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
     { rank: 4, name: 'Native Empire', imageUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200', location: 'Australia', category: 'Dessert Chef', followers: '6.4K Followers', badges: ['Top 10 Viewed'] },
   ];
 
-  const recentPosts = Array.from({ length: 6 }, (_, i) => `https://picsum.photos/seed/post-${i + 150}/150/150`);
+  // Mock Gallery Posts based on screenshots
+  const galleryPosts: GalleryPost[] = [
+    { id: 'p1', imageUrl: 'https://images.unsplash.com/photo-1541821637466-5bc01cb4d75d?auto=format&fit=crop&q=80&w=600', caption: 'Well, it’s been just over a year since we decided to renovate our dilapidated house and we’ve been living with our amazing uncommon_projects kitchen for a good few months now. Read all about our design process at the link in my bio and in my stories 📸 by rutheward (except the picture of Wesley which I snuck in)', type: 'image' },
+    { id: 'p2', imageUrl: 'https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?auto=format&fit=crop&q=80&w=600', caption: 'It’s Valentine’s Day tomorrow so to make sure I’m compliment with all known laws, I have two chocolate recipes for you... 🍫✨', type: 'video' },
+    { id: 'p3', imageUrl: 'https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&q=80&w=600', caption: 'How To: Chocolate Ep 3 What’s one of your all time favourite flavours? Mine would probably be Tonka bean, a head...', type: 'video' },
+    { id: 'p4', imageUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=600', caption: 'I’m going on a book tour! Can you believe this will actually be my first ever UK book tour? Very excited to hit the...', type: 'image' },
+    { id: 'p5', imageUrl: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&q=80&w=600', caption: 'Do you want to win something amazing? The ultimate Chocolate Baking bundle? Well listen up! To celebrate there bein...', type: 'video' },
+    { id: 'p6', imageUrl: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&q=80&w=600', caption: 'Do you want to win something amazing? The ultimate Chocolate Baking bundle? Well listen up! To celebrate there bein...', type: 'video' },
+  ];
+
+  const recentPostsData = Array.from({ length: 6 }, (_, i) => `https://picsum.photos/seed/post-${i + 150}/150/150`);
 
   const toggleExpand = (rank: number) => {
     if (expandedInfluencerRank === rank) {
@@ -216,9 +236,93 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
           </div>
 
           {/* Main Area */}
-          <div className="flex-1 overflow-y-auto p-8 space-y-8 scrollbar-hide flex flex-col">
+          <div className="flex-1 overflow-y-auto p-8 space-y-8 scrollbar-hide flex flex-col relative">
             
-            {activeTab === 'RANKING' ? (
+            {activeTab === 'GALLERY' ? (
+              <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                {selectedPost ? (
+                  /* Detailed Post View */
+                  <div className="animate-in zoom-in-95 duration-200">
+                    <div className="flex items-center justify-between mb-8">
+                       <div className="bg-brand-accent text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg">
+                         <div className="w-5 h-5"><InstagramIcon /></div>
+                         <span className="text-[11px] font-black uppercase tracking-widest">Instagram</span>
+                       </div>
+                       <button 
+                         onClick={() => setSelectedPost(null)}
+                         className="p-2 bg-gray-50 border border-gray-100 rounded-lg hover:bg-gray-100 transition-all text-brand-accent"
+                       >
+                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+                       </button>
+                    </div>
+
+                    <div className="bg-white border border-gray-100 rounded-2xl shadow-panel overflow-hidden flex flex-col md:flex-row min-h-[500px]">
+                       {/* Large Post Media */}
+                       <div className="md:w-[60%] bg-gray-50">
+                         <img 
+                           src={selectedPost.imageUrl} 
+                           alt="Post Detail" 
+                           className="w-full h-full object-cover" 
+                         />
+                       </div>
+                       {/* Caption Details */}
+                       <div className="md:w-[40%] p-10 flex flex-col">
+                         <div className="flex-1">
+                           <p className="text-lg font-serif font-medium text-brand-dark leading-relaxed">
+                             {selectedPost.caption}
+                           </p>
+                         </div>
+                       </div>
+                    </div>
+                  </div>
+                ) : (
+                  /* Grid Display */
+                  <div className="space-y-8">
+                    <div className="flex items-center gap-4">
+                       <div className="bg-brand-accent text-white px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg">
+                         <div className="w-5 h-5"><InstagramIcon /></div>
+                         <span className="text-[11px] font-black uppercase tracking-widest">Instagram</span>
+                       </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {galleryPosts.map((post) => (
+                        <div 
+                          key={post.id} 
+                          className="bg-white border border-gray-100 rounded-xl shadow-soft overflow-hidden flex flex-col group hover:shadow-panel transition-all duration-300"
+                        >
+                          <div className="aspect-[4/3] bg-gray-50 relative overflow-hidden">
+                            <img 
+                              src={post.imageUrl} 
+                              alt="Post" 
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
+                            />
+                            {post.type === 'video' && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/20 transition-colors">
+                                <div className="w-12 h-12 bg-white/30 backdrop-blur-md rounded-full flex items-center justify-center text-white ring-4 ring-white/20">
+                                   <svg className="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-6 flex flex-col flex-1">
+                             <p className="text-sm font-serif font-medium text-brand-dark leading-relaxed line-clamp-3 mb-6">
+                               {post.caption}
+                             </p>
+                             <button 
+                               onClick={() => setSelectedPost(post)}
+                               className="mt-auto self-start text-[11px] font-black text-brand-dark border-b-2 border-brand-dark/10 hover:border-brand-accent hover:text-brand-accent transition-all uppercase tracking-widest"
+                             >
+                               MORE
+                             </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : activeTab === 'RANKING' ? (
               <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-8">
                 {/* Ranking Header */}
                 <div className="flex items-center justify-between mb-2">
@@ -316,7 +420,7 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                             <div className="min-h-[140px]">
                               {activeRankingSubTab === 'Recent Posts' && (
                                 <div className="grid grid-cols-6 gap-3 animate-in fade-in duration-200">
-                                  {recentPosts.map((url, i) => (
+                                  {recentPostsData.map((url, i) => (
                                     <div key={i} className="aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm group cursor-default">
                                       <img src={url} alt={`Post ${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                     </div>
@@ -534,7 +638,7 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                   <div className="w-[200px] shrink-0 flex flex-col">
                     <h3 className="text-[9px] font-black uppercase tracking-widest text-brand-dark mb-4 opacity-50 px-1">Recent Activity</h3>
                     <div className="grid grid-cols-2 gap-2">
-                      {recentPosts.map((url, i) => (
+                      {recentPostsData.map((url, i) => (
                         <div key={i} className="aspect-square rounded-lg overflow-hidden bg-gray-100 group border border-gray-50 shadow-sm">
                            <img src={url} alt={`Post ${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                         </div>
