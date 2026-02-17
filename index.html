@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mapkats | Creator Community</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'brand-accent': '#E96126', // Mapkats Primary Orange
+              'brand-bg': '#FDFCFB',
+              'brand-dark': '#1A1A1A',
+              'brand-gray': '#6B7280',
+              'brand-light-gray': '#E5E7EB',
+              'mapkats-orange-light': '#FFF5F0',
+            },
+            fontFamily: {
+              sans: ['Plus Jakarta Sans', 'sans-serif'],
+              serif: ['Merriweather', 'serif'],
+            },
+            borderRadius: {
+              'sm': '0.25rem',
+              'md': '0.375rem',
+              'lg': '0.5rem',
+              'xl': '0.75rem',
+              '2xl': '1rem',
+            },
+            boxShadow: {
+              'soft': '0 2px 12px rgba(0,0,0,0.04)',
+              'panel': '0 4px 20px rgba(0,0,0,0.08)',
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Merriweather:wght@700;900&display=swap');
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #F8F6F4;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+</head>
+  <body class="text-brand-dark">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
