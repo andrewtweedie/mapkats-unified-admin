@@ -203,11 +203,11 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
           </div>
 
           {/* Main Area */}
-          <div className="flex-1 overflow-y-auto p-8 space-y-8 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto p-8 space-y-8 scrollbar-hide flex flex-col">
             
             {activeTab === 'RANKING' ? (
               <div className="animate-in fade-in slide-in-from-bottom-2 duration-300 space-y-8">
-                {/* Ranking Header from Screenshot */}
+                {/* Ranking Header */}
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-3">
                     <svg className="w-6 h-6 text-brand-accent" fill="currentColor" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z"/></svg>
@@ -225,11 +225,11 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                   </div>
                 </div>
 
-                {/* Ranking List Table-like Layout */}
+                {/* Ranking List */}
                 <div className="bg-white border border-gray-100 rounded-2xl shadow-soft overflow-hidden">
                   <div className="divide-y divide-gray-100">
                     {rankingList.map((item) => (
-                      <div key={item.rank} className={`flex items-center p-6 gap-6 transition-colors ${item.isCurrent ? 'bg-orange-50/20' : 'hover:bg-gray-50'}`}>
+                      <div key={item.rank} className={`flex items-center p-6 gap-6 transition-colors min-h-[100px] ${item.isCurrent ? 'bg-orange-50/20' : 'hover:bg-gray-50'}`}>
                         {/* Rank */}
                         <div className="w-10 flex-shrink-0 text-center">
                           <span className="text-lg font-serif font-black text-brand-dark">{item.rank}.</span>
@@ -243,7 +243,7 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                         {/* Details */}
                         <div className="flex-1 min-w-0">
                           <h4 className="text-base font-serif font-black text-brand-dark hover:text-brand-accent transition-colors cursor-pointer">{item.name}</h4>
-                          <div className="flex items-center gap-3 text-[11px] font-bold text-brand-gray mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
+                          <div className="flex items-center gap-3 text-[11px] font-bold text-brand-gray mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
                             <span className="flex items-center gap-1.5"><span className="text-base">🇦🇺</span> {item.category}</span>
                             <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
                             <span>{item.location}</span>
@@ -253,19 +253,13 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                         </div>
 
                         {/* Badges */}
-                        <div className="flex flex-wrap gap-1.5 max-w-[320px] justify-end">
+                        <div className="flex flex-wrap gap-x-2 gap-y-2 max-w-[340px] justify-end">
                           {item.badges.map((badge, idx) => {
-                            const isLondon = badge.includes('London');
-                            const isSydney = badge.includes('Sydney');
                             const isSaved = badge.includes('Saved');
-                            
-                            let bgColor = 'bg-[#404040]'; // Default Top 10 Viewed
-                            if (isSaved && (isLondon || isSydney)) bgColor = 'bg-[#82A3C4]';
-                            else if (isSaved) bgColor = 'bg-[#82A3C4]';
-                            else if (isLondon || isSydney) bgColor = 'bg-[#404040]';
+                            const bgColor = isSaved ? 'bg-[#82A3C4]' : 'bg-[#404040]';
 
                             return (
-                              <span key={idx} className={`${bgColor} text-white px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-tight whitespace-nowrap`}>
+                              <span key={idx} className={`${bgColor} text-white px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-tight whitespace-nowrap shadow-sm`}>
                                 {badge}
                               </span>
                             );
@@ -273,39 +267,38 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center gap-4 ml-4">
-                           <button className="text-brand-accent hover:scale-110 transition-transform"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg></button>
-                           <button className="text-brand-accent hover:scale-110 transition-transform"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg></button>
-                           <button className="text-brand-accent hover:scale-110 transition-transform"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg></button>
+                        <div className="flex items-center gap-5 ml-4 text-brand-accent/70">
+                           <button className="hover:text-brand-accent hover:scale-110 transition-all"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg></button>
+                           <button className="hover:text-brand-accent hover:scale-110 transition-all"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg></button>
+                           <button className="hover:text-brand-accent hover:scale-110 transition-all"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg></button>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
 
+                {/* Pagination */}
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-4 text-[11px] font-bold text-brand-gray border-t border-gray-50">
                   <div className="flex items-center gap-6">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <span className="cursor-pointer hover:text-brand-accent">20</span>
-                      <span className="bg-brand-accent text-white px-2 py-1 rounded shadow-sm">50</span>
+                      <span className="bg-brand-accent text-white px-3 py-1.5 rounded shadow-sm">50</span>
                       <span className="cursor-pointer hover:text-brand-accent">100</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <button className="opacity-40 hover:opacity-100 transition-opacity flex items-center gap-1">« PREVIOUS</button>
+                    <button className="opacity-40 hover:opacity-100 transition-opacity">« PREVIOUS</button>
                     <div className="flex gap-2">
-                      <span className="bg-brand-accent text-white px-2.5 py-1 rounded shadow-sm">1</span>
+                      <span className="bg-brand-accent text-white px-3 py-1.5 rounded shadow-sm">1</span>
                     </div>
-                    <button className="hover:text-brand-accent transition-colors flex items-center gap-1">NEXT »</button>
+                    <button className="hover:text-brand-accent transition-colors">NEXT »</button>
                   </div>
                 </div>
-                
-                <p className="text-[11px] font-serif italic text-brand-gray/60 text-center pb-8">Ranked using public data and Mapkats insights. Opt-out available.</p>
               </div>
             ) : activeTab === 'INFO' ? (
-              <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300 flex flex-col h-full">
-                {/* ... existing selectors ... */}
-                <div className="space-y-4">
+              <div className="flex-1 flex flex-col min-h-0 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                {/* Top Selectors */}
+                <div className="space-y-4 mb-8 shrink-0">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {[
                       { label: 'Vertical', value: influencer.category || 'Dessert Chef' },
@@ -323,9 +316,10 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                   </div>
                 </div>
 
-                <div className="flex gap-8 flex-1 border-t border-gray-50 pt-6 min-h-0">
-                  <div className="flex-1 space-y-4 min-h-0 overflow-y-auto scrollbar-hide pb-4">
-                    <div className="flex gap-1.5 sticky top-0 bg-white z-10 pb-2">
+                <div className="flex gap-8 flex-1 min-h-0 border-t border-gray-50 pt-6">
+                  {/* Left Column: Sub-tabs and Ranking Box */}
+                  <div className="flex-1 flex flex-col min-h-0">
+                    <div className="flex gap-1.5 sticky top-0 bg-white z-10 pb-3 shrink-0">
                       {['Key Stats', 'Audience', 'Content'].map((sub) => (
                         <button
                           key={sub}
@@ -341,101 +335,159 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                       ))}
                     </div>
 
-                    <div className="bg-[#FDFCFB] rounded-2xl p-5 border border-gray-50 shadow-soft">
-                      {infoSubTab === 'Key Stats' && (
-                        <div className="space-y-5 animate-in fade-in duration-200">
-                          <div className="grid grid-cols-2 gap-y-3 gap-x-6">
-                            <div className="flex flex-col">
-                               <span className="text-brand-gray font-serif text-[12px] opacity-70">Brand Fit</span>
-                               <span className="text-brand-dark font-serif text-[13px] font-semibold">{influencer.category || 'Dessert Chef'}</span>
+                    <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide pb-4">
+                      <div className="bg-[#FDFCFB] rounded-2xl p-5 border border-gray-50 shadow-soft mb-6">
+                        {infoSubTab === 'Key Stats' && (
+                          <div className="space-y-5 animate-in fade-in duration-200">
+                            <div className="grid grid-cols-2 gap-y-3 gap-x-6">
+                              <div className="flex flex-col">
+                                 <span className="text-brand-gray font-serif text-[12px] opacity-70">Brand Fit</span>
+                                 <span className="text-brand-dark font-serif text-[13px] font-semibold">{influencer.category || 'Dessert Chef'}</span>
+                              </div>
+                              <div className="flex flex-col">
+                                 <span className="text-brand-gray font-serif text-[12px] opacity-70">Location</span>
+                                 <span className="text-brand-dark font-serif text-[13px] font-semibold">Sydney, Australia</span>
+                              </div>
                             </div>
-                            <div className="flex flex-col">
-                               <span className="text-brand-gray font-serif text-[12px] opacity-70">Location</span>
-                               <span className="text-brand-dark font-serif text-[13px] font-semibold">Sydney, Australia</span>
+                            <div className="space-y-3 pt-3 border-t border-gray-100">
+                               <div className="flex items-center gap-2">
+                                  <h4 className="text-[14px] font-serif font-bold text-brand-dark">Mapkats Badges</h4>
+                               </div>
+                               <div className="flex flex-wrap gap-2">
+                                  <span className="bg-brand-accent text-white px-3 py-1.5 rounded-lg text-[11px] font-bold italic">#2 Dessert Chef</span>
+                                  <span className="bg-brand-dark text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold">Top 10 Viewed</span>
+                                  <span className="bg-[#82A3C4] text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold">Top 10 Saved</span>
+                               </div>
                             </div>
                           </div>
-                          <div className="space-y-3 pt-3 border-t border-gray-100">
-                             <div className="flex items-center gap-2">
-                                <h4 className="text-[14px] font-serif font-bold text-brand-dark">Mapkats Badges</h4>
-                             </div>
-                             <div className="flex flex-wrap gap-2">
-                                <span className="bg-brand-accent text-white px-3 py-1.5 rounded-lg text-[11px] font-bold italic">#2 Dessert Chef</span>
-                                <span className="bg-brand-dark text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold">Top 10 Viewed</span>
-                                <span className="bg-[#82A3C4] text-white px-3 py-1.5 rounded-lg text-[11px] font-semibold">Top 10 Saved</span>
-                             </div>
-
-                             {/* INFLUENCER RANKING IN INFO TAB - As per screenshot request */}
-                             <div className="pt-4 mt-2 border-t border-gray-50">
-                                <div className="flex items-center gap-3 p-3 bg-orange-50/30 rounded-xl border border-orange-100/50">
-                                  <svg className="w-5 h-5 text-brand-accent" fill="currentColor" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z"/></svg>
-                                  <div>
-                                    <p className="text-[9px] font-serif font-black text-brand-accent uppercase tracking-widest">Mapkats Ranking</p>
-                                    <p className="text-sm font-serif font-black text-brand-dark">#2 Top Influencer in <span className="text-brand-accent">{influencer.category || 'Dessert Chef'}</span></p>
-                                  </div>
-                                  <button onClick={() => setActiveTab('RANKING')} className="ml-auto text-[10px] font-bold text-brand-gray hover:text-brand-accent underline">View List</button>
+                        )}
+                        {infoSubTab === 'Audience' && (
+                          <div className="space-y-4 animate-in fade-in duration-200">
+                             <div className="space-y-2">
+                                <h4 className="text-[13px] font-serif font-bold text-brand-dark">Gender Distribution</h4>
+                                <div className="space-y-3">
+                                   <div>
+                                      <div className="flex justify-between items-center mb-1">
+                                        <p className="text-[11px] font-serif font-medium text-brand-dark">Women</p>
+                                        <p className="text-[11px] font-black text-brand-accent">27.9%</p>
+                                      </div>
+                                      <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                                         <div className="bg-brand-accent h-full" style={{ width: '27.9%' }}></div>
+                                      </div>
+                                   </div>
                                 </div>
                              </div>
                           </div>
+                        )}
+                        {infoSubTab === 'Content' && (
+                          <div className="space-y-4 animate-in fade-in duration-200">
+                             <div className="space-y-2">
+                                <h4 className="text-[13px] font-serif font-bold text-brand-dark">Engagement per Format</h4>
+                                <div className="space-y-3">
+                                   <div>
+                                      <div className="flex justify-between items-center mb-1">
+                                        <p className="text-[11px] font-serif font-medium text-brand-dark">Photos</p>
+                                        <p className="text-[11px] font-black text-brand-accent">4.1%</p>
+                                      </div>
+                                      <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                                         <div className="bg-brand-accent h-full" style={{ width: '41%' }}></div>
+                                      </div>
+                                   </div>
+                                </div>
+                             </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mt-auto pt-4 border-t border-gray-50 shrink-0">
+                      <div className="flex items-center gap-4 p-4 bg-orange-50/40 rounded-2xl border border-orange-100/50 shadow-sm">
+                        <div className="w-10 h-10 bg-brand-accent rounded-xl flex items-center justify-center text-white shrink-0 shadow-md shadow-orange-100">
+                          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z"/></svg>
                         </div>
-                      )}
-                      {infoSubTab === 'Audience' && (
-                        <div className="space-y-4 animate-in fade-in duration-200">
-                           <div className="space-y-2">
-                              <h4 className="text-[13px] font-serif font-bold text-brand-dark">Gender Distribution</h4>
-                              <div className="space-y-3">
-                                 <div>
-                                    <div className="flex justify-between items-center mb-1">
-                                      <p className="text-[11px] font-serif font-medium text-brand-dark">Women</p>
-                                      <p className="text-[11px] font-black text-brand-accent">27.9%</p>
-                                    </div>
-                                    <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                                       <div className="bg-brand-accent h-full" style={{ width: '27.9%' }}></div>
-                                    </div>
-                                 </div>
-                                 <div>
-                                    <div className="flex justify-between items-center mb-1">
-                                      <p className="text-[11px] font-serif font-medium text-brand-dark">Men</p>
-                                      <p className="text-[11px] font-black text-brand-accent">38.5%</p>
-                                    </div>
-                                    <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                                       <div className="bg-brand-accent h-full" style={{ width: '38.5%' }}></div>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
+                        <div className="flex-1">
+                          <p className="text-[10px] font-serif font-black text-brand-accent uppercase tracking-widest leading-none mb-1">Mapkats Ranking</p>
+                          <p className="text-sm font-serif font-black text-brand-dark leading-tight">
+                            #2 Top Influencer in <span className="text-brand-accent">{influencer.category || 'Dessert Chef'}</span>
+                          </p>
                         </div>
-                      )}
-                      {infoSubTab === 'Content' && (
-                        <div className="space-y-4 animate-in fade-in duration-200">
-                           <div className="space-y-2">
-                              <h4 className="text-[13px] font-serif font-bold text-brand-dark">Engagement per Format</h4>
-                              <div className="space-y-3">
-                                 <div>
-                                    <div className="flex justify-between items-center mb-1">
-                                      <p className="text-[11px] font-serif font-medium text-brand-dark">Photos</p>
-                                      <p className="text-[11px] font-black text-brand-accent">4.1%</p>
-                                    </div>
-                                    <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                                       <div className="bg-brand-accent h-full" style={{ width: '41%' }}></div>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                      )}
+                        <button onClick={() => setActiveTab('RANKING')} className="bg-white border border-orange-100 text-[10px] font-black text-brand-accent px-4 py-2 rounded-xl hover:bg-brand-accent hover:text-white transition-all shadow-sm uppercase">View Ranking</button>
+                      </div>
                     </div>
                   </div>
                   
-                  <div className="w-[200px] shrink-0 sticky top-0">
-                    <h3 className="text-[9px] font-black uppercase tracking-widest text-brand-dark mb-4 opacity-50">Recent Activity</h3>
+                  <div className="w-[200px] shrink-0 flex flex-col">
+                    <h3 className="text-[9px] font-black uppercase tracking-widest text-brand-dark mb-4 opacity-50 px-1">Recent Activity</h3>
                     <div className="grid grid-cols-2 gap-2">
                       {recentPosts.map((url, i) => (
-                        <div key={i} className="aspect-square rounded-lg overflow-hidden bg-gray-100 group cursor-pointer border border-gray-50">
+                        <div key={i} className="aspect-square rounded-lg overflow-hidden bg-gray-100 group border border-gray-50 shadow-sm">
                            <img src={url} alt={`Post ${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                         </div>
                       ))}
                     </div>
                   </div>
+                </div>
+              </div>
+            ) : activeTab === 'RATES' ? (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="flex items-center gap-2 bg-[#F8F6F4] p-1 rounded-xl">
+                    <button onClick={() => setRatesPlatform('ALL')} className={`px-4 py-1.5 text-[10px] font-black rounded-lg transition-all ${ratesPlatform === 'ALL' ? 'bg-brand-gray text-white' : 'text-brand-gray hover:bg-gray-200'}`}>ALL</button>
+                    <button onClick={() => setRatesPlatform('IG')} className={`w-8 h-8 p-1.5 rounded-lg transition-all ${ratesPlatform === 'IG' ? 'bg-brand-gray ring-2 ring-brand-accent' : 'opacity-40 hover:opacity-100'}`}><InstagramIcon /></button>
+                    <button onClick={() => setRatesPlatform('YT')} className={`w-8 h-8 p-1.5 rounded-lg transition-all ${ratesPlatform === 'YT' ? 'bg-brand-gray ring-2 ring-brand-accent' : 'opacity-40 hover:opacity-100'}`}><YouTubeIcon /></button>
+                    <button onClick={() => setRatesPlatform('TT')} className={`w-8 h-8 p-1.5 rounded-lg transition-all ${ratesPlatform === 'TT' ? 'bg-brand-gray ring-2 ring-brand-accent' : 'opacity-40 hover:opacity-100'}`}><TikTokIcon /></button>
+                  </div>
+                  <div className="flex items-center gap-6">
+                    <div className="flex flex-col">
+                       <span className="text-[9px] font-black text-brand-gray uppercase tracking-widest">Est. Media Value (MV)</span>
+                       <span className="text-sm font-black text-brand-dark">{totalValue}</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-4 pt-4 border-t border-gray-50">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-brand-dark/40">Influencer Pricing Sheet</h3>
+                    <button className="bg-brand-accent text-white p-2 rounded-lg shadow-md hover:brightness-110 transition-all"><PlusIcon className="w-4 h-4" /></button>
+                  </div>
+                  <div className="bg-[#FDFCFB] border border-gray-100 rounded-2xl overflow-hidden shadow-soft">
+                    <table className="w-full text-left">
+                      <thead className="bg-gray-50 border-b border-gray-100"><tr className="text-[9px] font-black text-brand-gray uppercase tracking-widest"><th className="px-6 py-4">Currency</th><th className="px-6 py-4">Fee</th><th className="px-6 py-4">Detail</th><th className="px-6 py-4 text-right">Actions</th></tr></thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {pricingData.map((row) => (
+                          <tr key={row.id} className="hover:bg-gray-50/50 transition-colors"><td className="px-6 py-5 text-[11px] font-bold text-brand-dark">{row.currency}</td><td className="px-6 py-5 text-[11px] font-black text-brand-dark">{row.fee}</td><td className="px-6 py-5 text-[11px] font-semibold text-brand-gray">{row.detail}</td><td className="px-6 py-5 text-right"><div className="flex justify-end gap-3 text-[10px] font-black"><button className="text-brand-accent hover:underline uppercase tracking-tighter">Edit</button><button className="text-red-500 hover:underline uppercase tracking-tighter">Delete</button></div></td></tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            ) : activeTab === 'SHIPPING' ? (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="space-y-4">
+                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-brand-dark/40">Logistics & Tracking</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <span className="text-[9px] font-black text-brand-gray uppercase tracking-widest px-1">Selected Courier</span>
+                      <select className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold text-brand-dark outline-none">
+                        <option>Select Courier...</option><option>Australia Post</option><option>DHL Express</option><option>FedEx</option>
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <span className="text-[9px] font-black text-brand-gray uppercase tracking-widest px-1">Tracking Number</span>
+                      <div className="relative"><input type="text" placeholder="Enter tracking..." className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 pl-4 pr-20 text-[11px] font-bold outline-none" /><button className="absolute right-1.5 top-1/2 -translate-y-1/2 bg-brand-accent text-white font-black px-4 py-1.5 rounded-lg text-[9px] tracking-widest uppercase">Save</button></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-4 pt-4 border-t border-gray-50">
+                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-brand-dark/40">Recipient Contact</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4"><input type="text" placeholder="First Name" className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold outline-none" /><input type="text" placeholder="Last Name" className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold outline-none" /></div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4"><input type="email" placeholder="Email Address" className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold outline-none" /><input type="tel" placeholder="Phone Number" className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold outline-none" /></div>
+                </div>
+                <div className="space-y-4 pt-4 border-t border-gray-50">
+                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-brand-dark/40">Shipping Address</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4"><select className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold text-brand-dark outline-none appearance-none"><option>Australia</option><option>United States</option></select><input type="text" placeholder="State" className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold outline-none" /></div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4"><input type="text" placeholder="City" className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold outline-none" /><input type="text" placeholder="Post Code" className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold outline-none" /></div>
+                  <button className="w-full bg-brand-dark text-white font-black py-2.5 rounded-xl text-[9px] tracking-widest uppercase hover:bg-brand-accent transition-all">Verify Address</button>
                 </div>
               </div>
             ) : activeTab === 'ROSTER' ? (
@@ -444,13 +496,26 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                   <div className="space-y-1.5">
                     <span className="text-[9px] font-black text-brand-gray uppercase tracking-widest px-1">Status</span>
                     <select className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold text-brand-dark focus:ring-1 focus:ring-brand-accent outline-none appearance-none cursor-pointer">
-                      <option>Active</option>
-                      <option>Red Flag</option>
-                      <option>Archive</option>
+                      <option>Active</option><option>Red Flag</option><option>Archive</option>
                     </select>
                   </div>
+                  <div className="space-y-1.5">
+                    <span className="text-[9px] font-black text-brand-gray uppercase tracking-widest px-1">Display Options</span>
+                    <div className="flex gap-4 py-2.5 px-1"><label className="flex items-center gap-2 text-[11px] font-bold"><input type="checkbox" className="w-4 h-4 rounded text-brand-accent" /> Carousel</label><label className="flex items-center gap-2 text-[11px] font-bold"><input type="checkbox" className="w-4 h-4 rounded text-brand-accent" /> Public Lists</label></div>
+                  </div>
                 </div>
-                {/* ... other roster sections ... */}
+                <div className="space-y-4 pt-4 border-t border-gray-50">
+                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-brand-dark/40">Biography Section</h3>
+                  <div className="bg-[#FDFCFB] border border-gray-100 rounded-2xl overflow-hidden shadow-soft">
+                    <div className="bg-gray-50 border-b border-gray-100 p-2 flex gap-1"><button className="p-1 px-2 text-[10px] font-bold bg-white rounded border">B</button><button className="p-1 px-2 text-[10px] font-bold bg-white rounded border italic">I</button></div>
+                    <textarea className="w-full h-32 p-4 bg-transparent text-[11px] font-medium outline-none resize-none" placeholder="Enter biography..." defaultValue="Aussie actor focusing on coffee culture and lifestyle." />
+                    <div className="p-3 bg-gray-50/30 border-t border-gray-50 flex justify-end"><button className="bg-brand-accent text-white font-black px-6 py-1.5 rounded-lg text-[9px] tracking-widest uppercase shadow-sm">Save</button></div>
+                  </div>
+                </div>
+                <div className="space-y-4 pt-4 border-t border-gray-50">
+                   <div className="flex items-center justify-between"><h3 className="text-xs font-black uppercase tracking-[0.2em] text-brand-dark/40">Gallery Assets</h3><button className="bg-brand-dark text-white px-6 py-1.5 rounded-lg text-[10px] font-black tracking-widest uppercase">Add</button></div>
+                   <div className="bg-[#F8F6F4] border-2 border-dashed border-gray-200 rounded-2xl h-32 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-brand-accent transition-colors"><PlusIcon className="w-6 h-6 text-brand-gray" /><span className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Upload assets here</span></div>
+                </div>
               </div>
             ) : (
               <div className="flex items-center justify-center h-full text-brand-gray italic text-sm font-bold uppercase tracking-widest opacity-30">
