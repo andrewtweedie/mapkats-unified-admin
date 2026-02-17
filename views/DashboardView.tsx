@@ -1,11 +1,14 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import ListSection from '../components/ListSection';
 import SocialCheckInput from '../components/SocialCheckInput';
 import InfluencerCardRow from '../components/InfluencerCardRow';
+import InfluencerDetailPopup from '../components/InfluencerDetailPopup';
 import { InstagramIcon, YouTubeIcon, TikTokIcon } from '../components/icons/SocialIcons';
 
 const DashboardView: React.FC = () => {
+  const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
+
   return (
     <div className="space-y-12">
       {/* Welcome Header */}
@@ -61,24 +64,34 @@ const DashboardView: React.FC = () => {
       <div className="space-y-20 pt-4">
         <InfluencerCardRow 
           title="My Saved Influencers" 
+          onViewProfile={(inf) => setSelectedInfluencer(inf)}
           influencers={[
-            { name: "Finebrands", imageUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400", stats: "779 followers", platform: "instagram" },
-            { name: "Shanky's Whip", imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400", stats: "13,866 followers", platform: "instagram" },
-            { name: "Tammy Moore Jackson", imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400", stats: "44,073 followers", platform: "instagram" },
-            { name: "ADELE.", imageUrl: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=400", stats: "45K followers", platform: "tiktok" },
+            { name: "Finebrands", imageUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400", stats: "779 followers", platform: "instagram", category: "Media", value: "70.72" },
+            { name: "Shanky's Whip", imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400", stats: "13,866 followers", platform: "instagram", category: "Wellness Lifestyle", value: "210.00" },
+            { name: "Tammy Moore Jackson", imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400", stats: "44,073 followers", platform: "instagram", category: "Media", value: "450.00" },
+            { name: "ADELE.", imageUrl: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=400", stats: "45K followers", platform: "tiktok", category: "Lifestyle Media", value: "900.00" },
           ]}
         />
 
         <InfluencerCardRow 
           title="Campaign Talent Queue" 
+          onViewProfile={(inf) => setSelectedInfluencer(inf)}
           influencers={[
-            { name: "Erma | Healthy Recipes", imageUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400", stats: "300K followers", platform: "instagram" },
-            { name: "Peter Madrigal", imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400", stats: "50K followers", platform: "youtube" },
-            { name: "Beautiful Booze", imageUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400", stats: "115K followers", platform: "instagram" },
-            { name: "Sam Pence", imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400", stats: "90K followers", platform: "tiktok" },
+            { name: "Erma | Healthy Recipes", imageUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400", stats: "300K followers", platform: "instagram", category: "Home Cooking", value: "1,200.00" },
+            { name: "Peter Madrigal", imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400", stats: "50K followers", platform: "youtube", category: "Media", value: "350.00" },
+            { name: "Beautiful Booze", imageUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400", stats: "115K followers", platform: "instagram", category: "Lifestyle Media", value: "2,400.00" },
+            { name: "Sam Pence", imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400", stats: "90K followers", platform: "tiktok", category: "Wellness Lifestyle", value: "850.00" },
           ]}
         />
       </div>
+
+      {/* Influencer Detail Popup */}
+      {selectedInfluencer && (
+        <InfluencerDetailPopup 
+          influencer={selectedInfluencer} 
+          onClose={() => setSelectedInfluencer(null)} 
+        />
+      )}
     </div>
   );
 };
