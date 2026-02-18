@@ -11,7 +11,7 @@ interface CampaignDetailViewProps {
 }
 
 const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, onBack }) => {
-  const tabs = ['Campaigns', 'Profiles', 'List', 'Post', 'Story', 'Insights'];
+  const tabs = ['Profiles', 'List', 'Post', 'Insights'];
   const [activeTab, setActiveTab] = useState('Profiles');
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
   const [showTagsPopup, setShowTagsPopup] = useState(false);
@@ -50,6 +50,156 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
   const [discoverExpandPost, setDiscoverExpandPost] = useState<{ imageUrl: string; caption: string; likes: number; comments: number } | null>(null);
   const [selectedProCollection, setSelectedProCollection] = useState<string | null>(null);
 
+  // Email batch send state
+  const [emailToggles, setEmailToggles] = useState<Record<string, boolean>>({});
+  const [connectedEmail, setConnectedEmail] = useState<'google' | 'outlook' | null>(null);
+  const [selectedEmailTemplate, setSelectedEmailTemplate] = useState<string | null>(null);
+  const [showEmailTemplatePopup, setShowEmailTemplatePopup] = useState(false);
+  const [showViewEmailPopup, setShowViewEmailPopup] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<any | null>(null);
+
+  const emailTemplates = [
+    { id: 'intro', name: 'Campaign Introduction', subject: 'Exciting Collaboration Opportunity!', preview: 'Hi {name}, we\'d love to partner with you on our upcoming campaign...' },
+    { id: 'followup', name: 'Follow Up', subject: 'Following Up on Our Collaboration', preview: 'Hi {name}, just checking in on our previous message about...' },
+    { id: 'offer', name: 'Partnership Offer', subject: 'Partnership Proposal – {campaign}', preview: 'Hi {name}, we have a fantastic opportunity for you to be part of...' },
+    { id: 'brief', name: 'Campaign Brief', subject: 'Your Campaign Brief is Ready', preview: 'Hi {name}, thank you for joining! Here are the details for...' },
+    { id: 'reminder', name: 'Content Reminder', subject: 'Friendly Reminder – Content Due Soon', preview: 'Hi {name}, just a gentle reminder that your content is due on...' },
+  ];
+
+  const toggledCount = Object.values(emailToggles).filter(Boolean).length;
+  const canViewEmail = connectedEmail !== null && selectedEmailTemplate !== null;
+  const canSendEmail = canViewEmail && toggledCount > 0;
+
+  // Campaign posts data
+  const campaignPosts = [
+    {
+      id: 'p1',
+      influencer: 'Tully Smyth',
+      username: 'tee_smyth',
+      avatarUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=600',
+      platform: 'instagram' as const,
+      type: 'Post' as const,
+      caption: 'So excited to share my new favourite recipe using @brandpartner ingredients! The flavours are absolutely incredible 🔥🍕 #Ad #CookingWithPassion',
+      likes: 4827,
+      comments: 312,
+      impressions: 89400,
+      mediaValue: 1560.42,
+      postedAt: '2026-01-12',
+    },
+    {
+      id: 'p2',
+      influencer: 'Lauren Phillips',
+      username: 'laurenphillips',
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=600',
+      platform: 'instagram' as const,
+      type: 'Post' as const,
+      caption: 'Nothing beats a Sunday brunch spread like this 😍 Thanks @brandpartner for making my mornings so much better! #Sponsored',
+      likes: 8213,
+      comments: 547,
+      impressions: 142800,
+      mediaValue: 2491.92,
+      postedAt: '2026-01-14',
+    },
+    {
+      id: 'p3',
+      influencer: 'Toasted Table',
+      username: 'toastedtable',
+      avatarUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=600',
+      platform: 'instagram' as const,
+      type: 'Reel' as const,
+      caption: 'Watch me turn these simple ingredients into something MAGICAL ✨🧑‍🍳 Recipe in bio! #Ad #FoodTok #RecipeVideo',
+      likes: 12450,
+      comments: 893,
+      impressions: 234600,
+      mediaValue: 4094.34,
+      postedAt: '2026-01-15',
+    },
+    {
+      id: 'p4',
+      influencer: 'Reynold',
+      username: 'reynoldpoernomo',
+      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&q=80&w=600',
+      platform: 'instagram' as const,
+      type: 'Post' as const,
+      caption: 'The art of dessert meets @brandpartner 🎨🍫 Creating something beautiful with the finest ingredients #Collaboration #PatisserieMagic',
+      likes: 28940,
+      comments: 1842,
+      impressions: 487200,
+      mediaValue: 8506.08,
+      postedAt: '2026-01-16',
+    },
+    {
+      id: 'p5',
+      influencer: 'Reynold',
+      username: 'reynoldpoernomo',
+      avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&q=80&w=600',
+      platform: 'tiktok' as const,
+      type: 'Reel' as const,
+      caption: 'POV: You\'re watching a MasterChef finalist create pure chocolate magic 🍫✨ @brandpartner #FoodTok #DessertArt',
+      likes: 45300,
+      comments: 2156,
+      impressions: 612800,
+      mediaValue: 10700.00,
+      postedAt: '2026-01-17',
+    },
+    {
+      id: 'p6',
+      influencer: 'Lauren Phillips',
+      username: 'laurenphillips',
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&q=80&w=600',
+      platform: 'youtube' as const,
+      type: 'Post' as const,
+      caption: 'FULL DAY OF EATING with @brandpartner 🍽️ Breakfast to dinner, every meal was elevated! Link in bio for the full video 🎬',
+      likes: 6840,
+      comments: 428,
+      impressions: 118400,
+      mediaValue: 2067.12,
+      postedAt: '2026-01-18',
+    },
+    {
+      id: 'p7',
+      influencer: 'Tully Smyth',
+      username: 'tee_smyth',
+      avatarUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&q=80&w=600',
+      platform: 'tiktok' as const,
+      type: 'Story' as const,
+      caption: 'Quick story showing my morning routine with @brandpartner products 🌅☕ Swipe up for the full recipe!',
+      likes: 3210,
+      comments: 189,
+      impressions: 67200,
+      mediaValue: 1173.36,
+      postedAt: '2026-01-19',
+    },
+    {
+      id: 'p8',
+      influencer: 'MELISSA HOYER OFFICIAL',
+      username: 'melissahoyer',
+      avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&q=80&w=600',
+      platform: 'instagram' as const,
+      type: 'Post' as const,
+      caption: 'When style meets substance 💫 Loving this collaboration with @brandpartner — the attention to detail is everything #Lifestyle #Ad',
+      likes: 2180,
+      comments: 156,
+      impressions: 41200,
+      mediaValue: 719.34,
+      postedAt: '2026-01-20',
+    },
+  ];
+
+  // Computed post insights
+  const totalPostImpressions = campaignPosts.reduce((sum, p) => sum + p.impressions, 0);
+  const totalPostLikes = campaignPosts.reduce((sum, p) => sum + p.likes, 0);
+  const totalPostComments = campaignPosts.reduce((sum, p) => sum + p.comments, 0);
+  const totalPostMediaValue = campaignPosts.reduce((sum, p) => sum + p.mediaValue, 0);
+
   const allInfluencers = [
     {
       name: 'Tully Smyth',
@@ -65,6 +215,11 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       status: 'New',
       statusDate: 'Tue Jan 06 2026',
       platforms: ['instagram', 'youtube', 'tiktok'],
+      platformStats: {
+        instagram: { followers: '209,618', value: '$3,657.84' },
+        youtube: { followers: '312,400', value: '$5,452.18' },
+        tiktok: { followers: '137,847', value: '$2,404.63' },
+      },
       posts: 0,
       stories: 0,
       isFavourite: false,
@@ -87,6 +242,10 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       status: 'New',
       statusDate: 'Fri Jul 04 2025',
       platforms: ['instagram', 'youtube'],
+      platformStats: {
+        instagram: { followers: '134,621', value: '$2,348.05' },
+        youtube: { followers: '5,516,619', value: '$96,266.09' },
+      },
       posts: 0,
       stories: 0,
       isFavourite: true,
@@ -109,6 +268,10 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       status: 'New',
       statusDate: 'Fri May 23 2025',
       platforms: ['instagram', 'tiktok'],
+      platformStats: {
+        instagram: { followers: '170,300', value: '$2,971.07' },
+        tiktok: { followers: '68,400', value: '$1,193.58' },
+      },
       posts: 0,
       stories: 0,
       isFavourite: false,
@@ -131,6 +294,11 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       status: 'New',
       statusDate: 'Wed Jun 25 2025',
       platforms: ['instagram', 'youtube', 'tiktok'],
+      platformStats: {
+        instagram: { followers: '1,300,000', value: '$22,946.72' },
+        youtube: { followers: '12,300', value: '$214.64' },
+        tiktok: { followers: '1,624', value: '$28.34' },
+      },
       posts: 0,
       stories: 0,
       isFavourite: true,
@@ -149,10 +317,13 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       region: 'AU',
       state: 'New South Wales',
       flag: '🇦🇺',
-      email: 'me@melissahoyer.com',
+      email: '',
       status: 'New',
       statusDate: 'Mon May 19 2025',
       platforms: ['instagram'],
+      platformStats: {
+        instagram: { followers: '92,700', value: '$1,618.21' },
+      },
       posts: 0,
       stories: 0,
       isFavourite: false,
@@ -312,7 +483,7 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
              </button>
           </div>
           <UniversalSocialSearch />
-          <div className="flex flex-wrap items-end gap-3 shrink-0">
+          <div className="shrink-0">
              <button
                onClick={() => setShowTagsPopup(true)}
                className="relative bg-white border border-gray-200 rounded-xl py-2.5 px-5 text-xs font-bold text-gray-700 hover:border-brand-accent hover:text-brand-accent transition-all h-[38px] flex items-center gap-2 xl:mb-0.5"
@@ -325,17 +496,15 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
                  <span className="bg-brand-accent text-white text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none">{campaignTags.length}</span>
                )}
              </button>
+          </div>
+          <div className="flex-1" />
+          <div className="shrink-0">
              <button
                onClick={() => { setShowDiscoverPopup(true); setDiscoverSearched(false); setDiscoverResults([]); setDiscoverFilters({ country: '', state: '', city: '', category: '', gender: '', hasEmail: false, channel: '', favourite: '', audienceFrom: '', audienceTo: '', mediaValueFrom: '', mediaValueTo: '' }); }}
                className="bg-brand-accent text-white font-black py-2.5 px-8 rounded-xl text-[10px] tracking-widest hover:brightness-110 transition-all shadow-md uppercase whitespace-nowrap h-[38px] flex items-center justify-center xl:mb-0.5"
              >
                Add Influencers
              </button>
-             {activeTab === 'List' && (
-               <button className="bg-teal-600 text-white font-black py-2.5 px-6 rounded-xl text-[10px] tracking-widest hover:brightness-110 transition-all shadow-md uppercase whitespace-nowrap h-[38px] flex items-center justify-center xl:mb-0.5">
-                 Export to Excel
-               </button>
-             )}
           </div>
         </div>
       </div>
@@ -355,11 +524,145 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
         </div>
       ) : activeTab === 'List' ? (
         /* Compressed List View Table */
+        <div className="space-y-4">
+        {/* Email Batch Send Toolbar */}
+        <div className="bg-white rounded-2xl shadow-soft border border-gray-100 px-5 py-3.5 flex flex-wrap items-center gap-3">
+          {/* Connect Email */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setConnectedEmail(connectedEmail === 'google' ? null : 'google')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold transition-all border ${
+                connectedEmail === 'google'
+                  ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                  : 'bg-white border-gray-200 text-gray-600 hover:border-brand-accent hover:text-brand-accent'
+              }`}
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+              {connectedEmail === 'google' ? 'Google Connected' : 'Sign in with Google'}
+            </button>
+            <button
+              onClick={() => setConnectedEmail(connectedEmail === 'outlook' ? null : 'outlook')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold transition-all border ${
+                connectedEmail === 'outlook'
+                  ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                  : 'bg-white border-gray-200 text-gray-600 hover:border-brand-accent hover:text-brand-accent'
+              }`}
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <path d="M21.17 2.06H10.94L0 6.71v10.52l10.94 4.65h10.23A1.84 1.84 0 0023 20.06V3.88a1.84 1.84 0 00-1.83-1.82z" fill="#0078D4"/>
+                <path d="M10.94 2.06v19.82L0 17.23V6.71z" fill="#0364B8"/>
+                <path d="M10.94 8.26L5.47 12l5.47 3.74V8.26z" fill="#0078D4" opacity=".5"/>
+                <ellipse cx="5.47" cy="12" rx="3.5" ry="4" fill="white"/>
+              </svg>
+              {connectedEmail === 'outlook' ? 'Outlook Connected' : 'Connect Outlook'}
+            </button>
+          </div>
+
+          {/* Divider */}
+          <div className="w-px h-6 bg-gray-200" />
+
+          {/* Email Template */}
+          <button
+            onClick={() => setShowEmailTemplatePopup(true)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold transition-all border ${
+              selectedEmailTemplate
+                ? 'bg-blue-50 border-blue-200 text-blue-700'
+                : 'bg-blue-600 border-blue-600 text-white hover:bg-blue-700 shadow-sm'
+            }`}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+            {selectedEmailTemplate
+              ? emailTemplates.find(t => t.id === selectedEmailTemplate)?.name || 'Template Selected'
+              : 'Email Template'}
+          </button>
+
+          {/* Divider */}
+          <div className="w-px h-6 bg-gray-200" />
+
+          {/* View Email */}
+          <button
+            onClick={() => { if (canViewEmail) setShowViewEmailPopup(true); }}
+            disabled={!canViewEmail}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold transition-all border ${
+              canViewEmail
+                ? 'bg-white border-gray-200 text-gray-700 hover:border-brand-accent hover:text-brand-accent cursor-pointer'
+                : 'bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed'
+            }`}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            View Email
+          </button>
+
+          {/* Send Email */}
+          <button
+            disabled={!canSendEmail}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[11px] font-bold transition-all border ${
+              canSendEmail
+                ? 'bg-brand-accent border-brand-accent text-white hover:brightness-110 shadow-sm cursor-pointer'
+                : 'bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed'
+            }`}
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+            </svg>
+            Send Email
+            {toggledCount > 0 && (
+              <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none ${
+                canSendEmail ? 'bg-white/25 text-white' : 'bg-gray-200 text-gray-400'
+              }`}>{toggledCount}</span>
+            )}
+          </button>
+
+          {/* Spacer to push export to far right */}
+          <div className="flex-1" />
+
+          {/* Export CSV */}
+          <button
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-[11px] font-bold text-brand-gray border border-gray-200 hover:border-brand-accent hover:text-brand-accent transition-all bg-white"
+            title="Export to CSV"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+            </svg>
+            CSV
+          </button>
+        </div>
+
         <div className="bg-white rounded-2xl shadow-panel overflow-hidden border border-gray-100">
           <div className="overflow-x-auto scrollbar-hide">
             <table className="w-full text-left border-collapse min-w-[900px]">
               <thead className="bg-[#FDFCFB] border-b border-gray-100">
                 <tr className="text-[10px] font-black text-brand-gray uppercase tracking-widest">
+                  <th className="pl-5 pr-2 py-4 w-[60px]">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-[8px]">Send</span>
+                      <button
+                        onClick={() => {
+                          const allOn = influencers.every(inf => emailToggles[inf.username]);
+                          const newToggles: Record<string, boolean> = {};
+                          influencers.forEach(inf => { newToggles[inf.username] = !allOn; });
+                          setEmailToggles(newToggles);
+                        }}
+                        className={`w-8 h-[18px] rounded-full transition-all relative ${
+                          influencers.every(inf => emailToggles[inf.username]) ? 'bg-brand-accent' : 'bg-gray-200'
+                        }`}
+                      >
+                        <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white shadow-sm transition-all ${
+                          influencers.every(inf => emailToggles[inf.username]) ? 'left-[15px]' : 'left-[2px]'
+                        }`} />
+                      </button>
+                    </div>
+                  </th>
                   <th className="px-6 py-4 w-[240px]">Influencer</th>
                   <th className="px-6 py-4 w-[140px]">Audience & Value</th>
                   <th className="px-6 py-4 w-[160px]">Location</th>
@@ -371,6 +674,20 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
               <tbody className="divide-y divide-gray-50">
                 {influencers.map((inf, idx) => (
                   <tr key={idx} className="group hover:bg-gray-50/50 transition-colors cursor-pointer" onClick={() => setSelectedInfluencer(inf)}>
+                    <td className="pl-5 pr-2 py-4" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex justify-center">
+                        <button
+                          onClick={() => setEmailToggles(prev => ({ ...prev, [inf.username]: !prev[inf.username] }))}
+                          className={`w-9 h-[20px] rounded-full transition-all relative ${
+                            emailToggles[inf.username] ? 'bg-brand-accent' : 'bg-gray-200'
+                          }`}
+                        >
+                          <div className={`absolute top-[3px] w-[14px] h-[14px] rounded-full bg-white shadow-sm transition-all ${
+                            emailToggles[inf.username] ? 'left-[18px]' : 'left-[3px]'
+                          }`} />
+                        </button>
+                      </div>
+                    </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="relative flex-shrink-0">
@@ -378,10 +695,10 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
                              <img src={inf.imageUrl} alt={inf.name} className="w-full h-full object-cover" />
                           </div>
                         </div>
-                        <div className="flex flex-col gap-0.5 min-w-0">
+                        <div className="flex flex-col gap-0.5 min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
                             <span className="text-[12px] font-bold text-brand-dark group-hover:text-brand-accent transition-colors truncate">{inf.name}</span>
-                            <button 
+                            <button
                               className={`${inf.isFavourite ? 'text-amber-400' : 'text-gray-200'} hover:text-amber-400 transition-colors flex-shrink-0`}
                               onClick={(e) => { e.stopPropagation(); /* toggle favourite logic here */ }}
                             >
@@ -392,6 +709,13 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
                              <div className="bg-pink-100/40 text-pink-600 px-1 py-0.5 rounded text-[8px] font-black">P {inf.posts}</div>
                              <div className="bg-pink-100/40 text-pink-600 px-1 py-0.5 rounded text-[8px] font-black">S {inf.stories}</div>
                           </div>
+                        </div>
+                        <div className={`flex-shrink-0 ${inf.email ? 'text-emerald-500' : 'text-gray-300'}`} title={inf.email || 'No email'}>
+                          {inf.email ? (
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" /><path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" /></svg>
+                          ) : (
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                          )}
                         </div>
                       </div>
                     </td>
@@ -440,6 +764,135 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+        </div>
+      ) : activeTab === 'Post' ? (
+        /* Post Grid View */
+        <div className="space-y-5">
+          {/* Insights Summary Bar */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-soft px-5 py-4">
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </div>
+                <span className="text-[10px] font-bold text-brand-gray uppercase tracking-wider">Impressions</span>
+              </div>
+              <p className="text-[22px] font-black text-brand-dark">{totalPostImpressions.toLocaleString()}</p>
+              <p className="text-[10px] font-bold text-emerald-500 mt-0.5">+12.4% vs benchmark</p>
+            </div>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-soft px-5 py-4">
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <div className="w-8 h-8 rounded-xl bg-rose-50 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-rose-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                  </svg>
+                </div>
+                <span className="text-[10px] font-bold text-brand-gray uppercase tracking-wider">Total Likes</span>
+              </div>
+              <p className="text-[22px] font-black text-brand-dark">{totalPostLikes.toLocaleString()}</p>
+              <p className="text-[10px] font-bold text-emerald-500 mt-0.5">{campaignPosts.length} posts</p>
+            </div>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-soft px-5 py-4">
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <div className="w-8 h-8 rounded-xl bg-amber-50 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                </div>
+                <span className="text-[10px] font-bold text-brand-gray uppercase tracking-wider">Comments</span>
+              </div>
+              <p className="text-[22px] font-black text-brand-dark">{totalPostComments.toLocaleString()}</p>
+              <p className="text-[10px] font-bold text-brand-gray mt-0.5">Avg {Math.round(totalPostComments / campaignPosts.length)} per post</p>
+            </div>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-soft px-5 py-4">
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <span className="text-[10px] font-bold text-brand-gray uppercase tracking-wider">Media Value</span>
+              </div>
+              <p className="text-[22px] font-black text-brand-dark">${totalPostMediaValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              <p className="text-[10px] font-bold text-emerald-500 mt-0.5">+8.7% ROI</p>
+            </div>
+          </div>
+
+          {/* Post Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            {campaignPosts.map((post) => (
+              <div key={post.id} onClick={() => setSelectedPost(post)} className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden hover:shadow-panel hover:-translate-y-0.5 transition-all group cursor-pointer">
+                {/* Thumbnail */}
+                <div className="relative w-full h-48 overflow-hidden">
+                  <img
+                    src={post.thumbnailUrl}
+                    alt={post.caption}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                  {/* Platform badge */}
+                  <div className="absolute top-3 left-3">
+                    <div className="w-7 h-7 rounded-lg overflow-hidden shadow-md">
+                      {post.platform === 'instagram' ? <InstagramIcon /> : post.platform === 'youtube' ? <YouTubeIcon /> : <TikTokIcon />}
+                    </div>
+                  </div>
+                  {/* Content type badge */}
+                  <div className="absolute top-3 right-3">
+                    <span className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full shadow-sm ${
+                      post.type === 'Reel' ? 'bg-purple-500 text-white' : post.type === 'Story' ? 'bg-blue-500 text-white' : 'bg-white/90 text-brand-dark backdrop-blur-sm'
+                    }`}>
+                      {post.type}
+                    </span>
+                  </div>
+                  {/* Bottom stats overlay */}
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center gap-3">
+                    <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-sm rounded-full px-2.5 py-1">
+                      <svg className="w-3 h-3 text-rose-400" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                      </svg>
+                      <span className="text-[10px] font-bold text-white">{post.likes.toLocaleString()}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-sm rounded-full px-2.5 py-1">
+                      <svg className="w-3 h-3 text-blue-300" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                      <span className="text-[10px] font-bold text-white">{post.comments.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card Body */}
+                <div className="px-4 py-3.5">
+                  {/* Influencer row */}
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <img src={post.avatarUrl} alt={post.influencer} className="w-8 h-8 rounded-full object-cover border-2 border-white shadow-sm" />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[12px] font-black text-brand-dark truncate">{post.influencer}</p>
+                      <p className="text-[10px] font-bold text-brand-gray">@{post.username}</p>
+                    </div>
+                    <span className="text-[10px] font-bold text-brand-gray shrink-0">{new Date(post.postedAt).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}</span>
+                  </div>
+
+                  {/* Stats row */}
+                  <div className="flex items-center gap-1 bg-gray-50 rounded-xl px-3.5 py-2.5">
+                    <div className="flex-1 text-center">
+                      <p className="text-[10px] font-bold text-brand-gray uppercase tracking-wider">Impressions</p>
+                      <p className="text-[13px] font-black text-brand-dark mt-0.5">{post.impressions.toLocaleString()}</p>
+                    </div>
+                    <div className="w-px h-7 bg-gray-200" />
+                    <div className="flex-1 text-center">
+                      <p className="text-[10px] font-bold text-brand-gray uppercase tracking-wider">Value</p>
+                      <p className="text-[13px] font-black text-emerald-600 mt-0.5">${post.mediaValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       ) : activeTab === 'Insights' ? (
@@ -656,6 +1109,403 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
                 className="flex-1 py-3 bg-red-500 text-white font-bold text-[12px] rounded-xl hover:bg-red-600 transition-all uppercase tracking-wider shadow-md"
               >
                 Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Email Template Selection Popup */}
+      {showEmailTemplatePopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowEmailTemplatePopup(false)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 rounded-lg p-2">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-[15px]">Email Templates</h3>
+                  <p className="text-white/70 text-[11px] font-medium">Select a template for this batch send</p>
+                </div>
+              </div>
+              <button onClick={() => setShowEmailTemplatePopup(false)} className="text-white/80 hover:text-white transition-colors p-1">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            {/* Template List */}
+            <div className="px-5 py-4 max-h-[400px] overflow-y-auto scrollbar-hide space-y-2">
+              {emailTemplates.map((tmpl) => {
+                const isSelected = selectedEmailTemplate === tmpl.id;
+                return (
+                  <button
+                    key={tmpl.id}
+                    onClick={() => { setSelectedEmailTemplate(tmpl.id); setShowEmailTemplatePopup(false); }}
+                    className={`w-full text-left p-4 rounded-xl border transition-all ${
+                      isSelected
+                        ? 'bg-blue-50 border-blue-200 ring-1 ring-blue-300'
+                        : 'bg-white border-gray-100 hover:border-blue-200 hover:bg-blue-50/30'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[13px] font-bold text-brand-dark">{tmpl.name}</span>
+                      {isSelected && (
+                        <span className="text-[9px] font-black text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full uppercase">Selected</span>
+                      )}
+                    </div>
+                    <p className="text-[11px] font-semibold text-brand-accent mb-1">{tmpl.subject}</p>
+                    <p className="text-[10px] text-brand-gray leading-relaxed">{tmpl.preview}</p>
+                  </button>
+                );
+              })}
+            </div>
+            {/* Footer */}
+            {selectedEmailTemplate && (
+              <div className="px-5 py-3 border-t border-gray-100 bg-gray-50/50">
+                <button
+                  onClick={() => { setSelectedEmailTemplate(null); }}
+                  className="text-[11px] font-bold text-red-500 hover:text-red-600 transition-colors"
+                >
+                  Clear selection
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* View Email Preview Popup */}
+      {showViewEmailPopup && selectedEmailTemplate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowViewEmailPopup(false)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Header bar */}
+            <div className="bg-gradient-to-r from-brand-accent to-brand-accent/90 px-6 py-4 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 rounded-lg p-2">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-[15px]">Email Template</h3>
+                  <p className="text-white/70 text-[11px] font-medium">Preview your email before sending</p>
+                </div>
+              </div>
+              <button onClick={() => setShowViewEmailPopup(false)} className="text-white/80 hover:text-white transition-colors p-1.5 hover:bg-white/10 rounded-lg">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            {/* Email meta fields */}
+            {(() => {
+              const tmpl = emailTemplates.find(t => t.id === selectedEmailTemplate);
+              if (!tmpl) return null;
+              const sampleName = influencers[0]?.name || 'Influencer';
+              return (
+                <>
+                  <div className="px-6 py-4 border-b border-gray-100 shrink-0 space-y-2.5 bg-[#FDFCFB]">
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] font-black text-brand-gray uppercase tracking-wider w-16 shrink-0">From:</span>
+                      <span className="text-[12px] font-semibold text-brand-dark">
+                        {connectedEmail === 'google' ? 'you@gmail.com' : 'you@outlook.com'}
+                        <span className="text-[10px] text-emerald-500 font-bold ml-2">({connectedEmail === 'google' ? 'Google' : 'Outlook'})</span>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] font-black text-brand-gray uppercase tracking-wider w-16 shrink-0">To:</span>
+                      <span className="text-[12px] font-semibold text-brand-dark">
+                        {toggledCount > 0 ? `${toggledCount} influencer${toggledCount > 1 ? 's' : ''} selected` : 'No recipients selected'}
+                        {toggledCount > 0 && (
+                          <span className="text-[10px] text-brand-gray font-medium ml-1">(personalised per recipient)</span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] font-black text-brand-gray uppercase tracking-wider w-16 shrink-0">Subject:</span>
+                      <span className="text-[13px] font-bold text-brand-dark">{tmpl.subject.replace('{campaign}', campaignName)}</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] font-black text-brand-gray uppercase tracking-wider w-16 shrink-0">Template:</span>
+                      <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100 uppercase">{tmpl.name}</span>
+                    </div>
+                  </div>
+
+                  {/* Scrollable email body */}
+                  <div className="flex-1 overflow-y-auto scrollbar-hide">
+                    <div className="px-8 py-6">
+                      <div className="text-[13px] text-brand-dark leading-[1.8] space-y-4">
+                        <p>Hello {sampleName}!</p>
+
+                        <p>{tmpl.preview.replace('{name}', sampleName)}</p>
+
+                        <p><strong>The Collaboration:</strong></p>
+
+                        <p>We are looking for a captivating Instagram Reel featuring one of our signature products. In your kit, you&apos;ll find everything you need to celebrate in style, including:</p>
+
+                        <ul className="list-disc pl-6 space-y-1">
+                          <li>A complimentary product sample for your content.</li>
+                          <li>Our signature branded accessories (please ensure this is used in your video!).</li>
+                          <li>Exclusive merch to wear on camera.</li>
+                        </ul>
+
+                        <p><strong>Video Concept:</strong> Show your audience how you enjoy the product in your own unique style. We ask that you tag our brand and use the campaign hashtags.</p>
+
+                        <p><strong>Key Dates:</strong></p>
+                        <p>Mid Feb: Product dispatched to your address.<br />
+                        Late Feb: Hard Deadline for draft content submission.<br />
+                        March 1–17: Content go-live window.</p>
+
+                        <p><strong>Key Points:</strong></p>
+
+                        <p><strong>Paid Partnership:</strong> This is a paid collaboration, and we look forward to a mutually beneficial campaign.</p>
+
+                        <p><strong>Rates:</strong> If you&apos;re interested, please provide your standard rates for an Instagram Reel when you reply.</p>
+
+                        <p><strong>Usage Rights:</strong> By moving forward, you agree to grant usage rights to repost your content for social media and advertising purposes.</p>
+
+                        <p>We&apos;ve attached the full media kit with creative ideas and notes for your reference. We look forward to the possibility of working together to make this campaign special!</p>
+
+                        <p>Best,<br />
+                        The {campaignName} Team</p>
+                      </div>
+
+                      {/* Attachments section */}
+                      <div className="mt-6 pt-5 border-t border-gray-100">
+                        <p className="text-[10px] font-black text-brand-gray uppercase tracking-wider mb-3">Attachments</p>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-3 bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 hover:border-brand-accent/30 transition-all cursor-pointer group">
+                            <div className="w-9 h-9 bg-red-50 rounded-lg flex items-center justify-center shrink-0">
+                              <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                              </svg>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[12px] font-bold text-brand-dark truncate group-hover:text-brand-accent transition-colors">{campaignName} Influencer Media Kit.pdf</p>
+                              <p className="text-[10px] text-brand-gray font-medium">PDF • 2.4 MB</p>
+                            </div>
+                            <svg className="w-4 h-4 text-gray-300 group-hover:text-brand-accent transition-colors shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                          </div>
+                          <div className="flex items-center gap-3 bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 hover:border-brand-accent/30 transition-all cursor-pointer group">
+                            <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
+                              <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" />
+                              </svg>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[12px] font-bold text-brand-dark truncate group-hover:text-brand-accent transition-colors">Recipe Ideas & Tasting Notes.pdf</p>
+                              <p className="text-[10px] text-brand-gray font-medium">PDF • 856 KB</p>
+                            </div>
+                            <svg className="w-4 h-4 text-gray-300 group-hover:text-brand-accent transition-colors shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Personalisation note */}
+                      <div className="mt-5 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
+                        <p className="text-[11px] text-amber-700 font-medium">
+                          <strong>Note:</strong> Personalisation tokens (e.g. recipient name) will be replaced for each influencer when the email is sent.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
+
+            {/* Footer */}
+            <div className="px-6 py-4 border-t border-gray-100 bg-[#FDFCFB] flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2">
+                <button className="px-4 py-2 rounded-xl text-[11px] font-bold text-brand-gray border border-gray-200 hover:bg-gray-100 transition-all flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
+                  </svg>
+                  Attach File
+                </button>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setShowViewEmailPopup(false)}
+                  className="px-5 py-2 rounded-xl text-[11px] font-bold text-gray-600 border border-gray-200 hover:bg-gray-100 transition-all"
+                >
+                  Close
+                </button>
+                {canSendEmail && (
+                  <button className="px-6 py-2.5 rounded-xl text-[11px] font-black bg-brand-accent text-white hover:brightness-110 shadow-md transition-all flex items-center gap-2 uppercase tracking-wider">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+                    </svg>
+                    Send to {toggledCount} Influencer{toggledCount > 1 ? 's' : ''}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Post Detail Popup */}
+      {selectedPost && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSelectedPost(null)} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl h-[88vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col">
+            {/* Header */}
+            <div className="shrink-0 bg-[#FDFCFB] border-b border-gray-100 px-6 py-3.5 flex items-center gap-4">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <img src={selectedPost.avatarUrl} alt={selectedPost.influencer} className="w-9 h-9 rounded-full object-cover border-2 border-white shadow-sm" />
+                <div className="min-w-0">
+                  <h3 className="text-[13px] font-black text-brand-dark truncate">{selectedPost.influencer}</h3>
+                  <p className="text-[11px] font-bold text-brand-gray">@{selectedPost.username}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <div className="w-6 h-6 rounded-md overflow-hidden shadow-sm">
+                  {selectedPost.platform === 'instagram' ? <InstagramIcon /> : selectedPost.platform === 'youtube' ? <YouTubeIcon /> : <TikTokIcon />}
+                </div>
+                <span className={`text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${
+                  selectedPost.type === 'Reel' ? 'bg-purple-50 text-purple-600' : selectedPost.type === 'Story' ? 'bg-blue-50 text-blue-600' : 'bg-gray-100 text-brand-dark'
+                }`}>
+                  {selectedPost.type}
+                </span>
+              </div>
+              <button onClick={() => setSelectedPost(null)} className="text-gray-400 hover:text-brand-dark transition-colors ml-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="flex flex-col lg:flex-row">
+                {/* Left: Image */}
+                <div className="lg:w-[55%] shrink-0 bg-black flex items-center justify-center">
+                  <img
+                    src={selectedPost.thumbnailUrl}
+                    alt={selectedPost.caption}
+                    className="w-full h-full object-cover max-h-[60vh] lg:max-h-none"
+                  />
+                </div>
+
+                {/* Right: Details */}
+                <div className="flex-1 flex flex-col">
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 gap-0 border-b border-gray-100">
+                    <div className="px-5 py-4 border-r border-gray-100">
+                      <div className="flex items-center gap-2 mb-1">
+                        <svg className="w-4 h-4 text-rose-400" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                        <span className="text-[10px] font-bold text-brand-gray uppercase tracking-wider">Likes</span>
+                      </div>
+                      <p className="text-[20px] font-black text-brand-dark">{selectedPost.likes.toLocaleString()}</p>
+                    </div>
+                    <div className="px-5 py-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <span className="text-[10px] font-bold text-brand-gray uppercase tracking-wider">Comments</span>
+                      </div>
+                      <p className="text-[20px] font-black text-brand-dark">{selectedPost.comments.toLocaleString()}</p>
+                    </div>
+                    <div className="px-5 py-4 border-r border-t border-gray-100">
+                      <div className="flex items-center gap-2 mb-1">
+                        <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span className="text-[10px] font-bold text-brand-gray uppercase tracking-wider">Impressions</span>
+                      </div>
+                      <p className="text-[20px] font-black text-brand-dark">{selectedPost.impressions.toLocaleString()}</p>
+                    </div>
+                    <div className="px-5 py-4 border-t border-gray-100">
+                      <div className="flex items-center gap-2 mb-1">
+                        <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="text-[10px] font-bold text-brand-gray uppercase tracking-wider">Media Value</span>
+                      </div>
+                      <p className="text-[20px] font-black text-emerald-600">${selectedPost.mediaValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    </div>
+                  </div>
+
+                  {/* Engagement Rate */}
+                  <div className="px-5 py-3.5 border-b border-gray-100 bg-gray-50/50">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-brand-gray uppercase tracking-wider">Engagement Rate</span>
+                      <span className="text-[13px] font-black text-brand-accent">
+                        {((selectedPost.likes + selectedPost.comments) / selectedPost.impressions * 100).toFixed(2)}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-1.5 mt-2">
+                      <div
+                        className="bg-gradient-to-r from-brand-accent to-brand-accent/70 h-1.5 rounded-full transition-all"
+                        style={{ width: `${Math.min(((selectedPost.likes + selectedPost.comments) / selectedPost.impressions * 100) * 10, 100)}%` }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Caption */}
+                  <div className="px-5 py-4 flex-1">
+                    <h4 className="text-[10px] font-bold text-brand-gray uppercase tracking-wider mb-2">Caption</h4>
+                    <p className="text-[13px] text-brand-dark leading-relaxed">{selectedPost.caption}</p>
+                  </div>
+
+                  {/* Post date & meta */}
+                  <div className="px-5 py-3.5 border-t border-gray-100 bg-[#FDFCFB]">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-3.5 h-3.5 text-brand-gray" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span className="text-[11px] font-bold text-brand-gray">
+                          Posted {new Date(selectedPost.postedAt).toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' })}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold text-brand-gray uppercase tracking-wider">
+                          {selectedPost.platform.charAt(0).toUpperCase() + selectedPost.platform.slice(1)}
+                        </span>
+                        <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                          selectedPost.type === 'Reel' ? 'bg-purple-100 text-purple-600' : selectedPost.type === 'Story' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-brand-dark'
+                        }`}>
+                          {selectedPost.type}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="shrink-0 border-t border-gray-100 px-6 py-3.5 flex items-center justify-between bg-[#FDFCFB]">
+              <div className="flex items-center gap-2">
+                <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-[11px] font-bold text-brand-gray hover:bg-gray-50 transition-colors">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Download
+                </button>
+                <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-[11px] font-bold text-brand-gray hover:bg-gray-50 transition-colors">
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                  </svg>
+                  Share
+                </button>
+              </div>
+              <button
+                onClick={() => setSelectedPost(null)}
+                className="px-6 py-2 rounded-xl bg-brand-dark text-white text-[11px] font-black uppercase tracking-wider hover:bg-brand-dark/90 transition-colors shadow-sm"
+              >
+                Close
               </button>
             </div>
           </div>
@@ -1233,21 +2083,36 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
                       <p className="text-[12px] text-brand-gray leading-relaxed">Browse curated collections of top-performing influencers handpicked by our team.</p>
                       <div className="grid grid-cols-2 gap-4">
                         {[
-                          { name: 'Top Food & Bev AU', count: 12, color: 'from-orange-500 to-red-500', icon: '🍽️', categories: ['Food', 'Home Cooking'] },
-                          { name: 'Lifestyle Leaders', count: 8, color: 'from-pink-500 to-purple-500', icon: '✨', categories: ['Lifestyle Media', 'Celebrity'] },
-                          { name: 'Fitness & Wellness', count: 7, color: 'from-emerald-500 to-teal-500', icon: '🧘', categories: ['Wellness Lifestyle'] },
-                          { name: 'Travel Creators', count: 6, color: 'from-blue-500 to-indigo-500', icon: '🌏', categories: [] },
+                          { name: 'Top Food & Bev AU', count: 12, image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=600', categories: ['Food', 'Home Cooking'] },
+                          { name: 'Lifestyle Leaders', count: 8, image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=600', categories: ['Lifestyle Media', 'Celebrity'] },
+                          { name: 'Fitness & Wellness', count: 7, image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=600', categories: ['Wellness Lifestyle'] },
+                          { name: 'Travel Creators', count: 6, image: 'https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&q=80&w=600', categories: [] },
                         ].map((col) => (
                           <div
                             key={col.name}
                             onClick={() => { setSelectedProCollection(col.name); setExpandedDiscoverUsername(null); setDiscoverExpandPost(null); setDismissedFromDiscover([]); }}
-                            className="bg-white border border-gray-100 rounded-xl p-5 hover:shadow-panel hover:-translate-y-0.5 transition-all cursor-pointer group"
+                            className="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-panel hover:-translate-y-0.5 transition-all cursor-pointer group"
                           >
-                            <div className={`w-10 h-10 bg-gradient-to-br ${col.color} rounded-xl mb-3 flex items-center justify-center shadow-md text-lg`}>
-                              {col.icon}
+                            <div className="relative w-full h-32 overflow-hidden">
+                              <img
+                                src={col.image}
+                                alt={col.name}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                              <button
+                                onClick={(e) => e.stopPropagation()}
+                                className="absolute top-2 right-2 w-7 h-7 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center shadow-sm hover:bg-brand-accent hover:text-white transition-all"
+                              >
+                                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                </svg>
+                              </button>
                             </div>
-                            <h4 className="text-[13px] font-black text-brand-dark group-hover:text-brand-accent transition-colors">{col.name}</h4>
-                            <p className="text-[11px] font-bold text-brand-gray mt-0.5">{col.count} influencers</p>
+                            <div className="px-4 py-3">
+                              <h4 className="text-[13px] font-black text-brand-dark group-hover:text-brand-accent transition-colors">{col.name}</h4>
+                              <p className="text-[11px] font-bold text-brand-gray mt-0.5">{col.count} Influencers</p>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -1855,7 +2720,8 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
 };
 
 // Sub-component for individual influencer cards (Profiles Grid)
-const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, category, audience, value, location, flag, platforms, isFavourite, isGeocoded, followers, estimatedValue, posts, stories, onAssign, onRemove }) => {
+const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, category, audience, value, location, flag, platforms, platformStats, isFavourite, isGeocoded, followers, estimatedValue, posts, stories, email, onAssign, onRemove }) => {
+  const [hoveredPlatform, setHoveredPlatform] = useState<string | null>(null);
   const getCategoryColor = (cat: string) => {
     switch (cat) {
       case 'Media': return 'bg-[#00529B]';
@@ -1919,8 +2785,16 @@ const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, catego
                <button className={`${isFavourite ? 'text-amber-400' : 'text-gray-300'} hover:text-amber-400 transition-colors`} onClick={(e) => e.stopPropagation()}>
                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                </button>
-               <button className="text-gray-300 hover:text-brand-accent transition-colors" onClick={(e) => e.stopPropagation()}>
-                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+               <button
+                 className={`transition-colors ${email ? 'text-emerald-500 hover:text-emerald-600' : 'text-gray-300 hover:text-gray-400'}`}
+                 onClick={(e) => e.stopPropagation()}
+                 title={email || 'No email'}
+               >
+                 {email ? (
+                   <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" /><path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" /></svg>
+                 ) : (
+                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                 )}
                </button>
             </div>
          </div>
@@ -1935,21 +2809,60 @@ const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, catego
             <p className="text-[12px] font-bold text-brand-accent">{estimatedValue || `$${value}`} <span className="text-brand-gray font-semibold">Estimated Value</span></p>
          </div>
 
-         {/* Social platform icons */}
+         {/* Social platform icons with hover stats */}
          <div className="flex items-center gap-2 pt-1">
             {(platforms || ['instagram']).includes('instagram') && (
-              <div className="w-6 h-6 rounded-md overflow-hidden shadow-sm border border-gray-100">
-                <InstagramIcon />
+              <div
+                className="relative"
+                onMouseEnter={() => setHoveredPlatform('instagram')}
+                onMouseLeave={() => setHoveredPlatform(null)}
+              >
+                <div className="w-6 h-6 rounded-md overflow-hidden shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow">
+                  <InstagramIcon />
+                </div>
+                {hoveredPlatform === 'instagram' && platformStats?.instagram && (
+                  <div className="absolute bottom-full left-0 mb-2 bg-white rounded-xl shadow-lg border border-gray-100 px-4 py-3 whitespace-nowrap z-20">
+                    <p className="text-[13px] font-black text-brand-dark">{platformStats.instagram.followers} followers</p>
+                    <p className="text-[12px] font-bold text-brand-dark">{platformStats.instagram.value} Estimated Value</p>
+                    <div className="absolute top-full left-3 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-white" />
+                  </div>
+                )}
               </div>
             )}
             {(platforms || []).includes('youtube') && (
-              <div className="w-6 h-6 rounded-md overflow-hidden shadow-sm border border-gray-100 bg-white flex items-center justify-center p-0.5">
-                <YouTubeIcon />
+              <div
+                className="relative"
+                onMouseEnter={() => setHoveredPlatform('youtube')}
+                onMouseLeave={() => setHoveredPlatform(null)}
+              >
+                <div className="w-6 h-6 rounded-md overflow-hidden shadow-sm border border-gray-100 bg-white flex items-center justify-center p-0.5 cursor-pointer hover:shadow-md transition-shadow">
+                  <YouTubeIcon />
+                </div>
+                {hoveredPlatform === 'youtube' && platformStats?.youtube && (
+                  <div className="absolute bottom-full left-0 mb-2 bg-white rounded-xl shadow-lg border border-gray-100 px-4 py-3 whitespace-nowrap z-20">
+                    <p className="text-[13px] font-black text-brand-dark">{platformStats.youtube.followers} followers</p>
+                    <p className="text-[12px] font-bold text-brand-dark">{platformStats.youtube.value} Estimated Value</p>
+                    <div className="absolute top-full left-3 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-white" />
+                  </div>
+                )}
               </div>
             )}
             {(platforms || []).includes('tiktok') && (
-              <div className="w-6 h-6 rounded-md overflow-hidden shadow-sm border border-gray-100 bg-white flex items-center justify-center p-1">
-                <TikTokIcon />
+              <div
+                className="relative"
+                onMouseEnter={() => setHoveredPlatform('tiktok')}
+                onMouseLeave={() => setHoveredPlatform(null)}
+              >
+                <div className="w-6 h-6 rounded-md overflow-hidden shadow-sm border border-gray-100 bg-white flex items-center justify-center p-1 cursor-pointer hover:shadow-md transition-shadow">
+                  <TikTokIcon />
+                </div>
+                {hoveredPlatform === 'tiktok' && platformStats?.tiktok && (
+                  <div className="absolute bottom-full left-0 mb-2 bg-white rounded-xl shadow-lg border border-gray-100 px-4 py-3 whitespace-nowrap z-20">
+                    <p className="text-[13px] font-black text-brand-dark">{platformStats.tiktok.followers} followers</p>
+                    <p className="text-[12px] font-bold text-brand-dark">{platformStats.tiktok.value} Estimated Value</p>
+                    <div className="absolute top-full left-3 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-white" />
+                  </div>
+                )}
               </div>
             )}
          </div>

@@ -14,7 +14,7 @@ const UniversalSocialSearch: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col space-y-1.5 flex-1 min-w-[300px]">
+    <div className="flex flex-col space-y-1.5 flex-1 min-w-[200px] max-w-[340px]">
       <div className="flex items-center justify-between px-1">
         <span className="text-[9px] font-extrabold text-brand-gray uppercase tracking-widest">
           Quick Lookup <span className="text-brand-accent ml-1">({platform})</span>
