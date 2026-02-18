@@ -39,9 +39,10 @@ interface GalleryPost {
 interface InfluencerDetailPopupProps {
   influencer: any;
   onClose: () => void;
+  campaignTags?: string[];
 }
 
-const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influencer, onClose }) => {
+const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influencer, onClose, campaignTags = [] }) => {
   if (!influencer) return null;
 
   const tabs = ['INFO', 'GALLERY', 'RANKING', 'RATES', 'SHIPPING', 'ROSTER'];
@@ -59,6 +60,13 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
 
   // Platform filter for RATES section
   const [ratesPlatform, setRatesPlatform] = React.useState<'ALL' | 'IG' | 'YT' | 'TT'>('ALL');
+
+  // Influencer tags for this campaign
+  const [assignedTags, setAssignedTags] = React.useState<string[]>([]);
+  const [selectedTagToAdd, setSelectedTagToAdd] = React.useState('');
+
+  // Recent Activity post detail overlay
+  const [selectedRecentPost, setSelectedRecentPost] = React.useState<{ imageUrl: string; caption: string; likes: number; comments: number } | null>(null);
 
   // Helper for category-specific colors
   const getCategoryColor = (category: string) => {
@@ -107,7 +115,14 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
     { id: 'p6', imageUrl: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&q=80&w=600', caption: 'Do you want to win something amazing? The ultimate Chocolate Baking bundle? Well listen up! To celebrate there bein...', type: 'video' },
   ];
 
-  const recentPostsData = Array.from({ length: 6 }, (_, i) => `https://picsum.photos/seed/post-${i + 150}/150/150`);
+  const recentPostsData = [
+    { imageUrl: 'https://picsum.photos/seed/post-150/400/400', caption: 'Ducati club is meeting in the lane way behind the office', likes: 41, comments: 5 },
+    { imageUrl: 'https://picsum.photos/seed/post-151/400/400', caption: 'Morning light hitting the harbour bridge — one of those moments you just have to stop and take it all in ☀️', likes: 128, comments: 12 },
+    { imageUrl: 'https://picsum.photos/seed/post-152/400/400', caption: 'New menu tasting at the rooftop bar. Every single dish was incredible, can\'t wait for you all to try it 🍽️', likes: 87, comments: 9 },
+    { imageUrl: 'https://picsum.photos/seed/post-153/400/400', caption: 'Behind the scenes of today\'s shoot — huge thanks to the team for making this happen. More coming soon 📸', likes: 214, comments: 23 },
+    { imageUrl: 'https://picsum.photos/seed/post-154/400/400', caption: 'Weekend markets are back! Supporting local makers and grabbing some seriously good coffee along the way ☕', likes: 63, comments: 7 },
+    { imageUrl: 'https://picsum.photos/seed/post-155/400/400', caption: 'Just wrapped up an amazing collab with @brandpartner — stay tuned for the full reveal next week 🔥', likes: 156, comments: 18 },
+  ];
 
   const toggleExpand = (rank: number) => {
     if (expandedInfluencerRank === rank) {
@@ -420,9 +435,9 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                             <div className="min-h-[140px]">
                               {activeRankingSubTab === 'Recent Posts' && (
                                 <div className="grid grid-cols-6 gap-3 animate-in fade-in duration-200">
-                                  {recentPostsData.map((url, i) => (
-                                    <div key={i} className="aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm group cursor-default">
-                                      <img src={url} alt={`Post ${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                  {recentPostsData.map((post, i) => (
+                                    <div key={i} className="aspect-square rounded-xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm group cursor-pointer" onClick={() => setSelectedRecentPost(post)}>
+                                      <img src={post.imageUrl} alt={`Post ${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                                     </div>
                                   ))}
                                 </div>
@@ -535,6 +550,75 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                   </div>
                 </div>
 
+                {/* Campaign Tags assignment */}
+                <div className="space-y-3 mb-8 shrink-0">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    <span className="text-[9px] font-black text-brand-dark uppercase tracking-widest">Campaign Tags</span>
+                  </div>
+
+                  {/* Assigned tags display */}
+                  {assignedTags.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {assignedTags.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center gap-1.5 bg-brand-accent/10 text-brand-accent border border-brand-accent/20 px-3 py-1.5 rounded-lg text-[11px] font-bold"
+                        >
+                          {tag}
+                          <button
+                            onClick={() => setAssignedTags(assignedTags.filter((_, i) => i !== idx))}
+                            className="text-brand-accent/60 hover:text-red-500 transition-colors ml-0.5"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Add tag controls */}
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={selectedTagToAdd}
+                      onChange={(e) => setSelectedTagToAdd(e.target.value)}
+                      className="flex-1 bg-[#F8F6F4] border border-gray-200 rounded-xl py-2 px-3 text-[11px] font-bold text-brand-dark focus:ring-1 focus:ring-brand-accent outline-none appearance-none cursor-pointer"
+                    >
+                      <option value="">Select a tag...</option>
+                      {campaignTags
+                        .filter((tag) => !assignedTags.includes(tag))
+                        .map((tag) => (
+                          <option key={tag} value={tag}>{tag}</option>
+                        ))
+                      }
+                    </select>
+                    <button
+                      onClick={() => {
+                        if (selectedTagToAdd && !assignedTags.includes(selectedTagToAdd)) {
+                          setAssignedTags([...assignedTags, selectedTagToAdd]);
+                          setSelectedTagToAdd('');
+                        }
+                      }}
+                      disabled={!selectedTagToAdd}
+                      className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${
+                        selectedTagToAdd
+                          ? 'bg-brand-accent text-white shadow-md hover:brightness-110'
+                          : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      }`}
+                    >
+                      Add
+                    </button>
+                  </div>
+
+                  {assignedTags.length === 0 && (
+                    <p className="text-[10px] font-medium text-brand-gray/50 italic">No tags assigned to this influencer yet</p>
+                  )}
+                </div>
+
                 <div className="flex gap-8 flex-1 min-h-0 border-t border-gray-50 pt-6">
                   {/* Left Column: Sub-tabs and Ranking Box */}
                   <div className="flex-1 flex flex-col min-h-0">
@@ -581,37 +665,121 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                           </div>
                         )}
                         {infoSubTab === 'Audience' && (
-                          <div className="space-y-4 animate-in fade-in duration-200">
-                             <div className="space-y-2">
-                                <h4 className="text-[13px] font-serif font-bold text-brand-dark">Gender Distribution</h4>
+                          <div className="space-y-6 animate-in fade-in duration-200">
+                             {/* Gender */}
+                             <div className="space-y-3">
+                                <h4 className="text-[13px] font-serif font-bold text-brand-dark">Gender</h4>
                                 <div className="space-y-3">
                                    <div>
                                       <div className="flex justify-between items-center mb-1">
-                                        <p className="text-[11px] font-serif font-medium text-brand-dark">Women</p>
-                                        <p className="text-[11px] font-black text-brand-accent">27.9%</p>
+                                        <p className="text-[11px] font-serif font-semibold text-brand-dark">Women 27.9%</p>
                                       </div>
-                                      <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                                         <div className="bg-brand-accent h-full" style={{ width: '27.9%' }}></div>
+                                      <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                                         <div className="bg-brand-accent h-full rounded-full" style={{ width: '27.9%' }}></div>
                                       </div>
                                    </div>
+                                   <div>
+                                      <div className="flex justify-between items-center mb-1">
+                                        <p className="text-[11px] font-serif font-semibold text-brand-dark">Men 38.5%</p>
+                                      </div>
+                                      <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                                         <div className="bg-brand-accent h-full rounded-full" style={{ width: '38.5%' }}></div>
+                                      </div>
+                                   </div>
+                                </div>
+                             </div>
+
+                             {/* Top Countries */}
+                             <div className="space-y-3">
+                                <h4 className="text-[13px] font-serif font-bold text-brand-dark">Top countries</h4>
+                                <div className="flex flex-wrap gap-2">
+                                   {[
+                                     { name: 'Australia', pct: '32%' },
+                                     { name: 'United States', pct: '16%' },
+                                     { name: 'United Kingdom', pct: '11%' },
+                                     { name: 'Italy', pct: '5.3%' },
+                                   ].map((c) => (
+                                     <span key={c.name} className="bg-[#F4F2EF] text-brand-dark text-[11px] font-semibold px-4 py-2 rounded-full">
+                                       {c.name} ({c.pct})
+                                     </span>
+                                   ))}
+                                </div>
+                             </div>
+
+                             {/* Top Cities */}
+                             <div className="space-y-3">
+                                <h4 className="text-[13px] font-serif font-bold text-brand-dark">Top cities</h4>
+                                <div className="flex flex-wrap gap-2">
+                                   {[
+                                     { name: 'Sydney', pct: '41.2%' },
+                                     { name: 'London', pct: '5.6%' },
+                                     { name: 'New York', pct: '3.8%' },
+                                     { name: 'Dublin', pct: '2.5%' },
+                                   ].map((c) => (
+                                     <span key={c.name} className="bg-[#F4F2EF] text-brand-dark text-[11px] font-semibold px-4 py-2 rounded-full">
+                                       {c.name} ({c.pct})
+                                     </span>
+                                   ))}
                                 </div>
                              </div>
                           </div>
                         )}
                         {infoSubTab === 'Content' && (
-                          <div className="space-y-4 animate-in fade-in duration-200">
-                             <div className="space-y-2">
-                                <h4 className="text-[13px] font-serif font-bold text-brand-dark">Engagement per Format</h4>
+                          <div className="space-y-6 animate-in fade-in duration-200">
+                             {/* Format Performance */}
+                             <div className="space-y-3">
+                                <h4 className="text-[13px] font-serif font-bold text-brand-dark">Format performance (avg engagement)</h4>
                                 <div className="space-y-3">
                                    <div>
                                       <div className="flex justify-between items-center mb-1">
-                                        <p className="text-[11px] font-serif font-medium text-brand-dark">Photos</p>
-                                        <p className="text-[11px] font-black text-brand-accent">4.1%</p>
+                                        <p className="text-[11px] font-serif font-semibold text-brand-dark">Photos 4.1%</p>
                                       </div>
-                                      <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                                         <div className="bg-brand-accent h-full" style={{ width: '41%' }}></div>
+                                      <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                                         <div className="bg-brand-accent h-full rounded-full" style={{ width: '41%' }}></div>
                                       </div>
                                    </div>
+                                   <div>
+                                      <div className="flex justify-between items-center mb-1">
+                                        <p className="text-[11px] font-serif font-semibold text-brand-dark">Reels 2.5%</p>
+                                      </div>
+                                      <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                                         <div className="bg-brand-accent h-full rounded-full" style={{ width: '25%' }}></div>
+                                      </div>
+                                   </div>
+                                </div>
+                             </div>
+
+                             {/* Top Content (last 30 days) */}
+                             <div className="space-y-3">
+                                <h4 className="text-[13px] font-serif font-bold text-brand-dark">Top content (last 30 days)</h4>
+                                <div className="flex flex-wrap gap-2">
+                                   {[
+                                     { label: 'Avg views', value: '0' },
+                                     { label: 'Median views', value: '0' },
+                                     { label: 'Saves rate', value: '0%' },
+                                     { label: 'Share rate', value: '0%' },
+                                   ].map((item) => (
+                                     <span key={item.label} className="bg-[#F4F2EF] text-brand-dark text-[11px] font-semibold px-4 py-2 rounded-full">
+                                       {item.label}: {item.value}
+                                     </span>
+                                   ))}
+                                </div>
+                             </div>
+
+                             {/* Cadence */}
+                             <div className="space-y-3">
+                                <h4 className="text-[13px] font-serif font-bold text-brand-dark">Cadence</h4>
+                                <div className="flex flex-wrap gap-2">
+                                   {[
+                                     { label: 'Posts', value: '23' },
+                                     { label: 'Reels', value: '7' },
+                                     { label: 'Stories', value: '' },
+                                     { label: 'Avg posts/week', value: '7' },
+                                   ].map((item) => (
+                                     <span key={item.label} className="bg-[#F4F2EF] text-brand-dark text-[11px] font-semibold px-4 py-2 rounded-full">
+                                       {item.label}: {item.value}
+                                     </span>
+                                   ))}
                                 </div>
                              </div>
                           </div>
@@ -638,9 +806,18 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                   <div className="w-[200px] shrink-0 flex flex-col">
                     <h3 className="text-[9px] font-black uppercase tracking-widest text-brand-dark mb-4 opacity-50 px-1">Recent Activity</h3>
                     <div className="grid grid-cols-2 gap-2">
-                      {recentPostsData.map((url, i) => (
-                        <div key={i} className="aspect-square rounded-lg overflow-hidden bg-gray-100 group border border-gray-50 shadow-sm">
-                           <img src={url} alt={`Post ${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      {recentPostsData.map((post, i) => (
+                        <div
+                          key={i}
+                          className="aspect-square rounded-lg overflow-hidden bg-gray-100 group border border-gray-50 shadow-sm cursor-pointer relative"
+                          onClick={() => setSelectedRecentPost(post)}
+                        >
+                           <img src={post.imageUrl} alt={`Post ${i}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                             <svg className="w-5 h-5 text-white drop-shadow-lg" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                               <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                             </svg>
+                           </div>
                         </div>
                       ))}
                     </div>
@@ -739,6 +916,59 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
             ) : (
               <div className="flex items-center justify-center h-full text-brand-gray italic text-sm font-bold uppercase tracking-widest opacity-30">
                 {activeTab} CONTENT SECTION
+              </div>
+            )}
+
+            {/* Recent Post Detail Overlay */}
+            {selectedRecentPost && (
+              <div className="absolute inset-0 z-20 bg-white flex flex-col animate-in fade-in zoom-in-95 duration-200">
+                {/* Close button */}
+                <div className="absolute top-4 right-4 z-10">
+                  <button
+                    onClick={() => setSelectedRecentPost(null)}
+                    className="p-2 bg-white border border-gray-200 text-brand-accent hover:text-red-500 rounded-xl shadow-md transition-all hover:shadow-lg"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Content area */}
+                <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
+                  {/* Image */}
+                  <div className="md:w-[55%] bg-gray-50 flex flex-col">
+                    <div className="flex-1 overflow-hidden">
+                      <img
+                        src={selectedRecentPost.imageUrl}
+                        alt="Post"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    {/* Engagement bar */}
+                    <div className="flex items-center gap-6 px-6 py-4 bg-white border-t border-gray-100">
+                      <div className="flex items-center gap-2">
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                        </svg>
+                        <span className="text-sm font-black text-brand-dark">{selectedRecentPost.likes}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" />
+                        </svg>
+                        <span className="text-sm font-black text-brand-dark">{selectedRecentPost.comments}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Caption side */}
+                  <div className="md:w-[45%] p-8 md:p-10 flex flex-col overflow-y-auto">
+                    <p className="text-base font-serif font-medium text-brand-dark leading-relaxed">
+                      {selectedRecentPost.caption}
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
           </div>

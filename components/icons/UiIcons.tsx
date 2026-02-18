@@ -107,3 +107,19 @@ export const ListIcon: React.FC<IconProps> = ({ className = "h-6 w-6" }) => (
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
   </svg>
 );
+
+export const SidebarCollapseIcon: React.FC<IconProps> = ({ className = "h-5 w-5" }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 4h18v16H3V4z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 4v16" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l-2 2 2 2" />
+  </svg>
+);
+
+export const SidebarExpandIcon: React.FC<IconProps> = ({ className = "h-5 w-5" }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 4h18v16H3V4z" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 4v16" />
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10l2 2-2 2" />
+  </svg>
+);

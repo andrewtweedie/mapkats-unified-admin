@@ -9,6 +9,7 @@ import CampaignDetailView from './views/CampaignDetailView';
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail'>('dashboard');
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const handleCampaignClick = (name: string) => {
     setSelectedCampaign(name);
@@ -17,33 +18,33 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-[#F8F6F4] overflow-hidden text-brand-dark">
-      {/* Fix: Pass currentView directly as the Sidebar component now handles 'campaign-detail' */}
-      <Sidebar 
-        currentView={currentView} 
+      <Sidebar
+        currentView={currentView}
         setView={(view) => {
           setCurrentView(view);
           if (view !== 'campaign-detail') setSelectedCampaign(null);
-        }} 
+        }}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
-      
+
       <main className="flex-1 overflow-y-auto scrollbar-hide flex flex-col">
-        {/* Fix: Pass currentView directly as the Header component now handles 'campaign-detail' */}
-        <Header 
-          userName="Andrew Tweedie" 
-          userInitials="AT" 
-          currentView={currentView} 
+        <Header
+          userName="Andrew Tweedie"
+          userInitials="AT"
+          currentView={currentView}
           setView={(view) => {
             setCurrentView(view);
             if (view !== 'campaign-detail') setSelectedCampaign(null);
-          }} 
+          }}
         />
 
         <div className="p-6 md:p-10 max-w-7xl w-full mx-auto">
           {currentView === 'dashboard' && <DashboardView />}
           {currentView === 'campaigns' && <CampaignsView onCampaignClick={handleCampaignClick} />}
           {currentView === 'campaign-detail' && (
-            <CampaignDetailView 
-              campaignName={selectedCampaign || 'Campaign'} 
+            <CampaignDetailView
+              campaignName={selectedCampaign || 'Campaign'}
               onBack={() => setCurrentView('campaigns')}
             />
           )}
