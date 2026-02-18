@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
-import { SearchIcon, PencilSquareIcon } from '../components/icons/UiIcons';
+import { SearchIcon, PencilSquareIcon, PlusIcon } from '../components/icons/UiIcons';
+import { InstagramIcon, TikTokIcon, YouTubeIcon } from '../components/icons/SocialIcons';
 import UniversalSocialSearch from '../components/UniversalSocialSearch';
 import InfluencerDetailPopup from '../components/InfluencerDetailPopup';
 
@@ -11,95 +12,104 @@ interface CampaignDetailViewProps {
 
 const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, onBack }) => {
   const tabs = ['Campaigns', 'Profiles', 'List', 'Post', 'Story', 'Insights'];
-  const activeTab = 'Profiles';
+  const [activeTab, setActiveTab] = useState('Profiles');
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
 
   const influencers = [
     { 
-      name: 'avriltreasure', 
-      username: 'avriltreasure', 
-      imageUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400', 
-      category: 'Media', 
-      audience: '4,053', 
-      value: '70.72',
-      totalAudience: '261,265',
-      totalValue: '$4,559.08',
-      channels: [
-        { platform: 'instagram', count: '210,655', value: '$3,675.93' },
-        { platform: 'youtube', count: '9,510', value: '$165.95' },
-        { platform: 'tiktok', count: '41,100', value: '$717.20' }
-      ]
-    },
-    { 
-      name: 'georgiamay._', 
-      username: 'georgiamay._', 
-      imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400', 
-      category: 'Wellness Lifestyle', 
-      audience: '6,329', 
-      value: '110.44',
-      totalAudience: '12,500',
-      totalValue: '$210.00',
-      channels: [
-        { platform: 'instagram', count: '6,329', value: '$110.44' },
-        { platform: 'tiktok', count: '6,171', value: '$99.56' }
-      ]
-    },
-    { 
-      name: 'helenaandvikki', 
-      username: 'helenaandvikki', 
-      imageUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400', 
-      category: 'Home Cooking', 
-      audience: '26,482', 
-      value: '462.11',
-      totalAudience: '45,200',
-      totalValue: '$820.50',
-      channels: [
-        { platform: 'instagram', count: '26,482', value: '$462.11' },
-        { platform: 'youtube', count: '18,718', value: '$358.39' }
-      ]
-    },
-    { 
-      name: 'nicolamdale', 
-      username: 'nicolamdale', 
-      imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400', 
-      category: 'Media', 
-      audience: '3,257', 
-      value: '56.84',
-      totalAudience: '3,257',
-      totalValue: '$56.84',
-      channels: [
-        { platform: 'instagram', count: '3,257', value: '$56.84' }
-      ]
-    },
-    { 
-      name: 'sallycrinis', 
-      username: 'sallycrinis', 
-      imageUrl: 'https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=400', 
-      category: 'Media', 
-      audience: '35,962', 
-      value: '627.53',
-      totalAudience: '50,100',
-      totalValue: '$912.00',
-      channels: [
-        { platform: 'instagram', count: '35,962', value: '$627.53' },
-        { platform: 'tiktok', count: '14,138', value: '$284.47' }
-      ]
-    },
-    { 
-      name: 'tee_smyth', 
+      name: 'Tully Smyth', 
       username: 'tee_smyth', 
       imageUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400', 
       category: 'Lifestyle Media', 
       audience: '209,618', 
       value: '3,657.84',
-      totalAudience: '550,000',
-      totalValue: '$9,200.00',
-      channels: [
-        { platform: 'instagram', count: '209,618', value: '$3,657.84' },
-        { platform: 'youtube', count: '140,382', value: '$2,542.16' },
-        { platform: 'tiktok', count: '200,000', value: '$3,000.00' }
-      ]
+      location: 'Melbourne',
+      region: 'AU',
+      flag: '🇦🇺',
+      email: 'youngbloodcreative@gmail.co',
+      status: 'New',
+      statusDate: 'Tue Jan 06 2026',
+      platforms: ['instagram'],
+      posts: 0,
+      stories: 0,
+      isFavourite: false
     },
+    { 
+      name: 'Lauren Phillips', 
+      username: 'laurenphillips', 
+      imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400', 
+      category: 'Celebrity', 
+      audience: '134,621', 
+      value: '2,348.05',
+      location: 'Melbourne',
+      region: 'AU',
+      state: 'Victoria',
+      flag: '🇦🇺',
+      email: 'Michelle.Tozer@img.com',
+      status: 'New',
+      statusDate: 'Fri Jul 04 2025',
+      platforms: ['instagram'],
+      posts: 0,
+      stories: 0,
+      isFavourite: true
+    },
+    { 
+      name: 'Toasted Table', 
+      username: 'toastedtable', 
+      imageUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400', 
+      category: 'Home Cooking', 
+      audience: '170,300', 
+      value: '2,971.07',
+      location: 'Englewood Cliffs',
+      region: 'US',
+      state: 'New Jersey',
+      flag: '🇺🇸',
+      email: 'toastedtable@gmail.com',
+      status: 'New',
+      statusDate: 'Fri May 23 2025',
+      platforms: ['instagram', 'tiktok'],
+      posts: 0,
+      stories: 0,
+      isFavourite: false
+    },
+    { 
+      name: 'Reynold', 
+      username: 'reynoldpoernomo', 
+      imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400', 
+      category: 'Food', 
+      audience: '1.3M', 
+      value: '22,946.72',
+      location: 'Sydney',
+      region: 'AU',
+      state: 'New South Wales',
+      flag: '🇦🇺',
+      email: 'Hi@reynoldpoernomo.com.au',
+      status: 'New',
+      statusDate: 'Wed Jun 25 2025',
+      platforms: ['instagram', 'tiktok'],
+      posts: 0,
+      stories: 0,
+      isFavourite: true
+    },
+    { 
+      name: 'MELISSA HOYER OFFICIAL', 
+      username: 'melissahoyer', 
+      imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400', 
+      category: 'Lifestyle Media', 
+      audience: '92.7K', 
+      value: '1,618.21',
+      location: 'Sydney',
+      region: 'AU',
+      state: 'New South Wales',
+      flag: '🇦🇺',
+      email: 'me@melissahoyer.com',
+      status: 'New',
+      statusDate: 'Mon May 19 2025',
+      platforms: ['instagram'],
+      posts: 0,
+      stories: 0,
+      isFavourite: false
+    }
   ];
 
   return (
@@ -124,6 +134,7 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
           {tabs.map((tab) => (
             <button
               key={tab}
+              onClick={() => setActiveTab(tab)}
               className={`px-6 py-2.5 text-[11px] font-bold rounded-lg transition-all whitespace-nowrap ${
                 tab === activeTab 
                   ? 'bg-black text-white shadow-md' 
@@ -136,11 +147,9 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
         </nav>
       </div>
 
-      {/* Optimized Action Bar */}
+      {/* Action Bar */}
       <div className="bg-white p-6 rounded-2xl shadow-soft border border-gray-100">
         <div className="flex flex-col xl:flex-row items-stretch xl:items-end gap-8">
-          
-          {/* Group 1: Tools (Left) */}
           <div className="flex items-center gap-2 shrink-0 h-[38px] xl:mb-0.5">
              <button className="bg-brand-accent text-white p-3 rounded-xl shadow-md hover:brightness-110 transition-all flex items-center justify-center">
                 <SearchIcon className="w-4 h-4" />
@@ -151,11 +160,7 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
                 </svg>
              </button>
           </div>
-          
-          {/* Group 2: Condensed Social Search (Center) */}
           <UniversalSocialSearch />
-
-          {/* Group 3: Dropdowns & Add Button (Right) */}
           <div className="flex flex-wrap items-end gap-3 shrink-0">
              <div className="flex flex-col space-y-1.5">
                 <span className="text-[9px] font-extrabold text-brand-gray uppercase tracking-widest px-1">Category</span>
@@ -165,35 +170,124 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
                   <option>Lifestyle</option>
                 </select>
              </div>
-             <div className="flex flex-col space-y-1.5">
-                <span className="text-[9px] font-extrabold text-brand-gray uppercase tracking-widest px-1">Tags</span>
-                <select className="bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-xs font-bold text-brand-dark min-w-[140px] focus:ring-1 focus:ring-brand-accent outline-none appearance-none cursor-pointer">
-                  <option>All Tags</option>
-                  <option>New</option>
-                  <option>UGC</option>
-                </select>
-             </div>
              <button className="bg-brand-accent text-white font-black py-2.5 px-8 rounded-xl text-[10px] tracking-widest hover:brightness-110 transition-all shadow-md uppercase whitespace-nowrap h-[38px] flex items-center justify-center xl:mb-0.5">
                Add Influencers
              </button>
+             {activeTab === 'List' && (
+               <button className="bg-teal-600 text-white font-black py-2.5 px-6 rounded-xl text-[10px] tracking-widest hover:brightness-110 transition-all shadow-md uppercase whitespace-nowrap h-[38px] flex items-center justify-center xl:mb-0.5">
+                 Export to Excel
+               </button>
+             )}
           </div>
         </div>
       </div>
 
-      {/* Influencer Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {influencers.map((inf, idx) => (
-          <div 
-            key={idx} 
-            className="cursor-pointer" 
-            onClick={() => setSelectedInfluencer(inf)}
-          >
-            <InfluencerProfileCard {...inf} />
+      {activeTab === 'Profiles' ? (
+        /* Profiles Grid View */
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {influencers.map((inf, idx) => (
+            <div key={idx} className="cursor-pointer" onClick={() => setSelectedInfluencer(inf)}>
+              <InfluencerProfileCard {...inf} />
+            </div>
+          ))}
+        </div>
+      ) : activeTab === 'List' ? (
+        /* Compressed List View Table */
+        <div className="bg-white rounded-2xl shadow-panel overflow-hidden border border-gray-100">
+          <div className="overflow-x-auto scrollbar-hide">
+            <table className="w-full text-left border-collapse min-w-[900px]">
+              <thead className="bg-[#FDFCFB] border-b border-gray-100">
+                <tr className="text-[10px] font-black text-brand-gray uppercase tracking-widest">
+                  <th className="px-6 py-4 w-[240px]">Influencer</th>
+                  <th className="px-6 py-4 w-[140px]">Audience & Value</th>
+                  <th className="px-6 py-4 w-[160px]">Location</th>
+                  <th className="px-6 py-4 w-[140px]">Category</th>
+                  <th className="px-6 py-4 w-[140px]">Status</th>
+                  <th className="px-6 py-4 text-right">Edit</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {influencers.map((inf, idx) => (
+                  <tr key={idx} className="group hover:bg-gray-50/50 transition-colors cursor-pointer" onClick={() => setSelectedInfluencer(inf)}>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="relative flex-shrink-0">
+                          <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 shadow-sm">
+                             <img src={inf.imageUrl} alt={inf.name} className="w-full h-full object-cover" />
+                          </div>
+                        </div>
+                        <div className="flex flex-col gap-0.5 min-w-0">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[12px] font-bold text-brand-dark group-hover:text-brand-accent transition-colors truncate">{inf.name}</span>
+                            <button 
+                              className={`${inf.isFavourite ? 'text-amber-400' : 'text-gray-200'} hover:text-amber-400 transition-colors flex-shrink-0`}
+                              onClick={(e) => { e.stopPropagation(); /* toggle favourite logic here */ }}
+                            >
+                              <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                            </button>
+                          </div>
+                          <div className="flex gap-1">
+                             <div className="bg-pink-100/40 text-pink-600 px-1 py-0.5 rounded text-[8px] font-black">P {inf.posts}</div>
+                             <div className="bg-pink-100/40 text-pink-600 px-1 py-0.5 rounded text-[8px] font-black">S {inf.stories}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-1.5">
+                           <span className="text-[12px] font-bold text-brand-dark">{inf.audience}</span>
+                           <div className="w-3.5 h-3.5"><InstagramIcon /></div>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                           <span className="text-[10px] font-black text-brand-accent">${inf.value}</span>
+                           <div className="w-3 h-3 opacity-40"><InstagramIcon /></div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-0.5 min-w-0">
+                        <span className="text-[11px] font-bold text-brand-dark truncate">{inf.location}{inf.state ? `, ${inf.state}` : ''}</span>
+                        <div className="flex items-center gap-1.5">
+                           <span className="text-sm leading-none">{inf.flag}</span>
+                           <span className="text-[8px] font-black text-brand-gray uppercase">{inf.region}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                       <span className="text-[11px] font-bold text-brand-dark truncate">{inf.category}</span>
+                    </td>
+                    <td className="px-6 py-4">
+                       <div className="flex flex-col gap-0.5">
+                          <span className="text-[9px] font-black text-blue-600 uppercase bg-blue-50/50 px-2 py-0.5 rounded-md w-fit">{inf.status}</span>
+                          <span className="text-[8px] text-brand-gray font-bold whitespace-nowrap">{inf.statusDate}</span>
+                       </div>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                       <div className="flex items-center justify-end gap-1.5" onClick={(e) => e.stopPropagation()}>
+                          <select className="bg-white border border-gray-100 rounded-lg py-1 px-1.5 text-[9px] font-bold text-brand-dark outline-none cursor-pointer hover:border-brand-accent transition-all">
+                             <option>Set Status</option>
+                          </select>
+                          <button className="p-1 text-brand-gray hover:text-brand-accent transition-colors"><PencilSquareIcon className="w-3.5 h-3.5" /></button>
+                          <button className="p-1 text-brand-gray hover:text-red-500 transition-colors">
+                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                          </button>
+                       </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ))}
-      </div>
+        </div>
+      ) : (
+        /* Placeholder for other tabs */
+        <div className="flex items-center justify-center h-64 bg-white rounded-2xl border border-gray-100 shadow-soft italic text-brand-gray">
+          {activeTab} view is coming soon...
+        </div>
+      )}
 
-      {/* Influencer Detail Popup */}
+      {/* Detail Popup */}
       {selectedInfluencer && (
         <InfluencerDetailPopup 
           influencer={selectedInfluencer} 
@@ -201,13 +295,13 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
         />
       )}
 
-      {/* Pagination Placeholder */}
+      {/* Pagination */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-gray-100 text-[11px] font-bold text-brand-gray">
          <div className="flex items-center gap-6">
-            <span className="uppercase tracking-widest opacity-60">SHOWING 1 TO 12 OF 721 RESULTS</span>
+            <span className="uppercase tracking-widest opacity-60">SHOWING {influencers.length} OF 721 RESULTS</span>
             <div className="flex items-center gap-2">
                <span className="cursor-pointer hover:text-brand-accent">20</span>
-               <span className="bg-brand-accent text-white px-2 py-1 rounded shadow-sm">50</span>
+               <span className="bg-brand-accent text-white px-2.5 py-1 rounded shadow-sm">50</span>
                <span className="cursor-pointer hover:text-brand-accent">100</span>
             </div>
          </div>
@@ -215,9 +309,9 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
             <button className="opacity-40 hover:opacity-100 transition-opacity">PREVIOUS</button>
             <div className="flex gap-2">
               <span className="bg-brand-accent text-white px-2.5 py-1 rounded shadow-sm">1</span>
-              <span className="px-2.5 py-1 cursor-pointer hover:bg-gray-100 rounded">2</span>
-              <span className="px-2.5 py-1 cursor-pointer hover:bg-gray-100 rounded">3</span>
-              <span className="px-2.5 py-1 cursor-pointer hover:bg-gray-100 rounded">4</span>
+              <span className="px-2.5 py-1 cursor-pointer hover:bg-gray-100 rounded transition-all">2</span>
+              <span className="px-2.5 py-1 cursor-pointer hover:bg-gray-100 rounded transition-all">3</span>
+              <span className="px-2.5 py-1 cursor-pointer hover:bg-gray-100 rounded transition-all">4</span>
             </div>
             <button className="hover:text-brand-accent transition-colors">NEXT</button>
          </div>
@@ -226,20 +320,19 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
   );
 };
 
-// Helper for category-specific colors as requested
-const getCategoryColor = (category: string) => {
-  switch (category) {
-    case 'Media': return 'bg-[#00529B]'; // Blue
-    case 'Wellness Lifestyle': return 'bg-[#1A1E4B]'; // Dark Navy
-    case 'Home Cooking': return 'bg-[#8B4513]'; // Brown/Sienna
-    case 'Lifestyle Media': return 'bg-[#D6249F]'; // Pink/Purple
-    default: return 'bg-brand-dark/80';
-  }
-};
-
-// Sub-component for individual influencer cards
+// Sub-component for individual influencer cards (Profiles Grid)
 const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, category, audience, value }) => {
-  const categoryBgColor = getCategoryColor(category);
+  const getCategoryColor = (cat: string) => {
+    switch (cat) {
+      case 'Media': return 'bg-[#00529B]';
+      case 'Wellness Lifestyle': return 'bg-[#1A1E4B]';
+      case 'Home Cooking': return 'bg-[#8B4513]';
+      case 'Lifestyle Media': return 'bg-[#D6249F]';
+      case 'Celebrity': return 'bg-purple-700';
+      case 'Food': return 'bg-orange-600';
+      default: return 'bg-brand-dark/80';
+    }
+  };
 
   return (
     <div className="bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden group hover:shadow-panel transition-all hover:-translate-y-1 h-full">
@@ -247,14 +340,12 @@ const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, catego
          <img src={imageUrl} alt={name} className="w-full h-full object-cover" />
          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60"></div>
          
-         {/* Status Overlays */}
          <div className="absolute top-3 left-3 flex flex-col gap-1">
             <div className="w-7 h-7 bg-white/90 rounded-lg p-1.5 shadow-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+              <InstagramIcon />
             </div>
             <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-[10px] text-white font-black">1</div>
             <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-[10px] text-white font-black">0</div>
-            <div className="w-6 h-6 bg-brand-accent rounded-full flex items-center justify-center text-[10px] text-white font-black">0</div>
          </div>
 
          <div className="absolute top-3 right-3">
@@ -262,8 +353,7 @@ const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, catego
          </div>
 
          <div className="absolute bottom-0 inset-x-0 p-4 flex items-center justify-center">
-            {/* Genre Pill: Matches screenshot colours and increased flag size */}
-            <div className={`${categoryBgColor} backdrop-blur-md px-4 py-1.5 rounded-full flex items-center gap-2 text-white shadow-lg`}>
+            <div className={`${getCategoryColor(category)} backdrop-blur-md px-4 py-1.5 rounded-full flex items-center gap-2 text-white shadow-lg`}>
                <span className="text-xl">🇦🇺</span>
                <span className="text-[10px] font-black uppercase tracking-widest">{category}</span>
             </div>
@@ -274,42 +364,23 @@ const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, catego
          <div className="flex items-center justify-between">
             <div className="space-y-0.5">
                <h3 className="text-sm font-black text-brand-accent hover:underline cursor-pointer">{name}</h3>
-               <p className="text-[11px] font-bold text-brand-dark opacity-60">{username}</p>
+               <p className="text-[11px] font-bold text-brand-dark opacity-60">@{username}</p>
             </div>
             <div className="flex gap-2">
                <button className="text-gray-300 hover:text-brand-accent transition-colors" onClick={(e) => e.stopPropagation()}>
                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                </button>
-               <button className="text-teal-500 hover:scale-110 transition-transform" onClick={(e) => e.stopPropagation()}>
-                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-               </button>
             </div>
          </div>
-
-         <p className="text-[11px] leading-relaxed text-brand-gray font-medium line-clamp-2">
-            Creator focusing on {category.toLowerCase()} and high engagement content across Australia.
-         </p>
 
          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-50">
             <div>
-               <p className="text-[9px] font-black text-brand-gray uppercase tracking-widest mb-1">Total Audience</p>
-               <p className="text-sm font-black text-brand-dark">{audience} <span className="text-[10px] text-brand-gray font-bold">followers</span></p>
+               <p className="text-[9px] font-black text-brand-gray uppercase tracking-widest mb-1">Audience</p>
+               <p className="text-sm font-black text-brand-dark">{audience}</p>
             </div>
             <div>
-               <p className="text-[9px] font-black text-brand-gray uppercase tracking-widest mb-1">Estimated Value</p>
+               <p className="text-[9px] font-black text-brand-gray uppercase tracking-widest mb-1">Value</p>
                <p className="text-sm font-black text-brand-dark">${value}</p>
-            </div>
-         </div>
-
-         <div className="flex items-center justify-between pt-4">
-            <button className="p-1.5 hover:bg-gray-50 rounded-lg text-brand-accent transition-colors">
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-            </button>
-            <div className="flex gap-2">
-               <button className="p-1.5 hover:bg-gray-50 rounded-lg text-red-500 transition-colors" onClick={(e) => e.stopPropagation()}><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg></button>
-               <button className="p-1.5 hover:bg-gray-50 rounded-lg text-teal-600 transition-colors" onClick={(e) => e.stopPropagation()}><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" /></svg></button>
-               <button className="p-1.5 hover:bg-gray-50 rounded-lg text-brand-gray transition-colors hover:text-brand-accent" onClick={(e) => e.stopPropagation()}><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
-               <button className="p-1.5 hover:bg-gray-50 rounded-lg text-brand-gray transition-colors hover:text-brand-accent" onClick={(e) => e.stopPropagation()}><svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg></button>
             </div>
          </div>
       </div>
