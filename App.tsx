@@ -27,9 +27,10 @@ import PlatformSettingsView from './views/PlatformSettingsView';
 import TermsConditionsView from './views/TermsConditionsView';
 import TermsConditionDetailView from './views/TermsConditionDetailView';
 import { TermsCondition } from './views/TermsConditionsView';
+import AccountSettingsView from './views/AccountSettingsView';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings'>('dashboard');
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
@@ -186,6 +187,7 @@ const App: React.FC = () => {
               onBack={() => { setCurrentView('terms-conditions'); setSelectedTermsCondition(null); }}
             />
           )}
+          {currentView === 'account-settings' && <AccountSettingsView />}
           {currentView === 'partners' && <PartnersView onPartnerClick={handlePartnerClick} />}
           {currentView === 'partner-detail' && selectedPartner && (
             <PartnerDetailView
