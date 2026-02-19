@@ -16,6 +16,20 @@ interface DashboardViewProps {
   onNavigateToInfluencerFullPage?: (influencer: any) => void;
 }
 
+// Map dashboard card data to the full InfluencerData shape needed by InfluencerDetailView
+const mapToFullInfluencer = (inf: any) => ({
+  id: inf.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+  name: inf.name,
+  imageUrl: inf.imageUrl,
+  category: inf.category || 'Media',
+  followers: inf.stats || '0 followers',
+  country: 'US',
+  flag: '🇺🇸',
+  city: 'Los Angeles',
+  bio: `${inf.name} is a passionate content creator specializing in ${inf.category || 'media'} content.`,
+  platforms: [inf.platform] as ('instagram' | 'tiktok' | 'youtube')[],
+});
+
 const DashboardView: React.FC<DashboardViewProps> = ({
   onNavigateToCampaigns,
   onNavigateToCampaignDetail,
@@ -88,7 +102,7 @@ const DashboardView: React.FC<DashboardViewProps> = ({
       <div className="space-y-20 pt-4">
         <InfluencerCardRow
           title="My Saved Influencers"
-          onViewProfile={(inf) => onNavigateToInfluencerFullPage?.(inf)}
+          onViewProfile={(inf) => onNavigateToInfluencerFullPage?.(mapToFullInfluencer(inf))}
           onCardClick={(inf) => setSelectedInfluencer(inf)}
           influencers={[
             { name: "Finebrands", imageUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400", stats: "779 followers", platform: "instagram", category: "Media", value: "70.72" },
@@ -100,7 +114,7 @@ const DashboardView: React.FC<DashboardViewProps> = ({
 
         <InfluencerCardRow
           title="Campaign Talent Queue"
-          onViewProfile={(inf) => onNavigateToInfluencerFullPage?.(inf)}
+          onViewProfile={(inf) => onNavigateToInfluencerFullPage?.(mapToFullInfluencer(inf))}
           onCardClick={(inf) => setSelectedInfluencer(inf)}
           influencers={[
             { name: "Erma | Healthy Recipes", imageUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400", stats: "300K followers", platform: "instagram", category: "Home Cooking", value: "1,200.00" },
