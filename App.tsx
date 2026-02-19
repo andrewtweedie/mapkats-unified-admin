@@ -20,9 +20,12 @@ import InfluencersView from './views/InfluencersView';
 import InfluencerListingView from './views/InfluencerListingView';
 import LocationsView from './views/LocationsView';
 import CategoriesView from './views/CategoriesView';
+import EmailTemplatesView from './views/EmailTemplatesView';
+import EmailTemplateDetailView from './views/EmailTemplateDetailView';
+import { EmailTemplate } from './views/EmailTemplatesView';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail'>('dashboard');
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
@@ -33,6 +36,7 @@ const App: React.FC = () => {
   const [selectedPartner, setSelectedPartner] = useState<any | null>(null);
   const [influencerListingCategory, setInfluencerListingCategory] = useState<string>('');
   const [influencerListingCountry, setInfluencerListingCountry] = useState<string>('');
+  const [selectedEmailTemplate, setSelectedEmailTemplate] = useState<EmailTemplate | null>(null);
 
   const handleProCollectionClick = (name: string) => {
     setSelectedProCollection(name);
@@ -69,6 +73,16 @@ const App: React.FC = () => {
     setInfluencerListingCategory(category);
     setInfluencerListingCountry(country);
     setCurrentView('influencer-listing');
+  };
+
+  const handleEmailTemplateClick = (template: EmailTemplate) => {
+    setSelectedEmailTemplate(template);
+    setCurrentView('email-template-detail');
+  };
+
+  const handleAddNewTemplate = () => {
+    setSelectedEmailTemplate(null);
+    setCurrentView('email-template-detail');
   };
 
   const handleNavigateToCategory = (category: string) => {
@@ -142,6 +156,13 @@ const App: React.FC = () => {
           )}
           {currentView === 'categories' && <CategoriesView />}
           {currentView === 'locations' && <LocationsView />}
+          {currentView === 'email-templates' && <EmailTemplatesView onTemplateClick={handleEmailTemplateClick} onAddNew={handleAddNewTemplate} />}
+          {currentView === 'email-template-detail' && (
+            <EmailTemplateDetailView
+              template={selectedEmailTemplate}
+              onBack={() => { setCurrentView('email-templates'); setSelectedEmailTemplate(null); }}
+            />
+          )}
           {currentView === 'partners' && <PartnersView onPartnerClick={handlePartnerClick} />}
           {currentView === 'partner-detail' && selectedPartner && (
             <PartnerDetailView
