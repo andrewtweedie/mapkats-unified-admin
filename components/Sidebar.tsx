@@ -23,8 +23,8 @@ import {
 } from './icons/UiIcons';
 
 interface SidebarProps {
-  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings';
-  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings') => void;
+  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details';
+  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details') => void;
   collapsed: boolean;
   onToggleCollapse: () => void;
 }
@@ -52,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
 
   const accountItems = [
     { name: 'Settings', id: 'account-settings', icon: <SettingsIcon className="w-4 h-4" /> },
-    { name: 'Account Details', icon: <CreditCardIcon className="w-4 h-4" /> },
+    { name: 'Account Details', id: 'account-details', icon: <CreditCardIcon className="w-4 h-4" /> },
   ];
 
   const isActiveView = (id?: string) => {
@@ -71,6 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
     if (id === 'platform-settings') return currentView === 'platform-settings';
     if (id === 'terms-conditions') return currentView === 'terms-conditions' || currentView === 'terms-condition-detail';
     if (id === 'account-settings') return currentView === 'account-settings';
+    if (id === 'account-details') return currentView === 'account-details';
     return false;
   };
 
@@ -90,6 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
     if (id === 'platform-settings') setView('platform-settings');
     if (id === 'terms-conditions') setView('terms-conditions');
     if (id === 'account-settings') setView('account-settings');
+    if (id === 'account-details') setView('account-details');
   };
 
   const renderSectionTitle = (title: string) => (
