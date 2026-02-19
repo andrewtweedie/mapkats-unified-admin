@@ -23,8 +23,8 @@ import {
 } from './icons/UiIcons';
 
 interface SidebarProps {
-  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings';
-  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings') => void;
+  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail';
+  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail') => void;
   collapsed: boolean;
   onToggleCollapse: () => void;
 }
@@ -47,7 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
     { name: 'Locations', id: 'locations', icon: <MapPinIcon className="w-4 h-4" /> },
     { name: 'Email Templates', id: 'email-templates', icon: <MailIcon className="w-4 h-4" /> },
     { name: 'Platform Settings', id: 'platform-settings', icon: <SettingsIcon className="w-4 h-4" /> },
-    { name: 'Terms & Conditions', icon: <DocumentTextIcon className="w-4 h-4" /> },
+    { name: 'Terms & Conditions', id: 'terms-conditions', icon: <DocumentTextIcon className="w-4 h-4" /> },
   ];
 
   const accountItems = [
@@ -69,6 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
     if (id === 'locations') return currentView === 'locations';
     if (id === 'email-templates') return currentView === 'email-templates' || currentView === 'email-template-detail';
     if (id === 'platform-settings') return currentView === 'platform-settings';
+    if (id === 'terms-conditions') return currentView === 'terms-conditions' || currentView === 'terms-condition-detail';
     return false;
   };
 
@@ -86,6 +87,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
     if (id === 'locations') setView('locations');
     if (id === 'email-templates') setView('email-templates');
     if (id === 'platform-settings') setView('platform-settings');
+    if (id === 'terms-conditions') setView('terms-conditions');
   };
 
   const renderSectionTitle = (title: string) => (
