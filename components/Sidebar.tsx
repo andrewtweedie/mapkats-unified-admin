@@ -22,8 +22,8 @@ import {
 } from './icons/UiIcons';
 
 interface SidebarProps {
-  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing';
-  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing') => void;
+  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations';
+  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations') => void;
   collapsed: boolean;
   onToggleCollapse: () => void;
 }
@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
     { name: 'Partners', id: 'partners', icon: <HandshakeIcon className="w-4 h-4" /> },
     { name: 'Influencer Dashboard', id: 'influencer-dashboard', icon: <ActivityIcon className="w-4 h-4" /> },
     { name: 'Influencers', id: 'influencers', icon: <UserIcon className="w-4 h-4" /> },
-    { name: 'Locations', icon: <MapPinIcon className="w-4 h-4" /> },
+    { name: 'Locations', id: 'locations', icon: <MapPinIcon className="w-4 h-4" /> },
     { name: 'Email Templates', icon: <MailIcon className="w-4 h-4" /> },
     { name: 'Platform Settings', icon: <SettingsIcon className="w-4 h-4" /> },
     { name: 'Terms & Conditions', icon: <DocumentTextIcon className="w-4 h-4" /> },
@@ -63,6 +63,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
     if (id === 'partners') return currentView === 'partners' || currentView === 'partner-detail';
     if (id === 'influencer-dashboard') return currentView === 'influencer-dashboard';
     if (id === 'influencers') return currentView === 'influencers' || currentView === 'influencer-listing';
+    if (id === 'locations') return currentView === 'locations';
     return false;
   };
 
@@ -76,6 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
     if (id === 'partners') setView('partners');
     if (id === 'influencer-dashboard') setView('influencer-dashboard');
     if (id === 'influencers') setView('influencers');
+    if (id === 'locations') setView('locations');
   };
 
   const renderSectionTitle = (title: string) => (

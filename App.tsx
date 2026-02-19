@@ -18,9 +18,10 @@ import PartnerDetailView from './views/PartnerDetailView';
 import InfluencerDashboardView from './views/InfluencerDashboardView';
 import InfluencersView from './views/InfluencersView';
 import InfluencerListingView from './views/InfluencerListingView';
+import LocationsView from './views/LocationsView';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations'>('dashboard');
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
@@ -138,6 +139,7 @@ const App: React.FC = () => {
               onBack={() => setCurrentView('influencers')}
             />
           )}
+          {currentView === 'locations' && <LocationsView />}
           {currentView === 'partners' && <PartnersView onPartnerClick={handlePartnerClick} />}
           {currentView === 'partner-detail' && selectedPartner && (
             <PartnerDetailView
