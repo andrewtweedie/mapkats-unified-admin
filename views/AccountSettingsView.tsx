@@ -164,9 +164,16 @@ const AccountSettingsView: React.FC = () => {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowChangePassword(false)} />
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
             {/* Modal Header */}
-            <div className="bg-brand-accent px-8 py-5">
-              <h3 className="text-lg font-serif font-black text-white">Change Password</h3>
-              <p className="text-[11px] text-white/70 mt-0.5">Enter your current password and choose a new one</p>
+            <div className="bg-gray-50 border-b border-gray-100 px-8 py-5 flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-serif font-black text-brand-dark">Change Password</h3>
+                <p className="text-[11px] font-medium text-brand-gray mt-0.5">Enter your current password and choose a new one</p>
+              </div>
+              <button onClick={() => setShowChangePassword(false)} className="text-brand-gray hover:text-brand-dark transition-colors p-1 rounded-lg hover:bg-gray-100">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
 
             {/* Modal Body */}

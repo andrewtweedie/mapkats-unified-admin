@@ -261,9 +261,9 @@ const UsersView: React.FC = () => {
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={handleClosePopup} />
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto scrollbar-hide">
             {/* Header */}
-            <div className="sticky top-0 z-10 bg-brand-accent px-8 py-5 rounded-t-2xl flex items-center justify-between">
-              <h2 className="text-lg font-serif font-black text-white">{editingUser ? 'Edit User' : 'Add New User'}</h2>
-              <button onClick={handleClosePopup} className="text-white/80 hover:text-white transition-colors">
+            <div className="sticky top-0 z-10 bg-gray-50 border-b border-gray-100 px-8 py-5 rounded-t-2xl flex items-center justify-between">
+              <h2 className="text-lg font-serif font-black text-brand-dark">{editingUser ? 'Edit User' : 'Add New User'}</h2>
+              <button onClick={handleClosePopup} className="text-brand-gray hover:text-brand-dark transition-colors p-1 rounded-lg hover:bg-gray-100">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>

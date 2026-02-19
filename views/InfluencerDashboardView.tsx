@@ -331,70 +331,49 @@ const InfluencerDashboardView: React.FC = () => {
 
       {/* Page Title */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Influencer Dashboard</h1>
+        <h1 className="text-3xl font-serif font-black tracking-tight text-brand-dark">Platform Gross Media Value</h1>
         <p className="text-[13px] text-gray-500 mt-1">Cumulative audience reach and media value of influencers on the platform.</p>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════════════════ */}
-      {/* SECTION 1: Total Influencers                                          */}
-      {/* ═══════════════════════════════════════════════════════════════════════ */}
-      <section className="space-y-6">
-        <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-2xl border border-purple-100 p-6 lg:p-8">
-          <SectionHeader
-            bigValue="1.9K"
-            bigLabel="Total Influencers"
-            description="Total number of influencers registered on the platform across all channels."
-            platformFilter={s1Platform}
-            countryFilter={s1Country}
-            categoryFilter={s1Category}
-            onPlatformChange={setS1Platform}
-            onCountryChange={setS1Country}
-            onCategoryChange={setS1Category}
-          />
+      {/* Showcase Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white rounded-2xl border border-blue-100 p-6 flex items-center gap-5 shadow-soft">
+          <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+            <svg className="w-7 h-7 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
+            </svg>
+          </div>
+          <div>
+            <p className="text-3xl font-black text-brand-dark tracking-tight">150.5M</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-brand-gray mt-0.5">Influencer Audience</p>
+          </div>
         </div>
-
-        {/* Campaign Performance Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard value="21" label="Collaborations" />
-          <StatCard value="57" label="Emails on File" />
-          <StatCard value="1,910" label="Total Profiles" />
-          <StatCard value="3" label="Platforms" />
+        <div className="bg-white rounded-2xl border border-amber-100 p-6 flex items-center gap-5 shadow-soft">
+          <div className="w-14 h-14 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+            <svg className="w-7 h-7 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <p className="text-3xl font-black text-brand-dark tracking-tight">$2.6M</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-brand-gray mt-0.5">Audience Media Value</p>
+          </div>
         </div>
-
-        {/* Breakdown Charts */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-          <ChartCard
-            title="Influencer Platform"
-            data={s1PlatformData}
-            showTable={showS1PlatformTable}
-            onToggle={() => setShowS1PlatformTable(!showS1PlatformTable)}
-            tableColumns={['Platform', 'Influencers']}
-            centerLabel="Platforms"
-          />
-          <ChartCard
-            title="Influencer Country"
-            data={s1CountryData}
-            showTable={showS1CountryTable}
-            onToggle={() => setShowS1CountryTable(!showS1CountryTable)}
-            tableColumns={['Country', 'Influencers']}
-            centerLabel="Countries"
-          />
-          <ChartCard
-            title="Influencer Category"
-            data={s1CategoryData}
-            showTable={showS1CategoryTable}
-            onToggle={() => setShowS1CategoryTable(!showS1CategoryTable)}
-            tableColumns={['Category', 'Influencers']}
-            centerLabel="Categories"
-          />
+        <div className="bg-white rounded-2xl border border-purple-100 p-6 flex items-center gap-5 shadow-soft">
+          <div className="w-14 h-14 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
+            <svg className="w-7 h-7 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+          </div>
+          <div>
+            <p className="text-3xl font-black text-brand-dark tracking-tight">1.8K</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-brand-gray mt-0.5">Total Influencers</p>
+          </div>
         </div>
-      </section>
-
-      {/* Divider */}
-      <div className="border-t border-gray-200" />
+      </div>
 
       {/* ═══════════════════════════════════════════════════════════════════════ */}
-      {/* SECTION 2: Influencer Audience                                        */}
+      {/* SECTION 1: Influencer Audience                                        */}
       {/* ═══════════════════════════════════════════════════════════════════════ */}
       <section className="space-y-6">
         <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-2xl border border-blue-100 p-6 lg:p-8">
@@ -459,7 +438,7 @@ const InfluencerDashboardView: React.FC = () => {
       <div className="border-t border-gray-200" />
 
       {/* ═══════════════════════════════════════════════════════════════════════ */}
-      {/* SECTION 3: Audience Media Value                                       */}
+      {/* SECTION 2: Audience Media Value                                       */}
       {/* ═══════════════════════════════════════════════════════════════════════ */}
       <section className="space-y-6">
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl border border-amber-100 p-6 lg:p-8">
@@ -515,6 +494,64 @@ const InfluencerDashboardView: React.FC = () => {
             centerLabel="Total Value"
             centerValue={fmtCurrency(s3CategoryData.reduce((s, d) => s + d.value, 0))}
             formatValue={fmtCurrencyFull}
+          />
+        </div>
+      </section>
+
+      {/* Divider */}
+      <div className="border-t border-gray-200" />
+
+      {/* ═══════════════════════════════════════════════════════════════════════ */}
+      {/* SECTION 3: Total Influencers                                          */}
+      {/* ═══════════════════════════════════════════════════════════════════════ */}
+      <section className="space-y-6">
+        <div className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-2xl border border-purple-100 p-6 lg:p-8">
+          <SectionHeader
+            bigValue="1.9K"
+            bigLabel="Total Influencers"
+            description="Total number of influencers registered on the platform across all channels."
+            platformFilter={s1Platform}
+            countryFilter={s1Country}
+            categoryFilter={s1Category}
+            onPlatformChange={setS1Platform}
+            onCountryChange={setS1Country}
+            onCategoryChange={setS1Category}
+          />
+        </div>
+
+        {/* Campaign Performance Stats */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatCard value="21" label="Collaborations" />
+          <StatCard value="57" label="Emails on File" />
+          <StatCard value="1,910" label="Total Profiles" />
+          <StatCard value="3" label="Platforms" />
+        </div>
+
+        {/* Breakdown Charts */}
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          <ChartCard
+            title="Influencer Platform"
+            data={s1PlatformData}
+            showTable={showS1PlatformTable}
+            onToggle={() => setShowS1PlatformTable(!showS1PlatformTable)}
+            tableColumns={['Platform', 'Influencers']}
+            centerLabel="Platforms"
+          />
+          <ChartCard
+            title="Influencer Country"
+            data={s1CountryData}
+            showTable={showS1CountryTable}
+            onToggle={() => setShowS1CountryTable(!showS1CountryTable)}
+            tableColumns={['Country', 'Influencers']}
+            centerLabel="Countries"
+          />
+          <ChartCard
+            title="Influencer Category"
+            data={s1CategoryData}
+            showTable={showS1CategoryTable}
+            onToggle={() => setShowS1CategoryTable(!showS1CategoryTable)}
+            tableColumns={['Category', 'Influencers']}
+            centerLabel="Categories"
           />
         </div>
       </section>

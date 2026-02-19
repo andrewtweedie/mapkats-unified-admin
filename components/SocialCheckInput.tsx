@@ -1,12 +1,27 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 
 interface SocialCheckInputProps {
   platform: string;
   icon: React.ReactNode;
+  onCheck?: (username: string) => void;
 }
 
-const SocialCheckInput: React.FC<SocialCheckInputProps> = ({ platform, icon }) => {
+const SocialCheckInput: React.FC<SocialCheckInputProps> = ({ platform, icon, onCheck }) => {
+  const [username, setUsername] = useState('');
+
+  const handleCheck = () => {
+    if (username.trim() && onCheck) {
+      onCheck(username.trim());
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleCheck();
+    }
+  };
+
   return (
     <div className="flex flex-col space-y-1.5 min-w-0">
       <div className="flex items-center gap-2 px-1">
@@ -16,10 +31,16 @@ const SocialCheckInput: React.FC<SocialCheckInputProps> = ({ platform, icon }) =
       <div className="flex items-center gap-1.5">
         <input
           type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder={`Enter username`}
           className="flex-1 min-w-0 border border-brand-light-gray rounded-xl px-3 py-2 text-[11px] font-medium focus:ring-1 focus:ring-brand-accent focus:border-brand-accent outline-none transition-all"
         />
-        <button className="bg-brand-accent text-white font-black px-3 py-2 rounded-xl text-[9px] tracking-tighter hover:brightness-110 transition-all shadow-sm shrink-0">
+        <button
+          onClick={handleCheck}
+          className="bg-brand-accent text-white font-black px-3 py-2 rounded-xl text-[9px] tracking-tighter hover:brightness-110 transition-all shadow-sm shrink-0"
+        >
           CHECK
         </button>
       </div>

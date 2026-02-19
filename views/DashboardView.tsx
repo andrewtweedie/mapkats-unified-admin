@@ -4,15 +4,18 @@ import ListSection from '../components/ListSection';
 import SocialCheckInput from '../components/SocialCheckInput';
 import InfluencerCardRow from '../components/InfluencerCardRow';
 import InfluencerDetailPopup from '../components/InfluencerDetailPopup';
+import AddCampaignModal from '../components/AddCampaignModal';
+import AddProCollectionModal from '../components/AddProCollectionModal';
+import InfluencerCheckModal from '../components/InfluencerCheckModal';
 import { InstagramIcon, YouTubeIcon, TikTokIcon } from '../components/icons/SocialIcons';
 
 interface DashboardViewProps {
   onNavigateToCampaigns?: () => void;
   onNavigateToCampaignDetail?: (name: string) => void;
-  onNavigateToNewCampaign?: () => void;
+  onNavigateToNewCampaign?: (name: string, type: 'GIFTED' | 'PAID') => void;
   onNavigateToProCollections?: () => void;
   onNavigateToProCollectionDetail?: (name: string) => void;
-  onNavigateToNewProCollection?: () => void;
+  onNavigateToNewProCollection?: (name: string) => void;
   onNavigateToInfluencerFullPage?: (influencer: any) => void;
 }
 
@@ -40,6 +43,86 @@ const DashboardView: React.FC<DashboardViewProps> = ({
   onNavigateToInfluencerFullPage,
 }) => {
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
+  const [showAddCampaignModal, setShowAddCampaignModal] = useState(false);
+  const [showAddProCollectionModal, setShowAddProCollectionModal] = useState(false);
+  const [showInfluencerCheckModal, setShowInfluencerCheckModal] = useState(false);
+  const [influencerCheckResult, setInfluencerCheckResult] = useState<any | null>(null);
+
+  // Mock data: usernames that "exist" in the database
+  const knownInfluencers: Record<string, any> = {
+    andrewtweedie: {
+      imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400',
+      followers: '348 followers',
+      category: 'Media',
+      categoryColor: '#3B5998',
+      countryFlag: '🇦🇺',
+      country: 'Australia',
+      city: 'Sydney',
+      ranking: { position: 2, category: 'Media' },
+      badges: [
+        { label: '#2 Media Creator', color: 'orange' },
+        { label: 'Top 10 Viewed', color: 'black' },
+        { label: 'Top 10 Saved', color: 'slate' },
+      ],
+    },
+    shankywhip: {
+      imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400',
+      followers: '13,866 followers',
+      category: 'Food & Drink',
+      categoryColor: '#B45309',
+      countryFlag: '🇺🇸',
+      country: 'United States',
+      city: 'Los Angeles',
+      ranking: { position: 5, category: 'Food & Drink' },
+      badges: [
+        { label: '#5 Bartender', color: 'orange' },
+        { label: 'Top 10 Viewed', color: 'black' },
+      ],
+    },
+    finebrands: {
+      imageUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400',
+      followers: '779 followers',
+      category: 'Wellness',
+      categoryColor: '#059669',
+      countryFlag: '🇬🇧',
+      country: 'United Kingdom',
+      city: 'London',
+      ranking: { position: 12, category: 'Wellness' },
+      badges: [
+        { label: '#12 Wellness', color: 'orange' },
+        { label: 'Top 10 Saved', color: 'slate' },
+      ],
+    },
+  };
+
+  const campaignsList = [
+    'Chinola SYD City & East',
+    'Chinola Northern Beaches',
+    'Shankys Candidates USA',
+    'Shankys St Patricks 2026',
+    'Collection',
+    'Manuka Honey',
+  ];
+
+  const handleInfluencerCheck = (username: string, platform: 'instagram' | 'youtube' | 'tiktok') => {
+    const cleanUsername = username.replace('@', '').toLowerCase();
+    const known = knownInfluencers[cleanUsername];
+    setInfluencerCheckResult({
+      username: cleanUsername,
+      platform,
+      imageUrl: known?.imageUrl || `https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=400`,
+      followers: known?.followers || `${Math.floor(Math.random() * 50000).toLocaleString()} followers`,
+      existsInDatabase: !!known,
+      category: known?.category,
+      categoryColor: known?.categoryColor,
+      countryFlag: known?.countryFlag,
+      country: known?.country,
+      city: known?.city,
+      ranking: known?.ranking,
+      badges: known?.badges,
+    });
+    setShowInfluencerCheckModal(true);
+  };
 
   return (
     <div className="space-y-12">
@@ -68,7 +151,7 @@ const DashboardView: React.FC<DashboardViewProps> = ({
           buttonColor="pink"
           onViewAll={onNavigateToCampaigns}
           onItemClick={(item) => onNavigateToCampaignDetail?.(item)}
-          onAddNew={onNavigateToNewCampaign}
+          onAddNew={() => setShowAddCampaignModal(true)}
         />
         <ListSection
           title="Manage Pro Collections"
@@ -83,14 +166,14 @@ const DashboardView: React.FC<DashboardViewProps> = ({
           buttonColor="pink"
           onViewAll={onNavigateToProCollections}
           onItemClick={(item) => onNavigateToProCollectionDetail?.(item)}
-          onAddNew={onNavigateToNewProCollection}
+          onAddNew={() => setShowAddProCollectionModal(true)}
         />
         <div className="bg-white rounded-xl shadow-soft p-6 flex flex-col h-full border border-gray-100">
           <h2 className="font-bold text-[11px] uppercase tracking-widest text-brand-gray border-b border-gray-50 pb-3 mb-6">Influencer Tools</h2>
           <div className="space-y-6 flex-1">
-            <SocialCheckInput platform="Instagram" icon={<InstagramIcon />} />
-            <SocialCheckInput platform="Youtube" icon={<YouTubeIcon />} />
-            <SocialCheckInput platform="TikTok" icon={<TikTokIcon />} />
+            <SocialCheckInput platform="Instagram" icon={<InstagramIcon />} onCheck={(u) => handleInfluencerCheck(u, 'instagram')} />
+            <SocialCheckInput platform="Youtube" icon={<YouTubeIcon />} onCheck={(u) => handleInfluencerCheck(u, 'youtube')} />
+            <SocialCheckInput platform="TikTok" icon={<TikTokIcon />} onCheck={(u) => handleInfluencerCheck(u, 'tiktok')} />
           </div>
           <div className="mt-6 pt-4 border-t border-gray-50">
             <a href="#" className="block text-center text-[10px] font-bold text-brand-accent hover:underline uppercase tracking-widest">Open Analytics Suite</a>
@@ -132,6 +215,39 @@ const DashboardView: React.FC<DashboardViewProps> = ({
           onClose={() => setSelectedInfluencer(null)}
         />
       )}
+
+      {/* Add Campaign Modal */}
+      <AddCampaignModal
+        isOpen={showAddCampaignModal}
+        onClose={() => setShowAddCampaignModal(false)}
+        onAdd={(name, type) => {
+          setShowAddCampaignModal(false);
+          onNavigateToNewCampaign?.(name, type);
+        }}
+      />
+
+      {/* Add Pro Collection Modal */}
+      <AddProCollectionModal
+        isOpen={showAddProCollectionModal}
+        onClose={() => setShowAddProCollectionModal(false)}
+        onAdd={(name) => {
+          setShowAddProCollectionModal(false);
+          onNavigateToNewProCollection?.(name);
+        }}
+      />
+
+      {/* Influencer Check Modal */}
+      <InfluencerCheckModal
+        isOpen={showInfluencerCheckModal}
+        onClose={() => { setShowInfluencerCheckModal(false); setInfluencerCheckResult(null); }}
+        result={influencerCheckResult}
+        campaigns={campaignsList}
+        onAddToCampaign={(campaign) => {
+          setShowInfluencerCheckModal(false);
+          setInfluencerCheckResult(null);
+          onNavigateToCampaignDetail?.(campaign);
+        }}
+      />
     </div>
   );
 };

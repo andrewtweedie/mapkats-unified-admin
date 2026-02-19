@@ -968,21 +968,14 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
           {/* Panel */}
           <div className="relative ml-auto w-full max-w-md bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 h-full">
             {/* Header */}
-            <div className="bg-gradient-to-r from-brand-accent to-brand-accent/90 px-6 py-5 flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="bg-white/20 rounded-lg p-2">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-white font-bold text-[15px]">Filter Influencers</h3>
-                  <p className="text-white/70 text-[11px] font-medium">Narrow down your campaign list</p>
-                </div>
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 shrink-0">
+              <div>
+                <h3 className="text-lg font-serif font-black tracking-tight text-brand-dark">Filter Influencers</h3>
+                <p className="text-[11px] font-medium text-brand-gray mt-0.5">Narrow down your campaign list</p>
               </div>
               <button
                 onClick={() => setShowFilterPanel(false)}
-                className="text-white/80 hover:text-white transition-colors p-1"
+                className="text-brand-gray hover:text-brand-dark transition-colors p-1 rounded-lg hover:bg-gray-100"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -1268,21 +1261,14 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
           {/* Modal */}
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Header */}
-            <div className="bg-gradient-to-r from-brand-accent to-brand-accent/90 px-6 py-5 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="bg-white/20 rounded-lg p-2">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-white font-bold text-[15px]">Campaign Tags</h3>
-                  <p className="text-white/70 text-[11px] font-medium">Add custom tags to organize this campaign</p>
-                </div>
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+              <div>
+                <h3 className="text-lg font-serif font-black tracking-tight text-brand-dark">Campaign Tags</h3>
+                <p className="text-[11px] font-medium text-brand-gray mt-0.5">Add custom tags to organize this campaign</p>
               </div>
               <button
                 onClick={() => setShowTagsPopup(false)}
-                className="text-white/80 hover:text-white transition-colors p-1"
+                className="text-brand-gray hover:text-brand-dark transition-colors p-1 rounded-lg hover:bg-gray-100"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -1378,17 +1364,12 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowAssignPopup(null)} />
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Header */}
-            <div className="bg-gradient-to-r from-emerald-600 to-emerald-500 px-6 py-5 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="bg-white/20 rounded-lg p-2">
-                  <PlusIcon className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-white font-bold text-[15px]">Assign to Campaign</h3>
-                  <p className="text-white/70 text-[11px] font-medium">Select a campaign for @{showAssignPopup}</p>
-                </div>
+            <div className="bg-gray-50 border-b border-gray-100 px-6 py-5 flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-serif font-black tracking-tight text-brand-dark">Assign to Campaign</h3>
+                <p className="text-[11px] font-medium text-brand-gray mt-0.5">Select a campaign for @{showAssignPopup}</p>
               </div>
-              <button onClick={() => setShowAssignPopup(null)} className="text-white/80 hover:text-white transition-colors p-1">
+              <button onClick={() => setShowAssignPopup(null)} className="text-brand-gray hover:text-brand-dark transition-colors p-1 rounded-lg hover:bg-gray-100">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -1467,19 +1448,12 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowEmailTemplatePopup(false)} />
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-5 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="bg-white/20 rounded-lg p-2">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-white font-bold text-[15px]">Email Templates</h3>
-                  <p className="text-white/70 text-[11px] font-medium">Select a template for this batch send</p>
-                </div>
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+              <div>
+                <h3 className="text-lg font-serif font-black tracking-tight text-brand-dark">Email Templates</h3>
+                <p className="text-[11px] font-medium text-brand-gray mt-0.5">Select a template for this batch send</p>
               </div>
-              <button onClick={() => setShowEmailTemplatePopup(false)} className="text-white/80 hover:text-white transition-colors p-1">
+              <button onClick={() => setShowEmailTemplatePopup(false)} className="text-brand-gray hover:text-brand-dark transition-colors p-1 rounded-lg hover:bg-gray-100">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
@@ -1530,19 +1504,12 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowViewEmailPopup(false)} />
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Header bar */}
-            <div className="bg-gradient-to-r from-brand-accent to-brand-accent/90 px-6 py-4 flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="bg-white/20 rounded-lg p-2">
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-white font-bold text-[15px]">Email Template</h3>
-                  <p className="text-white/70 text-[11px] font-medium">Preview your email before sending</p>
-                </div>
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 shrink-0">
+              <div>
+                <h3 className="text-lg font-serif font-black tracking-tight text-brand-dark">Email Template</h3>
+                <p className="text-[11px] font-medium text-brand-gray mt-0.5">Preview your email before sending</p>
               </div>
-              <button onClick={() => setShowViewEmailPopup(false)} className="text-white/80 hover:text-white transition-colors p-1.5 hover:bg-white/10 rounded-lg">
+              <button onClick={() => setShowViewEmailPopup(false)} className="text-brand-gray hover:text-brand-dark transition-colors p-1 rounded-lg hover:bg-gray-100">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
