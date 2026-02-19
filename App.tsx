@@ -23,9 +23,10 @@ import CategoriesView from './views/CategoriesView';
 import EmailTemplatesView from './views/EmailTemplatesView';
 import EmailTemplateDetailView from './views/EmailTemplateDetailView';
 import { EmailTemplate } from './views/EmailTemplatesView';
+import PlatformSettingsView from './views/PlatformSettingsView';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings'>('dashboard');
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
@@ -163,6 +164,7 @@ const App: React.FC = () => {
               onBack={() => { setCurrentView('email-templates'); setSelectedEmailTemplate(null); }}
             />
           )}
+          {currentView === 'platform-settings' && <PlatformSettingsView />}
           {currentView === 'partners' && <PartnersView onPartnerClick={handlePartnerClick} />}
           {currentView === 'partner-detail' && selectedPartner && (
             <PartnerDetailView
