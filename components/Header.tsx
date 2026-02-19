@@ -4,8 +4,8 @@ import React from 'react';
 interface HeaderProps {
   userName: string;
   userInitials: string;
-  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail';
-  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail') => void;
+  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail';
+  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ userName, currentView, setView }) => {
@@ -30,16 +30,25 @@ const Header: React.FC<HeaderProps> = ({ userName, currentView, setView }) => {
           >
             Dashboard
           </button>
-          <button 
+          <button
             onClick={() => setView('campaigns')}
             className={`transition-colors border-b-2 pb-1 ${
-              // Fix: Highlight 'Campaigns' when in 'campaigns' or 'campaign-detail' view
-              (currentView === 'campaigns' || currentView === 'campaign-detail') 
-                ? 'text-brand-dark font-bold border-brand-accent' 
+              (currentView === 'campaigns' || currentView === 'campaign-detail')
+                ? 'text-brand-dark font-bold border-brand-accent'
                 : 'border-transparent hover:text-brand-accent'
             }`}
           >
             Campaigns
+          </button>
+          <button
+            onClick={() => setView('pro-collections')}
+            className={`transition-colors border-b-2 pb-1 ${
+              (currentView === 'pro-collections' || currentView === 'pro-collection-detail')
+                ? 'text-brand-dark font-bold border-brand-accent'
+                : 'border-transparent hover:text-brand-accent'
+            }`}
+          >
+            Pro Collections
           </button>
           <button
             onClick={() => setView('top-influencers')}
@@ -60,16 +69,6 @@ const Header: React.FC<HeaderProps> = ({ userName, currentView, setView }) => {
             }`}
           >
             Search
-          </button>
-          <button
-            onClick={() => setView('pro-collections')}
-            className={`transition-colors border-b-2 pb-1 ${
-              (currentView === 'pro-collections' || currentView === 'pro-collection-detail')
-                ? 'text-brand-dark font-bold border-brand-accent'
-                : 'border-transparent hover:text-brand-accent'
-            }`}
-          >
-            Pro Collections
           </button>
         </nav>
 

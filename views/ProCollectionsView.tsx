@@ -134,9 +134,6 @@ const ProCollectionsView: React.FC<ProCollectionsViewProps> = ({ onCollectionCli
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <h1 className="text-3xl font-serif font-black tracking-tight text-brand-dark">Pro Collections</h1>
         <div className="flex flex-wrap items-center gap-3">
-          <button className="text-[11px] font-bold text-brand-accent border border-brand-accent px-5 py-2.5 rounded-xl hover:bg-brand-accent hover:text-white transition-all uppercase tracking-wider">
-            Show All
-          </button>
           <button className="bg-brand-accent text-white font-bold py-2.5 px-6 rounded-xl text-xs tracking-widest hover:brightness-110 transition-all shadow-md uppercase">
             Add Pro Collection
           </button>
@@ -155,9 +152,9 @@ const ProCollectionsView: React.FC<ProCollectionsViewProps> = ({ onCollectionCli
             className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 pl-11 pr-4 focus:ring-1 focus:ring-brand-accent outline-none text-xs font-semibold"
           />
         </div>
-        <div className="text-[11px] font-bold text-brand-gray">
-          {filteredCollections.length} collection{filteredCollections.length !== 1 ? 's' : ''}
-        </div>
+        <button className="text-[11px] font-bold text-brand-accent border border-brand-accent px-5 py-2 rounded-xl hover:bg-brand-accent hover:text-white transition-all uppercase tracking-wider">
+          Show All
+        </button>
       </div>
 
       {/* Collections List */}

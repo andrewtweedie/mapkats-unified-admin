@@ -10,15 +10,19 @@ import SearchView from './views/SearchView';
 import InfluencerDetailView from './views/InfluencerDetailView';
 import ProCollectionsView from './views/ProCollectionsView';
 import ProCollectionDetailView from './views/ProCollectionDetailView';
+import UsersView from './views/UsersView';
+import SubscribersView from './views/SubscribersView';
+import SubscriberDetailView from './views/SubscriberDetailView';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail'>('dashboard');
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
   const [previousView, setPreviousView] = useState<string>('search');
   const [topInfluencerCategory, setTopInfluencerCategory] = useState<string | null>(null);
   const [selectedProCollection, setSelectedProCollection] = useState<string | null>(null);
+  const [selectedSubscriber, setSelectedSubscriber] = useState<any | null>(null);
 
   const handleProCollectionClick = (name: string) => {
     setSelectedProCollection(name);
@@ -39,6 +43,11 @@ const App: React.FC = () => {
   const handleInfluencerBack = () => {
     setCurrentView(previousView as any);
     setSelectedInfluencer(null);
+  };
+
+  const handleSubscriberClick = (subscriber: any) => {
+    setSelectedSubscriber(subscriber);
+    setCurrentView('subscriber-detail');
   };
 
   const handleNavigateToCategory = (category: string) => {
@@ -89,6 +98,14 @@ const App: React.FC = () => {
             <ProCollectionDetailView
               collectionName={selectedProCollection || 'Collection'}
               onBack={() => setCurrentView('pro-collections')}
+            />
+          )}
+          {currentView === 'users' && <UsersView />}
+          {currentView === 'subscribers' && <SubscribersView onSubscriberClick={handleSubscriberClick} />}
+          {currentView === 'subscriber-detail' && selectedSubscriber && (
+            <SubscriberDetailView
+              subscriber={selectedSubscriber}
+              onBack={() => { setCurrentView('subscribers'); setSelectedSubscriber(null); }}
             />
           )}
           {currentView === 'search' && <SearchView onInfluencerClick={handleInfluencerClick} />}

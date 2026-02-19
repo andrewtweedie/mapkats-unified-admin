@@ -154,18 +154,18 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
         <div className="fixed inset-0 z-40" onClick={() => setAddToCampaignRank(null)} />
       )}
 
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-[12px] font-bold text-brand-gray">
+      {/* Page Title */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         {selectedCategory ? (
-          <>
-            <button onClick={() => { setSelectedCategory(null); setExpandedRank(null); }} className="hover:text-brand-accent transition-colors">
+          <div className="flex items-center gap-3">
+            <button onClick={() => { setSelectedCategory(null); setExpandedRank(null); }} className="text-3xl font-serif font-black tracking-tight text-brand-gray hover:text-brand-accent transition-colors">
               Top Influencers
             </button>
-            <span>/</span>
-            <span className="text-brand-dark font-black">{selectedCategory.name}</span>
-          </>
+            <span className="text-3xl font-serif font-black tracking-tight text-brand-gray">/</span>
+            <h1 className="text-3xl font-serif font-black tracking-tight text-brand-dark">{selectedCategory.name}</h1>
+          </div>
         ) : (
-          <span className="text-brand-dark font-black">Top Influencers</span>
+          <h1 className="text-3xl font-serif font-black tracking-tight text-brand-dark">Top Influencers</h1>
         )}
       </div>
 
@@ -185,7 +185,6 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <button className="text-[11px] font-serif font-bold text-brand-dark border-b border-brand-dark/20 hover:border-brand-accent hover:text-brand-accent transition-all">How Ranking Works</button>
                 <div className="relative">
                   <select
                     value={sortBy}
@@ -295,7 +294,6 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <button className="text-[11px] font-serif font-bold text-brand-dark border-b border-brand-dark/20 hover:border-brand-accent hover:text-brand-accent transition-all">How Ranking Works</button>
                     <div className="relative">
                       <select
                         value={sortBy}

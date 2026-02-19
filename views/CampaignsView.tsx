@@ -25,7 +25,6 @@ const CampaignsView: React.FC<CampaignsViewProps> = ({ onCampaignClick }) => {
         <h1 className="text-3xl font-serif font-black tracking-tight text-brand-dark">Campaigns</h1>
         <div className="flex flex-wrap items-center gap-3">
           <button className="bg-brand-accent text-white font-bold py-2.5 px-6 rounded-xl text-xs tracking-widest hover:brightness-110 transition-all shadow-md uppercase">Add Campaign</button>
-          <button className="bg-brand-dark text-white font-bold py-2.5 px-6 rounded-xl text-xs tracking-widest hover:brightness-110 transition-all shadow-md uppercase">Influencers</button>
         </div>
       </div>
 

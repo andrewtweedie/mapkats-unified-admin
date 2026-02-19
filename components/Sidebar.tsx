@@ -12,31 +12,94 @@ import {
   SparklesIcon,
   CrownIcon,
   SidebarCollapseIcon,
-  SidebarExpandIcon
+  SidebarExpandIcon,
+  UsersIcon,
+  UserIcon,
+  MapPinIcon,
+  MailIcon,
+  HandshakeIcon,
+  CreditCardIcon,
 } from './icons/UiIcons';
 
 interface SidebarProps {
-  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail';
-  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail') => void;
+  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail';
+  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail') => void;
   collapsed: boolean;
   onToggleCollapse: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onToggleCollapse }) => {
-  const adminItems = [
+  const toolsItems = [
     { name: 'Campaigns', id: 'campaigns', icon: <LayersIcon className="w-4 h-4" /> },
+    { name: 'Pro Collections', id: 'pro-collections', icon: <LayoutGridIcon className="w-4 h-4" /> },
     { name: 'Top Influencers', id: 'top-influencers', icon: <CrownIcon className="w-4 h-4" /> },
     { name: 'Search', id: 'search', icon: <SearchIcon className="w-4 h-4" /> },
-    { name: 'Pro Collections', id: 'pro-collections', icon: <LayoutGridIcon className="w-4 h-4" /> },
+  ];
+
+  const adminItems = [
+    { name: 'Users', id: 'users', icon: <UsersIcon className="w-4 h-4" /> },
+    { name: 'Subscribers', id: 'subscribers', icon: <SparklesIcon className="w-4 h-4" /> },
+    { name: 'Partners', icon: <HandshakeIcon className="w-4 h-4" /> },
     { name: 'Influencer Dashboard', icon: <ActivityIcon className="w-4 h-4" /> },
-    { name: 'Email Templates', icon: <FileTextIcon className="w-4 h-4" /> },
-    { name: 'Locations', icon: <SearchIcon className="w-4 h-4" /> },
-    { name: 'Partners', icon: <PlusIcon className="w-4 h-4 rotate-45" /> },
-    { name: 'Users', icon: <PlusIcon className="w-4 h-4" /> },
-    { name: 'Subscribers', icon: <SparklesIcon className="w-4 h-4" /> },
+    { name: 'Influencers', icon: <UserIcon className="w-4 h-4" /> },
+    { name: 'Locations', icon: <MapPinIcon className="w-4 h-4" /> },
+    { name: 'Email Templates', icon: <MailIcon className="w-4 h-4" /> },
     { name: 'Platform Settings', icon: <SettingsIcon className="w-4 h-4" /> },
     { name: 'Terms & Conditions', icon: <DocumentTextIcon className="w-4 h-4" /> },
   ];
+
+  const accountItems = [
+    { name: 'Settings', icon: <SettingsIcon className="w-4 h-4" /> },
+    { name: 'Account Details', icon: <CreditCardIcon className="w-4 h-4" /> },
+  ];
+
+  const isActiveView = (id?: string) => {
+    if (id === 'campaigns') return currentView === 'campaigns' || currentView === 'campaign-detail';
+    if (id === 'top-influencers') return currentView === 'top-influencers';
+    if (id === 'search') return currentView === 'search' || currentView === 'influencer-detail';
+    if (id === 'pro-collections') return currentView === 'pro-collections' || currentView === 'pro-collection-detail';
+    if (id === 'users') return currentView === 'users';
+    if (id === 'subscribers') return currentView === 'subscribers' || currentView === 'subscriber-detail';
+    return false;
+  };
+
+  const handleNavClick = (id?: string) => {
+    if (id === 'campaigns') setView('campaigns');
+    if (id === 'top-influencers') setView('top-influencers');
+    if (id === 'search') setView('search');
+    if (id === 'pro-collections') setView('pro-collections');
+    if (id === 'users') setView('users');
+    if (id === 'subscribers') setView('subscribers');
+  };
+
+  const renderSectionTitle = (title: string) => (
+    <>
+      {!collapsed && (
+        <h2 className="font-serif text-brand-accent text-[11px] tracking-widest uppercase mb-4 font-black">{title}</h2>
+      )}
+      {collapsed && (
+        <div className="w-full border-t border-gray-100 mb-4" />
+      )}
+    </>
+  );
+
+  const renderNavItem = (item: { name: string; id?: string; icon: React.ReactNode }, isBold = false) => (
+    <button
+      key={item.name}
+      onClick={() => handleNavClick(item.id)}
+      className={`w-full flex items-center ${collapsed ? 'justify-center' : ''} gap-3 ${collapsed ? 'px-0 py-2.5' : 'px-1 py-2'} transition-all ${isBold ? 'font-bold' : 'font-semibold'} text-[13px] ${
+        item.id && isActiveView(item.id)
+          ? 'text-brand-accent'
+          : item.id
+            ? 'text-brand-gray hover:text-brand-accent'
+            : 'text-brand-gray hover:text-brand-accent'
+      }`}
+      title={collapsed ? item.name : undefined}
+    >
+      <span className="opacity-50 flex-shrink-0">{item.icon}</span>
+      {!collapsed && <span className="truncate">{item.name}</span>}
+    </button>
+  );
 
   return (
     <aside
@@ -101,38 +164,27 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
           </nav>
         </section>
 
+        {/* Tools section */}
+        <section>
+          {renderSectionTitle('Tools')}
+          <nav className="space-y-0.5">
+            {toolsItems.map((item) => renderNavItem(item))}
+          </nav>
+        </section>
+
         {/* Admin section */}
         <section>
-          {!collapsed && (
-            <h2 className="font-serif text-brand-accent text-[11px] tracking-widest uppercase mb-4 font-black">Admin</h2>
-          )}
-          {collapsed && (
-            <div className="w-full border-t border-gray-100 mb-4" />
-          )}
+          {renderSectionTitle('Admin')}
           <nav className="space-y-0.5">
-            {adminItems.map((item) => (
-              <button
-                key={item.name}
-                onClick={() => {
-                  if (item.id === 'campaigns') setView('campaigns');
-                  if (item.id === 'top-influencers') setView('top-influencers');
-                  if (item.id === 'search') setView('search');
-                  if (item.id === 'pro-collections') setView('pro-collections');
-                }}
-                className={`w-full flex items-center ${collapsed ? 'justify-center' : ''} gap-3 ${collapsed ? 'px-0 py-2.5' : 'px-1 py-2'} transition-all font-semibold text-[13px] ${
-                  (item.id === 'campaigns' && (currentView === 'campaigns' || currentView === 'campaign-detail'))
-                    || (item.id === 'top-influencers' && currentView === 'top-influencers')
-                    || (item.id === 'search' && (currentView === 'search' || currentView === 'influencer-detail'))
-                    || (item.id === 'pro-collections' && (currentView === 'pro-collections' || currentView === 'pro-collection-detail'))
-                    ? 'text-brand-accent'
-                    : 'text-brand-gray hover:text-brand-accent'
-                }`}
-                title={collapsed ? item.name : undefined}
-              >
-                <span className="opacity-50 flex-shrink-0">{item.icon}</span>
-                {!collapsed && <span className="truncate">{item.name}</span>}
-              </button>
-            ))}
+            {adminItems.map((item) => renderNavItem(item))}
+          </nav>
+        </section>
+
+        {/* Account section */}
+        <section>
+          {renderSectionTitle('Account')}
+          <nav className="space-y-0.5">
+            {accountItems.map((item) => renderNavItem(item))}
           </nav>
         </section>
 
