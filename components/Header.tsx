@@ -75,7 +75,10 @@ const Header: React.FC<HeaderProps> = ({ userName, currentView, setView }) => {
         {/* Right Section */}
         <div className="flex items-center gap-6">
           <span className="text-[13px] font-bold text-brand-accent hidden sm:block">{userName.split(' ')[0]}</span>
-          <button className="border-2 border-brand-accent text-brand-accent text-xs font-bold px-6 py-2 rounded-xl hover:bg-brand-accent hover:text-white transition-all shadow-sm">
+          <button
+            onClick={() => setView('account-settings')}
+            className="border-2 border-brand-accent text-brand-accent text-xs font-bold px-6 py-2 rounded-xl hover:bg-brand-accent hover:text-white transition-all shadow-sm"
+          >
             Account
           </button>
         </div>

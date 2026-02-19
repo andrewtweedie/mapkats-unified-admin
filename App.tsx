@@ -138,7 +138,17 @@ const App: React.FC = () => {
         />
 
         <div className={`p-6 md:p-10 w-full mx-auto ${currentView === 'search' && !selectedInfluencer ? 'flex-1 flex flex-col max-w-full' : 'max-w-7xl'}`}>
-          {currentView === 'dashboard' && <DashboardView />}
+          {currentView === 'dashboard' && (
+            <DashboardView
+              onNavigateToCampaigns={() => setCurrentView('campaigns')}
+              onNavigateToCampaignDetail={(name) => { setSelectedCampaign(name); setCurrentView('campaign-detail'); }}
+              onNavigateToNewCampaign={() => { setSelectedCampaign(null); setCurrentView('campaign-detail'); }}
+              onNavigateToProCollections={() => setCurrentView('pro-collections')}
+              onNavigateToProCollectionDetail={(name) => { setSelectedProCollection(name); setCurrentView('pro-collection-detail'); }}
+              onNavigateToNewProCollection={() => { setSelectedProCollection(null); setCurrentView('pro-collection-detail'); }}
+              onNavigateToInfluencerFullPage={(influencer) => { setSelectedInfluencer(influencer); setPreviousView('dashboard'); setCurrentView('influencer-detail'); }}
+            />
+          )}
           {currentView === 'campaigns' && <CampaignsView onCampaignClick={handleCampaignClick} />}
           {currentView === 'campaign-detail' && (
             <CampaignDetailView
