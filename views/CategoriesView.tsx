@@ -177,6 +177,62 @@ const CategoriesView: React.FC = () => {
 
       {/* Categories List */}
       <div className="bg-white rounded-2xl shadow-panel overflow-hidden border border-gray-100">
+        {/* Add New Category Row */}
+        <div className="px-6 py-4 bg-gray-50/50 border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            {/* Color Picker */}
+            <div className="relative group/color">
+              <div
+                className="w-8 h-8 rounded-lg shadow-sm border border-gray-200 cursor-pointer hover:scale-110 transition-transform"
+                style={{ backgroundColor: newCategoryColor }}
+              />
+              <div className="absolute top-full left-0 mt-2 hidden group-hover/color:block z-20">
+                <div className="bg-white rounded-xl shadow-xl border border-gray-100 p-3 w-[200px]">
+                  <p className="text-[10px] font-black text-brand-gray uppercase tracking-wider mb-2">Pick a Color</p>
+                  <div className="grid grid-cols-6 gap-1.5">
+                    {colorPalette.map((color) => (
+                      <button
+                        key={color}
+                        onClick={() => setNewCategoryColor(color)}
+                        className={`w-6 h-6 rounded-md transition-all hover:scale-110 ${
+                          newCategoryColor === color ? 'ring-2 ring-brand-accent ring-offset-1' : ''
+                        }`}
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Name Input */}
+            <input
+              type="text"
+              placeholder="Add new category..."
+              value={newCategoryName}
+              onChange={(e) => setNewCategoryName(e.target.value)}
+              className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-brand-dark focus:ring-1 focus:ring-brand-accent focus:border-brand-accent outline-none transition-all"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && newCategoryName.trim()) {
+                  setNewCategoryName('');
+                }
+              }}
+            />
+
+            {/* Add Button */}
+            <button
+              onClick={() => {
+                if (newCategoryName.trim()) {
+                  setNewCategoryName('');
+                }
+              }}
+              className="bg-brand-accent text-white text-[11px] font-bold px-6 py-2.5 rounded-xl hover:brightness-110 transition-all shadow-md uppercase tracking-wider"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+
         {/* Table Header */}
         <div className="bg-brand-gray/5 border-b border-gray-100 px-6 py-4">
           <div className="flex items-center text-[10px] font-black text-brand-gray uppercase tracking-widest">
@@ -252,62 +308,6 @@ const CategoriesView: React.FC = () => {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Add New Category Row */}
-        <div className="border-t border-gray-100 px-6 py-4 bg-gray-50/50">
-          <div className="flex items-center gap-3">
-            {/* Color Picker */}
-            <div className="relative group/color">
-              <div
-                className="w-8 h-8 rounded-lg shadow-sm border border-gray-200 cursor-pointer hover:scale-110 transition-transform"
-                style={{ backgroundColor: newCategoryColor }}
-              />
-              <div className="absolute bottom-full left-0 mb-2 hidden group-hover/color:block z-20">
-                <div className="bg-white rounded-xl shadow-xl border border-gray-100 p-3 w-[200px]">
-                  <p className="text-[10px] font-black text-brand-gray uppercase tracking-wider mb-2">Pick a Color</p>
-                  <div className="grid grid-cols-6 gap-1.5">
-                    {colorPalette.map((color) => (
-                      <button
-                        key={color}
-                        onClick={() => setNewCategoryColor(color)}
-                        className={`w-6 h-6 rounded-md transition-all hover:scale-110 ${
-                          newCategoryColor === color ? 'ring-2 ring-brand-accent ring-offset-1' : ''
-                        }`}
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Name Input */}
-            <input
-              type="text"
-              placeholder="Add new category..."
-              value={newCategoryName}
-              onChange={(e) => setNewCategoryName(e.target.value)}
-              className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-[13px] font-semibold text-brand-dark focus:ring-1 focus:ring-brand-accent focus:border-brand-accent outline-none transition-all"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && newCategoryName.trim()) {
-                  setNewCategoryName('');
-                }
-              }}
-            />
-
-            {/* Add Button */}
-            <button
-              onClick={() => {
-                if (newCategoryName.trim()) {
-                  setNewCategoryName('');
-                }
-              }}
-              className="bg-brand-accent text-white text-[11px] font-bold px-6 py-2.5 rounded-xl hover:brightness-110 transition-all shadow-md uppercase tracking-wider"
-            >
-              Add
-            </button>
-          </div>
         </div>
 
         {/* Table Footer */}
