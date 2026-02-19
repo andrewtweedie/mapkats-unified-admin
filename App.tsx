@@ -13,9 +13,14 @@ import ProCollectionDetailView from './views/ProCollectionDetailView';
 import UsersView from './views/UsersView';
 import SubscribersView from './views/SubscribersView';
 import SubscriberDetailView from './views/SubscriberDetailView';
+import PartnersView from './views/PartnersView';
+import PartnerDetailView from './views/PartnerDetailView';
+import InfluencerDashboardView from './views/InfluencerDashboardView';
+import InfluencersView from './views/InfluencersView';
+import InfluencerListingView from './views/InfluencerListingView';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing'>('dashboard');
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
@@ -23,6 +28,9 @@ const App: React.FC = () => {
   const [topInfluencerCategory, setTopInfluencerCategory] = useState<string | null>(null);
   const [selectedProCollection, setSelectedProCollection] = useState<string | null>(null);
   const [selectedSubscriber, setSelectedSubscriber] = useState<any | null>(null);
+  const [selectedPartner, setSelectedPartner] = useState<any | null>(null);
+  const [influencerListingCategory, setInfluencerListingCategory] = useState<string>('');
+  const [influencerListingCountry, setInfluencerListingCountry] = useState<string>('');
 
   const handleProCollectionClick = (name: string) => {
     setSelectedProCollection(name);
@@ -50,6 +58,17 @@ const App: React.FC = () => {
     setCurrentView('subscriber-detail');
   };
 
+  const handlePartnerClick = (partner: any) => {
+    setSelectedPartner(partner);
+    setCurrentView('partner-detail');
+  };
+
+  const handleNavigateToInfluencerListing = (category: string, country: string) => {
+    setInfluencerListingCategory(category);
+    setInfluencerListingCountry(country);
+    setCurrentView('influencer-listing');
+  };
+
   const handleNavigateToCategory = (category: string) => {
     setTopInfluencerCategory(category);
     setCurrentView('top-influencers');
@@ -64,6 +83,7 @@ const App: React.FC = () => {
           setCurrentView(view);
           if (view !== 'campaign-detail') setSelectedCampaign(null);
           if (view !== 'pro-collection-detail') setSelectedProCollection(null);
+          if (view !== 'partner-detail') setSelectedPartner(null);
           if (view === 'top-influencers') setTopInfluencerCategory(null);
         }}
         collapsed={sidebarCollapsed}
@@ -79,6 +99,7 @@ const App: React.FC = () => {
             setCurrentView(view);
             if (view !== 'campaign-detail') setSelectedCampaign(null);
             if (view !== 'pro-collection-detail') setSelectedProCollection(null);
+            if (view !== 'partner-detail') setSelectedPartner(null);
             if (view === 'top-influencers') setTopInfluencerCategory(null);
           }}
         />
@@ -106,6 +127,22 @@ const App: React.FC = () => {
             <SubscriberDetailView
               subscriber={selectedSubscriber}
               onBack={() => { setCurrentView('subscribers'); setSelectedSubscriber(null); }}
+            />
+          )}
+          {currentView === 'influencer-dashboard' && <InfluencerDashboardView />}
+          {currentView === 'influencers' && <InfluencersView onNavigateToListing={handleNavigateToInfluencerListing} />}
+          {currentView === 'influencer-listing' && (
+            <InfluencerListingView
+              category={influencerListingCategory}
+              country={influencerListingCountry}
+              onBack={() => setCurrentView('influencers')}
+            />
+          )}
+          {currentView === 'partners' && <PartnersView onPartnerClick={handlePartnerClick} />}
+          {currentView === 'partner-detail' && selectedPartner && (
+            <PartnerDetailView
+              partner={selectedPartner}
+              onBack={() => { setCurrentView('partners'); setSelectedPartner(null); }}
             />
           )}
           {currentView === 'search' && <SearchView onInfluencerClick={handleInfluencerClick} />}

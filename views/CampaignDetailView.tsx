@@ -58,6 +58,38 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
   const [showViewEmailPopup, setShowViewEmailPopup] = useState(false);
   const [selectedPost, setSelectedPost] = useState<any | null>(null);
 
+  // Filter panel state
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [filters, setFilters] = useState({
+    username: '',
+    email: '',
+    gender: '',
+    country: '',
+    city: '',
+    status: '',
+    category: '',
+    objective: '',
+    favourite: '',
+  });
+  const [filterTagsAll, setFilterTagsAll] = useState<string[]>([]);
+  const [filterTagsAny, setFilterTagsAny] = useState<string[]>([]);
+  const [filterTagsExclude, setFilterTagsExclude] = useState<string[]>([]);
+  const [filterTagAllInput, setFilterTagAllInput] = useState('');
+  const [filterTagAnyInput, setFilterTagAnyInput] = useState('');
+  const [filterTagExcludeInput, setFilterTagExcludeInput] = useState('');
+
+  const activeFilterCount = [
+    filters.username, filters.email, filters.gender, filters.country,
+    filters.city, filters.status, filters.category, filters.objective, filters.favourite,
+  ].filter(Boolean).length + (filterTagsAll.length > 0 ? 1 : 0) + (filterTagsAny.length > 0 ? 1 : 0) + (filterTagsExclude.length > 0 ? 1 : 0);
+
+  const clearAllFilters = () => {
+    setFilters({ username: '', email: '', gender: '', country: '', city: '', status: '', category: '', objective: '', favourite: '' });
+    setFilterTagsAll([]);
+    setFilterTagsAny([]);
+    setFilterTagsExclude([]);
+  };
+
   const emailTemplates = [
     { id: 'intro', name: 'Campaign Introduction', subject: 'Exciting Collaboration Opportunity!', preview: 'Hi {name}, we\'d love to partner with you on our upcoming campaign...' },
     { id: 'followup', name: 'Follow Up', subject: 'Following Up on Our Collaboration', preview: 'Hi {name}, just checking in on our previous message about...' },
@@ -333,7 +365,21 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
     }
   ];
 
-  const influencers = allInfluencers.filter(inf => !removedInfluencers.includes(inf.username));
+  const influencers = allInfluencers.filter(inf => {
+    if (removedInfluencers.includes(inf.username)) return false;
+    if (filters.username && !inf.username.toLowerCase().includes(filters.username.toLowerCase()) && !inf.name.toLowerCase().includes(filters.username.toLowerCase())) return false;
+    if (filters.email && (!inf.email || !inf.email.toLowerCase().includes(filters.email.toLowerCase()))) return false;
+    if (filters.country) {
+      const q = filters.country.toLowerCase();
+      if (!inf.region.toLowerCase().includes(q) && !(inf.location || '').toLowerCase().includes(q) && !inf.flag.includes(filters.country)) return false;
+    }
+    if (filters.city && !(inf.location || '').toLowerCase().includes(filters.city.toLowerCase())) return false;
+    if (filters.status && inf.status !== filters.status) return false;
+    if (filters.category && inf.category !== filters.category) return false;
+    if (filters.favourite === 'Yes' && !inf.isFavourite) return false;
+    if (filters.favourite === 'No' && inf.isFavourite) return false;
+    return true;
+  });
 
   // Mock database of all influencers available for discovery
   const databaseInfluencers = [
@@ -473,8 +519,17 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       <div className="bg-white p-6 rounded-2xl shadow-soft border border-gray-100">
         <div className="flex flex-col xl:flex-row items-stretch xl:items-end gap-8">
           <div className="flex items-center gap-2 shrink-0 h-[38px] xl:mb-0.5">
-             <button className="bg-brand-accent text-white p-3 rounded-xl shadow-md hover:brightness-110 transition-all flex items-center justify-center">
-                <SearchIcon className="w-4 h-4" />
+             <button
+               onClick={() => setShowFilterPanel(true)}
+               className="relative bg-brand-accent text-white px-4 py-2.5 rounded-xl shadow-md hover:brightness-110 transition-all flex items-center justify-center gap-2 text-[11px] font-bold"
+             >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
+                </svg>
+                Filter
+                {activeFilterCount > 0 && (
+                  <span className="bg-white text-brand-accent text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none">{activeFilterCount}</span>
+                )}
              </button>
              <button className="border border-brand-light-gray p-3 rounded-xl text-brand-gray hover:bg-gray-50 transition-all flex items-center justify-center">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -901,6 +956,297 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
         /* Placeholder for other tabs */
         <div className="flex items-center justify-center h-64 bg-white rounded-2xl border border-gray-100 shadow-soft italic text-brand-gray">
           {activeTab} view is coming soon...
+        </div>
+      )}
+
+      {/* Filter Side Panel */}
+      {showFilterPanel && (
+        <div className="fixed inset-0 z-40 flex">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setShowFilterPanel(false)} />
+
+          {/* Panel */}
+          <div className="relative ml-auto w-full max-w-md bg-white shadow-2xl flex flex-col animate-in slide-in-from-right duration-300 h-full">
+            {/* Header */}
+            <div className="bg-gradient-to-r from-brand-accent to-brand-accent/90 px-6 py-5 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="bg-white/20 rounded-lg p-2">
+                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-[15px]">Filter Influencers</h3>
+                  <p className="text-white/70 text-[11px] font-medium">Narrow down your campaign list</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowFilterPanel(false)}
+                className="text-white/80 hover:text-white transition-colors p-1"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto scrollbar-hide px-6 py-6 space-y-5">
+              {/* Username */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Username</label>
+                <input
+                  type="text"
+                  value={filters.username}
+                  onChange={(e) => setFilters({ ...filters, username: e.target.value })}
+                  placeholder="Search by name or username"
+                  className="w-full px-4 py-2.5 text-[13px] font-semibold rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all placeholder:text-gray-300"
+                />
+              </div>
+
+              {/* Email */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Email</label>
+                <input
+                  type="text"
+                  value={filters.email}
+                  onChange={(e) => setFilters({ ...filters, email: e.target.value })}
+                  placeholder="Search by email address"
+                  className="w-full px-4 py-2.5 text-[13px] font-semibold rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all placeholder:text-gray-300"
+                />
+              </div>
+
+              {/* Gender */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Gender</label>
+                <select
+                  value={filters.gender}
+                  onChange={(e) => setFilters({ ...filters, gender: e.target.value })}
+                  className="w-full px-4 py-2.5 text-[13px] font-semibold rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all cursor-pointer text-gray-700"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Non-binary">Non-binary</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              {/* Country */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Country</label>
+                <input
+                  type="text"
+                  value={filters.country}
+                  onChange={(e) => setFilters({ ...filters, country: e.target.value })}
+                  placeholder="Filter by country or region code"
+                  className="w-full px-4 py-2.5 text-[13px] font-semibold rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all placeholder:text-gray-300"
+                />
+              </div>
+
+              {/* City */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-brand-gray uppercase tracking-widest">City</label>
+                <input
+                  type="text"
+                  value={filters.city}
+                  onChange={(e) => setFilters({ ...filters, city: e.target.value })}
+                  placeholder="Filter by city"
+                  className="w-full px-4 py-2.5 text-[13px] font-semibold rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all placeholder:text-gray-300"
+                />
+              </div>
+
+              {/* Status */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Status</label>
+                <select
+                  value={filters.status}
+                  onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                  className="w-full px-4 py-2.5 text-[13px] font-semibold rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all cursor-pointer text-gray-700"
+                >
+                  <option value="">Select Status</option>
+                  <option value="New">New</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Confirmed">Confirmed</option>
+                  <option value="Declined">Declined</option>
+                  <option value="Completed">Completed</option>
+                </select>
+              </div>
+
+              {/* Category */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Category</label>
+                <select
+                  value={filters.category}
+                  onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+                  className="w-full px-4 py-2.5 text-[13px] font-semibold rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all cursor-pointer text-gray-700"
+                >
+                  <option value="">Select Category</option>
+                  <option value="Lifestyle Media">Lifestyle Media</option>
+                  <option value="Celebrity">Celebrity</option>
+                  <option value="Food">Food</option>
+                  <option value="Home Cooking">Home Cooking</option>
+                  <option value="Wellness Lifestyle">Wellness Lifestyle</option>
+                  <option value="Bartender">Bartender</option>
+                  <option value="Ceramic Art">Ceramic Art</option>
+                  <option value="Fashion">Fashion</option>
+                  <option value="Music">Music</option>
+                  <option value="Alcohol">Alcohol</option>
+                </select>
+              </div>
+
+              {/* Objective */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Objective</label>
+                <select
+                  value={filters.objective}
+                  onChange={(e) => setFilters({ ...filters, objective: e.target.value })}
+                  className="w-full px-4 py-2.5 text-[13px] font-semibold rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all cursor-pointer text-gray-700"
+                >
+                  <option value="">Select Objective</option>
+                  <option value="Brand Awareness">Brand Awareness</option>
+                  <option value="Product Launch">Product Launch</option>
+                  <option value="Content Creation">Content Creation</option>
+                  <option value="Event Coverage">Event Coverage</option>
+                  <option value="Gifting">Gifting</option>
+                </select>
+              </div>
+
+              {/* Favourite */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Favourite</label>
+                <select
+                  value={filters.favourite}
+                  onChange={(e) => setFilters({ ...filters, favourite: e.target.value })}
+                  className="w-full px-4 py-2.5 text-[13px] font-semibold rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all cursor-pointer text-gray-700"
+                >
+                  <option value="">Any</option>
+                  <option value="Yes">Favourites Only</option>
+                  <option value="No">Non-favourites Only</option>
+                </select>
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-gray-100 pt-5">
+                <h4 className="text-[12px] font-black text-brand-dark mb-4">Filter by Tags</h4>
+
+                {/* ALL tags */}
+                <div className="space-y-2 mb-5">
+                  <label className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Show Influencers that have ALL these tags</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={filterTagAllInput}
+                      onChange={(e) => setFilterTagAllInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && filterTagAllInput.trim()) {
+                          setFilterTagsAll([...filterTagsAll, filterTagAllInput.trim()]);
+                          setFilterTagAllInput('');
+                        }
+                      }}
+                      placeholder="Add tag and press Enter"
+                      className="flex-1 px-4 py-2 text-[12px] font-semibold rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all placeholder:text-gray-300"
+                    />
+                  </div>
+                  {filterTagsAll.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {filterTagsAll.map((tag, i) => (
+                        <span key={i} className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                          {tag}
+                          <button onClick={() => setFilterTagsAll(filterTagsAll.filter((_, idx) => idx !== i))} className="text-emerald-500 hover:text-emerald-800">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* ANY tags */}
+                <div className="space-y-2 mb-5">
+                  <label className="text-[10px] font-black text-brand-gray uppercase tracking-widest">OR any of these tags</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={filterTagAnyInput}
+                      onChange={(e) => setFilterTagAnyInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && filterTagAnyInput.trim()) {
+                          setFilterTagsAny([...filterTagsAny, filterTagAnyInput.trim()]);
+                          setFilterTagAnyInput('');
+                        }
+                      }}
+                      placeholder="Add tag and press Enter"
+                      className="flex-1 px-4 py-2 text-[12px] font-semibold rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all placeholder:text-gray-300"
+                    />
+                  </div>
+                  {filterTagsAny.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {filterTagsAny.map((tag, i) => (
+                        <span key={i} className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                          {tag}
+                          <button onClick={() => setFilterTagsAny(filterTagsAny.filter((_, idx) => idx !== i))} className="text-blue-500 hover:text-blue-800">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* EXCLUDE tags */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Exclude Influencers with these tags</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={filterTagExcludeInput}
+                      onChange={(e) => setFilterTagExcludeInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && filterTagExcludeInput.trim()) {
+                          setFilterTagsExclude([...filterTagsExclude, filterTagExcludeInput.trim()]);
+                          setFilterTagExcludeInput('');
+                        }
+                      }}
+                      placeholder="Add tag and press Enter"
+                      className="flex-1 px-4 py-2 text-[12px] font-semibold rounded-xl border border-gray-200 bg-white focus:ring-2 focus:ring-brand-accent/20 focus:border-brand-accent outline-none transition-all placeholder:text-gray-300"
+                    />
+                  </div>
+                  {filterTagsExclude.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {filterTagsExclude.map((tag, i) => (
+                        <span key={i} className="bg-red-50 text-red-700 text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                          {tag}
+                          <button onClick={() => setFilterTagsExclude(filterTagsExclude.filter((_, idx) => idx !== i))} className="text-red-500 hover:text-red-800">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Actions */}
+            <div className="border-t border-gray-100 px-6 py-4 flex items-center gap-3 shrink-0 bg-white">
+              {activeFilterCount > 0 && (
+                <button
+                  onClick={clearAllFilters}
+                  className="text-[11px] font-bold text-red-500 hover:text-red-600 transition-colors"
+                >
+                  Clear All
+                </button>
+              )}
+              <div className="flex-1" />
+              <button
+                onClick={() => setShowFilterPanel(false)}
+                className="bg-brand-accent text-white font-black py-2.5 px-8 rounded-xl text-[10px] tracking-widest hover:brightness-110 transition-all shadow-md uppercase"
+              >
+                Search
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
