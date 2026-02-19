@@ -142,14 +142,19 @@ const App: React.FC = () => {
             <DashboardView
               onNavigateToCampaigns={() => setCurrentView('campaigns')}
               onNavigateToCampaignDetail={(name) => { setSelectedCampaign(name); setCurrentView('campaign-detail'); }}
-              onNavigateToNewCampaign={() => { setSelectedCampaign(null); setCurrentView('campaign-detail'); }}
+              onNavigateToNewCampaign={(name, type) => { setSelectedCampaign(name); setCurrentView('campaign-detail'); }}
               onNavigateToProCollections={() => setCurrentView('pro-collections')}
               onNavigateToProCollectionDetail={(name) => { setSelectedProCollection(name); setCurrentView('pro-collection-detail'); }}
-              onNavigateToNewProCollection={() => { setSelectedProCollection(null); setCurrentView('pro-collection-detail'); }}
+              onNavigateToNewProCollection={(name) => { setSelectedProCollection(name); setCurrentView('pro-collection-detail'); }}
               onNavigateToInfluencerFullPage={(influencer) => { setSelectedInfluencer(influencer); setPreviousView('dashboard'); setCurrentView('influencer-detail'); }}
             />
           )}
-          {currentView === 'campaigns' && <CampaignsView onCampaignClick={handleCampaignClick} />}
+          {currentView === 'campaigns' && (
+            <CampaignsView
+              onCampaignClick={handleCampaignClick}
+              onAddCampaign={(name, type) => { setSelectedCampaign(name); setCurrentView('campaign-detail'); }}
+            />
+          )}
           {currentView === 'campaign-detail' && (
             <CampaignDetailView
               campaignName={selectedCampaign || 'Campaign'}

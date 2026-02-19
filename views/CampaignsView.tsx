@@ -1,12 +1,15 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SearchIcon } from '../components/icons/UiIcons';
+import AddCampaignModal from '../components/AddCampaignModal';
 
 interface CampaignsViewProps {
   onCampaignClick?: (name: string) => void;
+  onAddCampaign?: (name: string, type: 'GIFTED' | 'PAID') => void;
 }
 
-const CampaignsView: React.FC<CampaignsViewProps> = ({ onCampaignClick }) => {
+const CampaignsView: React.FC<CampaignsViewProps> = ({ onCampaignClick, onAddCampaign }) => {
+  const [showAddCampaignModal, setShowAddCampaignModal] = useState(false);
   const campaigns = [
     { name: 'Collection', posts: 0, stories: 0, media: 0.00, type: 'GIFTED', target: 0, confirmed: 0, need: 0, activity: { new: 4, email: 4, requested: 0 } },
     { name: 'GOFAR', posts: 0, stories: 0, media: 0.00, type: 'GIFTED', target: 0, confirmed: 0, need: 0, activity: { new: 0, email: 0, requested: 0 } },
@@ -24,7 +27,10 @@ const CampaignsView: React.FC<CampaignsViewProps> = ({ onCampaignClick }) => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <h1 className="text-3xl font-serif font-black tracking-tight text-brand-dark">Campaigns</h1>
         <div className="flex flex-wrap items-center gap-3">
-          <button className="bg-brand-accent text-white font-bold py-2.5 px-6 rounded-xl text-xs tracking-widest hover:brightness-110 transition-all shadow-md uppercase">Add Campaign</button>
+          <button
+            onClick={() => setShowAddCampaignModal(true)}
+            className="bg-brand-accent text-white font-bold py-2.5 px-6 rounded-xl text-xs tracking-widest hover:brightness-110 transition-all shadow-md uppercase"
+          >Add Campaign</button>
         </div>
       </div>
 
@@ -127,6 +133,15 @@ const CampaignsView: React.FC<CampaignsViewProps> = ({ onCampaignClick }) => {
           </table>
         </div>
       </div>
+      {/* Add Campaign Modal */}
+      <AddCampaignModal
+        isOpen={showAddCampaignModal}
+        onClose={() => setShowAddCampaignModal(false)}
+        onAdd={(name, type) => {
+          setShowAddCampaignModal(false);
+          onAddCampaign?.(name, type);
+        }}
+      />
     </div>
   );
 };

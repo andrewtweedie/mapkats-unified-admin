@@ -41,18 +41,18 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
     { name: 'Users', id: 'users', icon: <UsersIcon className="w-4 h-4" /> },
     { name: 'Subscribers', id: 'subscribers', icon: <SparklesIcon className="w-4 h-4" /> },
     { name: 'Partners', id: 'partners', icon: <HandshakeIcon className="w-4 h-4" /> },
-    { name: 'Influencer Dashboard', id: 'influencer-dashboard', icon: <ActivityIcon className="w-4 h-4" /> },
+    { name: 'Platform GMV', id: 'influencer-dashboard', icon: <ActivityIcon className="w-4 h-4" /> },
     { name: 'Influencers', id: 'influencers', icon: <UserIcon className="w-4 h-4" /> },
     { name: 'Categories', id: 'categories', icon: <TagIcon className="w-4 h-4" /> },
     { name: 'Locations', id: 'locations', icon: <MapPinIcon className="w-4 h-4" /> },
     { name: 'Email Templates', id: 'email-templates', icon: <MailIcon className="w-4 h-4" /> },
     { name: 'Platform Settings', id: 'platform-settings', icon: <SettingsIcon className="w-4 h-4" /> },
     { name: 'Terms & Conditions', id: 'terms-conditions', icon: <DocumentTextIcon className="w-4 h-4" /> },
+    { name: 'Account Details', id: 'account-details', icon: <CreditCardIcon className="w-4 h-4" /> },
   ];
 
   const accountItems = [
     { name: 'Settings', id: 'account-settings', icon: <SettingsIcon className="w-4 h-4" /> },
-    { name: 'Account Details', id: 'account-details', icon: <CreditCardIcon className="w-4 h-4" /> },
   ];
 
   const isActiveView = (id?: string) => {
