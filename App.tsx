@@ -27,9 +27,11 @@ import PlatformSettingsView from './views/PlatformSettingsView';
 import TermsConditionsView from './views/TermsConditionsView';
 import TermsConditionDetailView from './views/TermsConditionDetailView';
 import { TermsCondition } from './views/TermsConditionsView';
+import AccountSettingsView from './views/AccountSettingsView';
+import AccountDetailsView from './views/AccountDetailsView';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details'>('dashboard');
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
@@ -136,7 +138,17 @@ const App: React.FC = () => {
         />
 
         <div className={`p-6 md:p-10 w-full mx-auto ${currentView === 'search' && !selectedInfluencer ? 'flex-1 flex flex-col max-w-full' : 'max-w-7xl'}`}>
-          {currentView === 'dashboard' && <DashboardView />}
+          {currentView === 'dashboard' && (
+            <DashboardView
+              onNavigateToCampaigns={() => setCurrentView('campaigns')}
+              onNavigateToCampaignDetail={(name) => { setSelectedCampaign(name); setCurrentView('campaign-detail'); }}
+              onNavigateToNewCampaign={() => { setSelectedCampaign(null); setCurrentView('campaign-detail'); }}
+              onNavigateToProCollections={() => setCurrentView('pro-collections')}
+              onNavigateToProCollectionDetail={(name) => { setSelectedProCollection(name); setCurrentView('pro-collection-detail'); }}
+              onNavigateToNewProCollection={() => { setSelectedProCollection(null); setCurrentView('pro-collection-detail'); }}
+              onNavigateToInfluencerFullPage={(influencer) => { setSelectedInfluencer(influencer); setPreviousView('dashboard'); setCurrentView('influencer-detail'); }}
+            />
+          )}
           {currentView === 'campaigns' && <CampaignsView onCampaignClick={handleCampaignClick} />}
           {currentView === 'campaign-detail' && (
             <CampaignDetailView
@@ -186,6 +198,8 @@ const App: React.FC = () => {
               onBack={() => { setCurrentView('terms-conditions'); setSelectedTermsCondition(null); }}
             />
           )}
+          {currentView === 'account-settings' && <AccountSettingsView />}
+          {currentView === 'account-details' && <AccountDetailsView />}
           {currentView === 'partners' && <PartnersView onPartnerClick={handlePartnerClick} />}
           {currentView === 'partner-detail' && selectedPartner && (
             <PartnerDetailView

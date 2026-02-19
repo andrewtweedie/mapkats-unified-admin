@@ -6,7 +6,39 @@ import InfluencerCardRow from '../components/InfluencerCardRow';
 import InfluencerDetailPopup from '../components/InfluencerDetailPopup';
 import { InstagramIcon, YouTubeIcon, TikTokIcon } from '../components/icons/SocialIcons';
 
-const DashboardView: React.FC = () => {
+interface DashboardViewProps {
+  onNavigateToCampaigns?: () => void;
+  onNavigateToCampaignDetail?: (name: string) => void;
+  onNavigateToNewCampaign?: () => void;
+  onNavigateToProCollections?: () => void;
+  onNavigateToProCollectionDetail?: (name: string) => void;
+  onNavigateToNewProCollection?: () => void;
+  onNavigateToInfluencerFullPage?: (influencer: any) => void;
+}
+
+// Map dashboard card data to the full InfluencerData shape needed by InfluencerDetailView
+const mapToFullInfluencer = (inf: any) => ({
+  id: inf.name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+  name: inf.name,
+  imageUrl: inf.imageUrl,
+  category: inf.category || 'Media',
+  followers: inf.stats || '0 followers',
+  country: 'US',
+  flag: '🇺🇸',
+  city: 'Los Angeles',
+  bio: `${inf.name} is a passionate content creator specializing in ${inf.category || 'media'} content.`,
+  platforms: [inf.platform] as ('instagram' | 'tiktok' | 'youtube')[],
+});
+
+const DashboardView: React.FC<DashboardViewProps> = ({
+  onNavigateToCampaigns,
+  onNavigateToCampaignDetail,
+  onNavigateToNewCampaign,
+  onNavigateToProCollections,
+  onNavigateToProCollectionDetail,
+  onNavigateToNewProCollection,
+  onNavigateToInfluencerFullPage,
+}) => {
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
 
   return (
@@ -23,8 +55,8 @@ const DashboardView: React.FC = () => {
 
       {/* Top Row: Management Cards & Social Tools */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-        <ListSection 
-          title="Manage Campaigns" 
+        <ListSection
+          title="Manage Campaigns"
           items={[
             "Chinola SYD City & East",
             "Chinola Northern Beaches",
@@ -34,9 +66,12 @@ const DashboardView: React.FC = () => {
           ]}
           buttonText="ADD CAMPAIGN"
           buttonColor="pink"
+          onViewAll={onNavigateToCampaigns}
+          onItemClick={(item) => onNavigateToCampaignDetail?.(item)}
+          onAddNew={onNavigateToNewCampaign}
         />
-        <ListSection 
-          title="Manage Pro Collections" 
+        <ListSection
+          title="Manage Pro Collections"
           items={[
             "London's Best Tastemakers",
             "UK's Best Home Bartenders",
@@ -46,6 +81,9 @@ const DashboardView: React.FC = () => {
           ]}
           buttonText="ADD PRO COLLECTION"
           buttonColor="pink"
+          onViewAll={onNavigateToProCollections}
+          onItemClick={(item) => onNavigateToProCollectionDetail?.(item)}
+          onAddNew={onNavigateToNewProCollection}
         />
         <div className="bg-white rounded-xl shadow-soft p-6 flex flex-col h-full border border-gray-100">
           <h2 className="font-bold text-[11px] uppercase tracking-widest text-brand-gray border-b border-gray-50 pb-3 mb-6">Influencer Tools</h2>
@@ -62,9 +100,10 @@ const DashboardView: React.FC = () => {
 
       {/* Influencer Sections */}
       <div className="space-y-20 pt-4">
-        <InfluencerCardRow 
-          title="My Saved Influencers" 
-          onViewProfile={(inf) => setSelectedInfluencer(inf)}
+        <InfluencerCardRow
+          title="My Saved Influencers"
+          onViewProfile={(inf) => onNavigateToInfluencerFullPage?.(mapToFullInfluencer(inf))}
+          onCardClick={(inf) => setSelectedInfluencer(inf)}
           influencers={[
             { name: "Finebrands", imageUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400", stats: "779 followers", platform: "instagram", category: "Media", value: "70.72" },
             { name: "Shanky's Whip", imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400", stats: "13,866 followers", platform: "instagram", category: "Wellness Lifestyle", value: "210.00" },
@@ -73,9 +112,10 @@ const DashboardView: React.FC = () => {
           ]}
         />
 
-        <InfluencerCardRow 
-          title="Campaign Talent Queue" 
-          onViewProfile={(inf) => setSelectedInfluencer(inf)}
+        <InfluencerCardRow
+          title="Campaign Talent Queue"
+          onViewProfile={(inf) => onNavigateToInfluencerFullPage?.(mapToFullInfluencer(inf))}
+          onCardClick={(inf) => setSelectedInfluencer(inf)}
           influencers={[
             { name: "Erma | Healthy Recipes", imageUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400", stats: "300K followers", platform: "instagram", category: "Home Cooking", value: "1,200.00" },
             { name: "Peter Madrigal", imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400", stats: "50K followers", platform: "youtube", category: "Media", value: "350.00" },
@@ -85,11 +125,11 @@ const DashboardView: React.FC = () => {
         />
       </div>
 
-      {/* Influencer Detail Popup */}
+      {/* Influencer Detail Popup - shown when clicking image/name */}
       {selectedInfluencer && (
-        <InfluencerDetailPopup 
-          influencer={selectedInfluencer} 
-          onClose={() => setSelectedInfluencer(null)} 
+        <InfluencerDetailPopup
+          influencer={selectedInfluencer}
+          onClose={() => setSelectedInfluencer(null)}
         />
       )}
     </div>

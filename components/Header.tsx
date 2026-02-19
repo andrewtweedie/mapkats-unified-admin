@@ -4,8 +4,8 @@ import React from 'react';
 interface HeaderProps {
   userName: string;
   userInitials: string;
-  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail';
-  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail') => void;
+  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details';
+  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ userName, currentView, setView }) => {
@@ -75,7 +75,10 @@ const Header: React.FC<HeaderProps> = ({ userName, currentView, setView }) => {
         {/* Right Section */}
         <div className="flex items-center gap-6">
           <span className="text-[13px] font-bold text-brand-accent hidden sm:block">{userName.split(' ')[0]}</span>
-          <button className="border-2 border-brand-accent text-brand-accent text-xs font-bold px-6 py-2 rounded-xl hover:bg-brand-accent hover:text-white transition-all shadow-sm">
+          <button
+            onClick={() => setView('account-settings')}
+            className="border-2 border-brand-accent text-brand-accent text-xs font-bold px-6 py-2 rounded-xl hover:bg-brand-accent hover:text-white transition-all shadow-sm"
+          >
             Account
           </button>
         </div>
