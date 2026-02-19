@@ -4,10 +4,8 @@ import React from 'react';
 interface HeaderProps {
   userName: string;
   userInitials: string;
-  // Fix: Extended currentView type to include 'campaign-detail'
-  currentView: 'dashboard' | 'campaigns' | 'campaign-detail';
-  // Fix: Extended setView type to include 'campaign-detail'
-  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail') => void;
+  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail';
+  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail') => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ userName, currentView, setView }) => {
@@ -43,8 +41,36 @@ const Header: React.FC<HeaderProps> = ({ userName, currentView, setView }) => {
           >
             Campaigns
           </button>
-          <a href="#" className="hover:text-brand-accent transition-colors border-b-2 border-transparent pb-1">Influencers</a>
-          <a href="#" className="hover:text-brand-accent transition-colors border-b-2 border-transparent pb-1">Pro Collections</a>
+          <button
+            onClick={() => setView('top-influencers')}
+            className={`transition-colors border-b-2 pb-1 ${
+              currentView === 'top-influencers'
+                ? 'text-brand-dark font-bold border-brand-accent'
+                : 'border-transparent hover:text-brand-accent'
+            }`}
+          >
+            Top Influencers
+          </button>
+          <button
+            onClick={() => setView('search')}
+            className={`transition-colors border-b-2 pb-1 ${
+              (currentView === 'search' || currentView === 'influencer-detail')
+                ? 'text-brand-dark font-bold border-brand-accent'
+                : 'border-transparent hover:text-brand-accent'
+            }`}
+          >
+            Search
+          </button>
+          <button
+            onClick={() => setView('pro-collections')}
+            className={`transition-colors border-b-2 pb-1 ${
+              (currentView === 'pro-collections' || currentView === 'pro-collection-detail')
+                ? 'text-brand-dark font-bold border-brand-accent'
+                : 'border-transparent hover:text-brand-accent'
+            }`}
+          >
+            Pro Collections
+          </button>
         </nav>
 
         {/* Right Section */}

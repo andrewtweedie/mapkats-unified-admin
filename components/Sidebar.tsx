@@ -16,8 +16,8 @@ import {
 } from './icons/UiIcons';
 
 interface SidebarProps {
-  currentView: 'dashboard' | 'campaigns' | 'campaign-detail';
-  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail') => void;
+  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail';
+  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail') => void;
   collapsed: boolean;
   onToggleCollapse: () => void;
 }
@@ -25,8 +25,9 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onToggleCollapse }) => {
   const adminItems = [
     { name: 'Campaigns', id: 'campaigns', icon: <LayersIcon className="w-4 h-4" /> },
-    { name: 'Influencers', icon: <CrownIcon className="w-4 h-4" /> },
-    { name: 'Pro Collections', icon: <LayoutGridIcon className="w-4 h-4" /> },
+    { name: 'Top Influencers', id: 'top-influencers', icon: <CrownIcon className="w-4 h-4" /> },
+    { name: 'Search', id: 'search', icon: <SearchIcon className="w-4 h-4" /> },
+    { name: 'Pro Collections', id: 'pro-collections', icon: <LayoutGridIcon className="w-4 h-4" /> },
     { name: 'Influencer Dashboard', icon: <ActivityIcon className="w-4 h-4" /> },
     { name: 'Email Templates', icon: <FileTextIcon className="w-4 h-4" /> },
     { name: 'Locations', icon: <SearchIcon className="w-4 h-4" /> },
@@ -112,9 +113,17 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
             {adminItems.map((item) => (
               <button
                 key={item.name}
-                onClick={() => { if(item.id === 'campaigns') setView('campaigns'); }}
+                onClick={() => {
+                  if (item.id === 'campaigns') setView('campaigns');
+                  if (item.id === 'top-influencers') setView('top-influencers');
+                  if (item.id === 'search') setView('search');
+                  if (item.id === 'pro-collections') setView('pro-collections');
+                }}
                 className={`w-full flex items-center ${collapsed ? 'justify-center' : ''} gap-3 ${collapsed ? 'px-0 py-2.5' : 'px-1 py-2'} transition-all font-semibold text-[13px] ${
                   (item.id === 'campaigns' && (currentView === 'campaigns' || currentView === 'campaign-detail'))
+                    || (item.id === 'top-influencers' && currentView === 'top-influencers')
+                    || (item.id === 'search' && (currentView === 'search' || currentView === 'influencer-detail'))
+                    || (item.id === 'pro-collections' && (currentView === 'pro-collections' || currentView === 'pro-collection-detail'))
                     ? 'text-brand-accent'
                     : 'text-brand-gray hover:text-brand-accent'
                 }`}
