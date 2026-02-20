@@ -6,6 +6,8 @@ import DashboardView from './views/DashboardView';
 import CampaignsView from './views/CampaignsView';
 import CampaignDetailView from './views/CampaignDetailView';
 import TopInfluencersView from './views/TopInfluencersView';
+import MySavesView from './views/MySavesView';
+import MySavesSectionView from './views/MySavesSectionView';
 import SearchView from './views/SearchView';
 import InfluencerDetailView from './views/InfluencerDetailView';
 import ProCollectionsView from './views/ProCollectionsView';
@@ -31,12 +33,13 @@ import AccountSettingsView from './views/AccountSettingsView';
 import AccountDetailsView from './views/AccountDetailsView';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'my-saves' | 'my-saves-pro-collections' | 'my-saves-influencers' | 'my-saves-categories' | 'my-saves-lists' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details'>('dashboard');
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
   const [previousView, setPreviousView] = useState<string>('search');
   const [topInfluencerCategory, setTopInfluencerCategory] = useState<string | null>(null);
+  const [topInfluencerHighlight, setTopInfluencerHighlight] = useState<{ name: string; rank: number; imageUrl?: string; followers?: string; location?: string; country?: string; flag?: string; badges?: string[] } | null>(null);
   const [selectedProCollection, setSelectedProCollection] = useState<string | null>(null);
   const [selectedSubscriber, setSelectedSubscriber] = useState<any | null>(null);
   const [selectedPartner, setSelectedPartner] = useState<any | null>(null);
@@ -102,10 +105,16 @@ const App: React.FC = () => {
     setCurrentView('terms-condition-detail');
   };
 
-  const handleNavigateToCategory = (category: string) => {
+  const handleNavigateToCategory = (category: string, highlight?: { name: string; rank: number; imageUrl?: string; followers?: string; location?: string; country?: string; flag?: string; badges?: string[] }) => {
     setTopInfluencerCategory(category);
+    setTopInfluencerHighlight(highlight || null);
     setCurrentView('top-influencers');
     setSelectedInfluencer(null);
+    // Scroll to top of page when navigating to rankings
+    setTimeout(() => {
+      const mainEl = document.querySelector('main');
+      if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 0);
   };
 
   return (
@@ -117,7 +126,7 @@ const App: React.FC = () => {
           if (view !== 'campaign-detail') setSelectedCampaign(null);
           if (view !== 'pro-collection-detail') setSelectedProCollection(null);
           if (view !== 'partner-detail') setSelectedPartner(null);
-          if (view === 'top-influencers') setTopInfluencerCategory(null);
+          if (view === 'top-influencers') { setTopInfluencerCategory(null); setTopInfluencerHighlight(null); }
         }}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -133,7 +142,7 @@ const App: React.FC = () => {
             if (view !== 'campaign-detail') setSelectedCampaign(null);
             if (view !== 'pro-collection-detail') setSelectedProCollection(null);
             if (view !== 'partner-detail') setSelectedPartner(null);
-            if (view === 'top-influencers') setTopInfluencerCategory(null);
+            if (view === 'top-influencers') { setTopInfluencerCategory(null); setTopInfluencerHighlight(null); }
           }}
         />
 
@@ -147,6 +156,7 @@ const App: React.FC = () => {
               onNavigateToProCollectionDetail={(name) => { setSelectedProCollection(name); setCurrentView('pro-collection-detail'); }}
               onNavigateToNewProCollection={(name) => { setSelectedProCollection(name); setCurrentView('pro-collection-detail'); }}
               onNavigateToInfluencerFullPage={(influencer) => { setSelectedInfluencer(influencer); setPreviousView('dashboard'); setCurrentView('influencer-detail'); }}
+              onNavigateToRanking={(category, highlight) => handleNavigateToCategory(category, highlight)}
             />
           )}
           {currentView === 'campaigns' && (
@@ -159,9 +169,35 @@ const App: React.FC = () => {
             <CampaignDetailView
               campaignName={selectedCampaign || 'Campaign'}
               onBack={() => setCurrentView('campaigns')}
+              onNavigateToRanking={(category, highlight) => handleNavigateToCategory(category, highlight)}
             />
           )}
-          {currentView === 'top-influencers' && <TopInfluencersView initialCategory={topInfluencerCategory} />}
+          {currentView === 'top-influencers' && <TopInfluencersView initialCategory={topInfluencerCategory} highlightInfluencer={topInfluencerHighlight} />}
+          {currentView === 'my-saves' && (
+            <MySavesView
+              onNavigateToSection={(section) => {
+                const viewMap: Record<string, any> = {
+                  'pro-collections': 'my-saves-pro-collections',
+                  'influencers': 'my-saves-influencers',
+                  'categories': 'my-saves-categories',
+                  'lists': 'my-saves-lists',
+                };
+                setCurrentView(viewMap[section]);
+              }}
+            />
+          )}
+          {currentView === 'my-saves-pro-collections' && (
+            <MySavesSectionView section="pro-collections" onBack={() => setCurrentView('my-saves')} />
+          )}
+          {currentView === 'my-saves-influencers' && (
+            <MySavesSectionView section="influencers" onBack={() => setCurrentView('my-saves')} />
+          )}
+          {currentView === 'my-saves-categories' && (
+            <MySavesSectionView section="categories" onBack={() => setCurrentView('my-saves')} />
+          )}
+          {currentView === 'my-saves-lists' && (
+            <MySavesSectionView section="lists" onBack={() => setCurrentView('my-saves')} />
+          )}
           {currentView === 'pro-collections' && <ProCollectionsView onCollectionClick={handleProCollectionClick} />}
           {currentView === 'pro-collection-detail' && (
             <ProCollectionDetailView

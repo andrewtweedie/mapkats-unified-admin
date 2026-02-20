@@ -8,9 +8,10 @@ import InfluencerDetailPopup from '../components/InfluencerDetailPopup';
 interface CampaignDetailViewProps {
   campaignName: string;
   onBack: () => void;
+  onNavigateToRanking?: (category: string, highlight: { name: string; rank: number; imageUrl?: string; followers?: string; location?: string; country?: string; flag?: string; badges?: string[] }) => void;
 }
 
-const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, onBack }) => {
+const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, onBack, onNavigateToRanking }) => {
   const tabs = ['Profiles', 'List', 'Post', 'Insights'];
   const [activeTab, setActiveTab] = useState('Profiles');
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
@@ -57,6 +58,7 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
   const [showEmailTemplatePopup, setShowEmailTemplatePopup] = useState(false);
   const [showViewEmailPopup, setShowViewEmailPopup] = useState(false);
   const [selectedPost, setSelectedPost] = useState<any | null>(null);
+  const [hoveredPlatform, setHoveredPlatform] = useState<{ username: string; platform: string } | null>(null);
 
   // Filter panel state
   const [showFilterPanel, setShowFilterPanel] = useState(false);
@@ -257,7 +259,8 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       isFavourite: false,
       isGeocoded: true,
       followers: '659,865',
-      estimatedValue: '$11,514.65'
+      estimatedValue: '$11,514.65',
+      ranking: { position: 3, category: 'Lifestyle Media' },
     },
     {
       name: 'Lauren Phillips',
@@ -283,7 +286,8 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       isFavourite: true,
       isGeocoded: true,
       followers: '5,651,240',
-      estimatedValue: '$98,614.14'
+      estimatedValue: '$98,614.14',
+      ranking: { position: 1, category: 'Celebrity' },
     },
     {
       name: 'Toasted Table',
@@ -309,7 +313,8 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       isFavourite: false,
       isGeocoded: false,
       followers: '32,338',
-      estimatedValue: '$564.30'
+      estimatedValue: '$564.30',
+      ranking: { position: 4, category: 'Home Cooking' },
     },
     {
       name: 'Reynold',
@@ -336,7 +341,8 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       isFavourite: true,
       isGeocoded: true,
       followers: '13,924',
-      estimatedValue: '$242.98'
+      estimatedValue: '$242.98',
+      ranking: { position: 2, category: 'Food' },
     },
     {
       name: 'MELISSA HOYER OFFICIAL',
@@ -361,7 +367,8 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       isFavourite: false,
       isGeocoded: false,
       followers: '29,277',
-      estimatedValue: '$510.88'
+      estimatedValue: '$510.88',
+      ranking: { position: 6, category: 'Lifestyle Media' },
     }
   ];
 
@@ -573,6 +580,7 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
                 {...inf}
                 onAssign={(username: string) => setShowAssignPopup(username)}
                 onRemove={(username: string) => setShowRemoveConfirm(username)}
+                onNavigateToRanking={onNavigateToRanking}
               />
             </div>
           ))}
@@ -750,7 +758,7 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
                              <img src={inf.imageUrl} alt={inf.name} className="w-full h-full object-cover" />
                           </div>
                         </div>
-                        <div className="flex flex-col gap-0.5 min-w-0 flex-1">
+                        <div className="flex flex-col gap-1 min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
                             <span className="text-[12px] font-bold text-brand-dark group-hover:text-brand-accent transition-colors truncate">{inf.name}</span>
                             <button
@@ -760,9 +768,70 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
                               <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
                             </button>
                           </div>
-                          <div className="flex gap-1">
-                             <div className="bg-pink-100/40 text-pink-600 px-1 py-0.5 rounded text-[8px] font-black">P {inf.posts}</div>
-                             <div className="bg-pink-100/40 text-pink-600 px-1 py-0.5 rounded text-[8px] font-black">S {inf.stories}</div>
+                          <div className="flex items-center gap-1.5">
+                            {/* Social media channel icons with hover tooltips */}
+                            {(inf.platforms || ['instagram']).includes('instagram') && (
+                              <div
+                                className="relative"
+                                onMouseEnter={() => setHoveredPlatform({ username: inf.username, platform: 'instagram' })}
+                                onMouseLeave={() => setHoveredPlatform(null)}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <div className="w-5 h-5 rounded overflow-hidden shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow">
+                                  <InstagramIcon />
+                                </div>
+                                {hoveredPlatform?.username === inf.username && hoveredPlatform?.platform === 'instagram' && inf.platformStats?.instagram && (
+                                  <div className="absolute bottom-full left-0 mb-2 bg-white rounded-xl shadow-lg border border-gray-100 px-4 py-3 whitespace-nowrap z-20">
+                                    <p className="text-[12px] font-black text-brand-dark">{inf.platformStats.instagram.followers} <span className="text-brand-gray font-semibold">followers</span></p>
+                                    <p className="text-[11px] font-bold text-brand-accent">{inf.platformStats.instagram.value} <span className="text-brand-gray font-semibold">Est. Value</span></p>
+                                    <div className="absolute top-full left-3 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-white" />
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            {(inf.platforms || []).includes('youtube') && (
+                              <div
+                                className="relative"
+                                onMouseEnter={() => setHoveredPlatform({ username: inf.username, platform: 'youtube' })}
+                                onMouseLeave={() => setHoveredPlatform(null)}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <div className="w-5 h-5 rounded overflow-hidden shadow-sm border border-gray-100 bg-white flex items-center justify-center p-0.5 cursor-pointer hover:shadow-md transition-shadow">
+                                  <YouTubeIcon />
+                                </div>
+                                {hoveredPlatform?.username === inf.username && hoveredPlatform?.platform === 'youtube' && inf.platformStats?.youtube && (
+                                  <div className="absolute bottom-full left-0 mb-2 bg-white rounded-xl shadow-lg border border-gray-100 px-4 py-3 whitespace-nowrap z-20">
+                                    <p className="text-[12px] font-black text-brand-dark">{inf.platformStats.youtube.followers} <span className="text-brand-gray font-semibold">followers</span></p>
+                                    <p className="text-[11px] font-bold text-brand-accent">{inf.platformStats.youtube.value} <span className="text-brand-gray font-semibold">Est. Value</span></p>
+                                    <div className="absolute top-full left-3 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-white" />
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            {(inf.platforms || []).includes('tiktok') && (
+                              <div
+                                className="relative"
+                                onMouseEnter={() => setHoveredPlatform({ username: inf.username, platform: 'tiktok' })}
+                                onMouseLeave={() => setHoveredPlatform(null)}
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <div className="w-5 h-5 rounded overflow-hidden shadow-sm border border-gray-100 bg-white flex items-center justify-center p-[3px] cursor-pointer hover:shadow-md transition-shadow">
+                                  <TikTokIcon />
+                                </div>
+                                {hoveredPlatform?.username === inf.username && hoveredPlatform?.platform === 'tiktok' && inf.platformStats?.tiktok && (
+                                  <div className="absolute bottom-full left-0 mb-2 bg-white rounded-xl shadow-lg border border-gray-100 px-4 py-3 whitespace-nowrap z-20">
+                                    <p className="text-[12px] font-black text-brand-dark">{inf.platformStats.tiktok.followers} <span className="text-brand-gray font-semibold">followers</span></p>
+                                    <p className="text-[11px] font-bold text-brand-accent">{inf.platformStats.tiktok.value} <span className="text-brand-gray font-semibold">Est. Value</span></p>
+                                    <div className="absolute top-full left-3 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-white" />
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            {/* P and S badges to the right of social icons */}
+                            <div className="flex gap-1 ml-1">
+                              <div className="bg-pink-100/40 text-pink-600 px-1 py-0.5 rounded text-[8px] font-black">P {inf.posts}</div>
+                              <div className="bg-pink-100/40 text-pink-600 px-1 py-0.5 rounded text-[8px] font-black">S {inf.stories}</div>
+                            </div>
                           </div>
                         </div>
                         <div className={`flex-shrink-0 ${inf.email ? 'text-emerald-500' : 'text-gray-300'}`} title={inf.email || 'No email'}>
@@ -776,14 +845,8 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
-                        <div className="flex items-center gap-1.5">
-                           <span className="text-[12px] font-bold text-brand-dark">{inf.audience}</span>
-                           <div className="w-3.5 h-3.5"><InstagramIcon /></div>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                           <span className="text-[10px] font-black text-brand-accent">${inf.value}</span>
-                           <div className="w-3 h-3 opacity-40"><InstagramIcon /></div>
-                        </div>
+                        <span className="text-[12px] font-bold text-brand-dark">{inf.audience}</span>
+                        <span className="text-[10px] font-black text-brand-accent">${inf.value}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -3033,7 +3096,7 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
 };
 
 // Sub-component for individual influencer cards (Profiles Grid)
-const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, category, audience, value, location, flag, platforms, platformStats, isFavourite, isGeocoded, followers, estimatedValue, posts, stories, email, onAssign, onRemove }) => {
+const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, category, audience, value, location, flag, platforms, platformStats, isFavourite, isGeocoded, followers, estimatedValue, posts, stories, email, ranking, onAssign, onRemove, onNavigateToRanking }) => {
   const [hoveredPlatform, setHoveredPlatform] = useState<string | null>(null);
   const getCategoryColor = (cat: string) => {
     switch (cat) {
@@ -3179,6 +3242,30 @@ const InfluencerProfileCard: React.FC<any> = ({ name, username, imageUrl, catego
               </div>
             )}
          </div>
+
+         {/* Mapkats Ranking */}
+         {ranking && (
+           <div
+             className="mt-1 bg-[#FFF8F4] border border-orange-100 rounded-xl px-3 py-2.5 flex items-center gap-3 cursor-pointer hover:bg-[#FFF3EC] hover:border-orange-200 transition-all"
+             onClick={(e) => { e.stopPropagation(); onNavigateToRanking?.(ranking.category, { name, rank: ranking.position, imageUrl, followers, location, flag, badges: [] }); }}
+           >
+             <div className="w-8 h-8 bg-brand-accent rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+               <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                 <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+               </svg>
+             </div>
+             <div className="flex-1 min-w-0">
+               <p className="text-[8px] font-bold uppercase tracking-widest text-brand-accent">Mapkats Ranking</p>
+               <p className="text-[11px] font-serif font-black text-brand-dark leading-tight mt-0.5">
+                 #{ranking.position} Top Influencer in{' '}
+                 <span className="text-brand-accent">{ranking.category}</span>
+               </p>
+             </div>
+             <svg className="w-4 h-4 text-brand-accent flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+               <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+             </svg>
+           </div>
+         )}
 
          {/* Spacer to push action bar to bottom */}
          <div className="flex-1" />

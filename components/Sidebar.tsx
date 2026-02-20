@@ -20,11 +20,12 @@ import {
   HandshakeIcon,
   CreditCardIcon,
   TagIcon,
+  BookmarkIcon,
 } from './icons/UiIcons';
 
 interface SidebarProps {
-  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details';
-  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details') => void;
+  currentView: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'my-saves' | 'my-saves-pro-collections' | 'my-saves-influencers' | 'my-saves-categories' | 'my-saves-lists' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details';
+  setView: (view: 'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'my-saves' | 'my-saves-pro-collections' | 'my-saves-influencers' | 'my-saves-categories' | 'my-saves-lists' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details') => void;
   collapsed: boolean;
   onToggleCollapse: () => void;
 }
@@ -34,7 +35,15 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
     { name: 'Campaigns', id: 'campaigns', icon: <LayersIcon className="w-4 h-4" /> },
     { name: 'Pro Collections', id: 'pro-collections', icon: <LayoutGridIcon className="w-4 h-4" /> },
     { name: 'Top Influencers', id: 'top-influencers', icon: <CrownIcon className="w-4 h-4" /> },
+    { name: 'My Saves', id: 'my-saves', icon: <BookmarkIcon className="w-4 h-4" /> },
     { name: 'Search', id: 'search', icon: <SearchIcon className="w-4 h-4" /> },
+  ];
+
+  const mySavesSubItems = [
+    { name: 'Pro Collections', id: 'my-saves-pro-collections' },
+    { name: 'Influencers', id: 'my-saves-influencers' },
+    { name: 'Categories', id: 'my-saves-categories' },
+    { name: 'Lists', id: 'my-saves-lists' },
   ];
 
   const adminItems = [
@@ -55,9 +64,17 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
     { name: 'Settings', id: 'account-settings', icon: <SettingsIcon className="w-4 h-4" /> },
   ];
 
+  // Whether the My Saves sub-menu should be expanded
+  const isMySavesExpanded = currentView === 'my-saves' || currentView.startsWith('my-saves-');
+
   const isActiveView = (id?: string) => {
     if (id === 'campaigns') return currentView === 'campaigns' || currentView === 'campaign-detail';
     if (id === 'top-influencers') return currentView === 'top-influencers';
+    if (id === 'my-saves') return currentView === 'my-saves' || currentView.startsWith('my-saves-');
+    if (id === 'my-saves-pro-collections') return currentView === 'my-saves-pro-collections';
+    if (id === 'my-saves-influencers') return currentView === 'my-saves-influencers';
+    if (id === 'my-saves-categories') return currentView === 'my-saves-categories';
+    if (id === 'my-saves-lists') return currentView === 'my-saves-lists';
     if (id === 'search') return currentView === 'search' || currentView === 'influencer-detail';
     if (id === 'pro-collections') return currentView === 'pro-collections' || currentView === 'pro-collection-detail';
     if (id === 'users') return currentView === 'users';
@@ -78,6 +95,11 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
   const handleNavClick = (id?: string) => {
     if (id === 'campaigns') setView('campaigns');
     if (id === 'top-influencers') setView('top-influencers');
+    if (id === 'my-saves') setView('my-saves');
+    if (id === 'my-saves-pro-collections') setView('my-saves-pro-collections');
+    if (id === 'my-saves-influencers') setView('my-saves-influencers');
+    if (id === 'my-saves-categories') setView('my-saves-categories');
+    if (id === 'my-saves-lists') setView('my-saves-lists');
     if (id === 'search') setView('search');
     if (id === 'pro-collections') setView('pro-collections');
     if (id === 'users') setView('users');
@@ -120,6 +142,21 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
     >
       <span className="opacity-50 flex-shrink-0">{item.icon}</span>
       {!collapsed && <span className="truncate">{item.name}</span>}
+    </button>
+  );
+
+  const renderMySavesSubItem = (item: { name: string; id: string }) => (
+    <button
+      key={item.id}
+      onClick={() => handleNavClick(item.id)}
+      className={`w-full flex items-center gap-2 pl-9 pr-1 py-1.5 transition-all font-semibold text-[12px] ${
+        isActiveView(item.id)
+          ? 'text-brand-accent'
+          : 'text-brand-gray hover:text-brand-accent'
+      }`}
+    >
+      <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isActiveView(item.id) ? 'bg-brand-accent' : 'bg-gray-300'}`} />
+      <span className="truncate">{item.name}</span>
     </button>
   );
 
@@ -190,15 +227,17 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
         <section>
           {renderSectionTitle('Tools')}
           <nav className="space-y-0.5">
-            {toolsItems.map((item) => renderNavItem(item))}
-          </nav>
-        </section>
-
-        {/* Admin section */}
-        <section>
-          {renderSectionTitle('Admin')}
-          <nav className="space-y-0.5">
-            {adminItems.map((item) => renderNavItem(item))}
+            {toolsItems.map((item) => (
+              <React.Fragment key={item.name}>
+                {renderNavItem(item)}
+                {/* My Saves sub-menu */}
+                {item.id === 'my-saves' && isMySavesExpanded && !collapsed && (
+                  <div className="space-y-0.5 pb-1">
+                    {mySavesSubItems.map((sub) => renderMySavesSubItem(sub))}
+                  </div>
+                )}
+              </React.Fragment>
+            ))}
           </nav>
         </section>
 
@@ -207,6 +246,14 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, collapsed, onTo
           {renderSectionTitle('Account')}
           <nav className="space-y-0.5">
             {accountItems.map((item) => renderNavItem(item))}
+          </nav>
+        </section>
+
+        {/* Admin section */}
+        <section>
+          {renderSectionTitle('Admin')}
+          <nav className="space-y-0.5">
+            {adminItems.map((item) => renderNavItem(item))}
           </nav>
         </section>
 
