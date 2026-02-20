@@ -15,9 +15,10 @@ interface InfluencerCardRowProps {
   influencers: Influencer[];
   onViewProfile?: (influencer: Influencer) => void;
   onCardClick?: (influencer: Influencer) => void;
+  onRankingClick?: (category: string, influencerName: string, rank: number, influencer?: Influencer) => void;
 }
 
-const InfluencerCardRow: React.FC<InfluencerCardRowProps> = ({ title, influencers, onViewProfile, onCardClick }) => {
+const InfluencerCardRow: React.FC<InfluencerCardRowProps> = ({ title, influencers, onViewProfile, onCardClick, onRankingClick }) => {
   const getIcon = (platform: string) => {
     switch (platform) {
       case 'instagram': return <InstagramIcon />;
@@ -81,7 +82,31 @@ const InfluencerCardRow: React.FC<InfluencerCardRowProps> = ({ title, influencer
                 </div>
               </div>
 
-              <div className="mt-4 pt-4 border-t border-gray-50">
+              {/* Mapkats Ranking */}
+              {inf.ranking && (
+                <div
+                  className="mt-3 bg-[#FFF8F4] border border-orange-100 rounded-xl px-3 py-2.5 flex items-center gap-3 cursor-pointer hover:bg-[#FFF3EC] hover:border-orange-200 transition-all"
+                  onClick={(e) => { e.stopPropagation(); onRankingClick?.(inf.ranking.category, inf.name, inf.ranking.position, inf); }}
+                >
+                  <div className="w-8 h-8 bg-brand-accent rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[8px] font-bold uppercase tracking-widest text-brand-accent">Mapkats Ranking</p>
+                    <p className="text-[11px] font-serif font-black text-brand-dark leading-tight mt-0.5">
+                      #{inf.ranking.position} Top Influencer in{' '}
+                      <span className="text-brand-accent">{inf.ranking.category}</span>
+                    </p>
+                  </div>
+                  <svg className="w-4 h-4 text-brand-accent flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              )}
+
+              <div className="mt-auto pt-4 border-t border-gray-50">
                 <button
                   className="w-full bg-brand-dark text-white text-[11px] font-bold tracking-widest py-3 rounded-xl transition-all hover:bg-brand-accent shadow-md"
                   onClick={(e) => { e.stopPropagation(); onViewProfile?.(inf); }}

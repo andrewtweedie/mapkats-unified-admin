@@ -17,6 +17,7 @@ interface DashboardViewProps {
   onNavigateToProCollectionDetail?: (name: string) => void;
   onNavigateToNewProCollection?: (name: string) => void;
   onNavigateToInfluencerFullPage?: (influencer: any) => void;
+  onNavigateToRanking?: (category: string, highlight: { name: string; rank: number; imageUrl?: string; followers?: string; location?: string; country?: string; flag?: string; badges?: string[] }) => void;
 }
 
 // Map dashboard card data to the full InfluencerData shape needed by InfluencerDetailView
@@ -41,6 +42,7 @@ const DashboardView: React.FC<DashboardViewProps> = ({
   onNavigateToProCollectionDetail,
   onNavigateToNewProCollection,
   onNavigateToInfluencerFullPage,
+  onNavigateToRanking,
 }) => {
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
   const [showAddCampaignModal, setShowAddCampaignModal] = useState(false);
@@ -187,11 +189,12 @@ const DashboardView: React.FC<DashboardViewProps> = ({
           title="My Saved Influencers"
           onViewProfile={(inf) => onNavigateToInfluencerFullPage?.(mapToFullInfluencer(inf))}
           onCardClick={(inf) => setSelectedInfluencer(inf)}
+          onRankingClick={(category, name, rank, inf) => onNavigateToRanking?.(category, { name, rank, imageUrl: inf?.imageUrl, followers: inf?.stats?.replace(' followers', ''), location: inf?.location || 'Australia', country: inf?.country || 'AU', flag: inf?.flag || '🇦🇺', badges: inf?.badges || [] })}
           influencers={[
-            { name: "Finebrands", imageUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400", stats: "779 followers", platform: "instagram", category: "Media", value: "70.72" },
-            { name: "Shanky's Whip", imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400", stats: "13,866 followers", platform: "instagram", category: "Wellness Lifestyle", value: "210.00" },
-            { name: "Tammy Moore Jackson", imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400", stats: "44,073 followers", platform: "instagram", category: "Media", value: "450.00" },
-            { name: "ADELE.", imageUrl: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=400", stats: "45K followers", platform: "tiktok", category: "Lifestyle Media", value: "900.00" },
+            { name: "Finebrands", imageUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=400", stats: "779 followers", platform: "instagram", category: "Media", value: "70.72", ranking: { position: 12, category: 'Media' }, location: 'Sydney, Australia', country: 'AU', flag: '🇦🇺', badges: ['Top 10 Viewed'] },
+            { name: "Shanky's Whip", imageUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400", stats: "13,866 followers", platform: "instagram", category: "Wellness Lifestyle", value: "210.00", ranking: { position: 5, category: 'Food & Drink' }, location: 'Los Angeles, USA', country: 'US', flag: '🇺🇸', badges: ['Top 10 Viewed', 'Top 10 Saved'] },
+            { name: "Tammy Moore Jackson", imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400", stats: "44,073 followers", platform: "instagram", category: "Media", value: "450.00", ranking: { position: 3, category: 'Media' }, location: 'Melbourne, Australia', country: 'AU', flag: '🇦🇺', badges: ['Top 10 Viewed', 'Top 10 Saved'] },
+            { name: "ADELE.", imageUrl: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&q=80&w=400", stats: "45K followers", platform: "tiktok", category: "Lifestyle Media", value: "900.00", ranking: { position: 8, category: 'Lifestyle Media' }, location: 'Perth, Australia', country: 'AU', flag: '🇦🇺', badges: ['Top 10 Viewed'] },
           ]}
         />
 
@@ -199,11 +202,12 @@ const DashboardView: React.FC<DashboardViewProps> = ({
           title="Campaign Talent Queue"
           onViewProfile={(inf) => onNavigateToInfluencerFullPage?.(mapToFullInfluencer(inf))}
           onCardClick={(inf) => setSelectedInfluencer(inf)}
+          onRankingClick={(category, name, rank, inf) => onNavigateToRanking?.(category, { name, rank, imageUrl: inf?.imageUrl, followers: inf?.stats?.replace(' followers', ''), location: inf?.location || 'Australia', country: inf?.country || 'AU', flag: inf?.flag || '🇦🇺', badges: inf?.badges || [] })}
           influencers={[
-            { name: "Erma | Healthy Recipes", imageUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400", stats: "300K followers", platform: "instagram", category: "Home Cooking", value: "1,200.00" },
-            { name: "Peter Madrigal", imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400", stats: "50K followers", platform: "youtube", category: "Media", value: "350.00" },
-            { name: "Beautiful Booze", imageUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400", stats: "115K followers", platform: "instagram", category: "Lifestyle Media", value: "2,400.00" },
-            { name: "Sam Pence", imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400", stats: "90K followers", platform: "tiktok", category: "Wellness Lifestyle", value: "850.00" },
+            { name: "Erma | Healthy Recipes", imageUrl: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400", stats: "300K followers", platform: "instagram", category: "Home Cooking", value: "1,200.00", ranking: { position: 1, category: 'Home Cooking' }, location: 'Brisbane, Australia', country: 'AU', flag: '🇦🇺', badges: ['Top 10 Viewed', 'Top 10 Saved'] },
+            { name: "Peter Madrigal", imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=400", stats: "50K followers", platform: "youtube", category: "Media", value: "350.00", ranking: { position: 15, category: 'Media' }, location: 'New York, USA', country: 'US', flag: '🇺🇸', badges: ['Top 10 Viewed'] },
+            { name: "Beautiful Booze", imageUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=400", stats: "115K followers", platform: "instagram", category: "Lifestyle Media", value: "2,400.00", ranking: { position: 2, category: 'Lifestyle Media' }, location: 'London, United Kingdom', country: 'UK', flag: '🇬🇧', badges: ['Top 10 Viewed', 'Top 10 Saved'] },
+            { name: "Sam Pence", imageUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=400", stats: "90K followers", platform: "tiktok", category: "Wellness Lifestyle", value: "850.00", ranking: { position: 7, category: 'Wellness' }, location: 'Sydney, Australia', country: 'AU', flag: '🇦🇺', badges: ['Top 10 Saved'] },
           ]}
         />
       </div>
