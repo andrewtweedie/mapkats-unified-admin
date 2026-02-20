@@ -6,6 +6,8 @@ import DashboardView from './views/DashboardView';
 import CampaignsView from './views/CampaignsView';
 import CampaignDetailView from './views/CampaignDetailView';
 import TopInfluencersView from './views/TopInfluencersView';
+import MySavesView from './views/MySavesView';
+import MySavesSectionView from './views/MySavesSectionView';
 import SearchView from './views/SearchView';
 import InfluencerDetailView from './views/InfluencerDetailView';
 import ProCollectionsView from './views/ProCollectionsView';
@@ -31,7 +33,7 @@ import AccountSettingsView from './views/AccountSettingsView';
 import AccountDetailsView from './views/AccountDetailsView';
 
 const App: React.FC = () => {
-  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details'>('dashboard');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'my-saves' | 'my-saves-pro-collections' | 'my-saves-influencers' | 'my-saves-categories' | 'my-saves-lists' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details'>('dashboard');
   const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
@@ -171,6 +173,31 @@ const App: React.FC = () => {
             />
           )}
           {currentView === 'top-influencers' && <TopInfluencersView initialCategory={topInfluencerCategory} highlightInfluencer={topInfluencerHighlight} />}
+          {currentView === 'my-saves' && (
+            <MySavesView
+              onNavigateToSection={(section) => {
+                const viewMap: Record<string, any> = {
+                  'pro-collections': 'my-saves-pro-collections',
+                  'influencers': 'my-saves-influencers',
+                  'categories': 'my-saves-categories',
+                  'lists': 'my-saves-lists',
+                };
+                setCurrentView(viewMap[section]);
+              }}
+            />
+          )}
+          {currentView === 'my-saves-pro-collections' && (
+            <MySavesSectionView section="pro-collections" onBack={() => setCurrentView('my-saves')} />
+          )}
+          {currentView === 'my-saves-influencers' && (
+            <MySavesSectionView section="influencers" onBack={() => setCurrentView('my-saves')} />
+          )}
+          {currentView === 'my-saves-categories' && (
+            <MySavesSectionView section="categories" onBack={() => setCurrentView('my-saves')} />
+          )}
+          {currentView === 'my-saves-lists' && (
+            <MySavesSectionView section="lists" onBack={() => setCurrentView('my-saves')} />
+          )}
           {currentView === 'pro-collections' && <ProCollectionsView onCollectionClick={handleProCollectionClick} />}
           {currentView === 'pro-collection-detail' && (
             <ProCollectionDetailView
