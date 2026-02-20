@@ -31,6 +31,7 @@ import TermsConditionDetailView from './views/TermsConditionDetailView';
 import { TermsCondition } from './views/TermsConditionsView';
 import AccountSettingsView from './views/AccountSettingsView';
 import AccountDetailsView from './views/AccountDetailsView';
+import InfluencerDetailPopup from './components/InfluencerDetailPopup';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<'dashboard' | 'campaigns' | 'campaign-detail' | 'top-influencers' | 'my-saves' | 'my-saves-pro-collections' | 'my-saves-influencers' | 'my-saves-categories' | 'my-saves-lists' | 'search' | 'influencer-detail' | 'pro-collections' | 'pro-collection-detail' | 'users' | 'subscribers' | 'subscriber-detail' | 'partners' | 'partner-detail' | 'influencer-dashboard' | 'influencers' | 'influencer-listing' | 'locations' | 'categories' | 'email-templates' | 'email-template-detail' | 'platform-settings' | 'terms-conditions' | 'terms-condition-detail' | 'account-settings' | 'account-details'>('dashboard');
@@ -47,6 +48,7 @@ const App: React.FC = () => {
   const [influencerListingCountry, setInfluencerListingCountry] = useState<string>('');
   const [selectedEmailTemplate, setSelectedEmailTemplate] = useState<EmailTemplate | null>(null);
   const [selectedTermsCondition, setSelectedTermsCondition] = useState<TermsCondition | null>(null);
+  const [popupInfluencer, setPopupInfluencer] = useState<any | null>(null);
 
   const handleProCollectionClick = (name: string) => {
     setSelectedProCollection(name);
@@ -172,7 +174,22 @@ const App: React.FC = () => {
               onNavigateToRanking={(category, highlight) => handleNavigateToCategory(category, highlight)}
             />
           )}
-          {currentView === 'top-influencers' && <TopInfluencersView initialCategory={topInfluencerCategory} highlightInfluencer={topInfluencerHighlight} />}
+          {currentView === 'top-influencers' && (
+            <TopInfluencersView
+              initialCategory={topInfluencerCategory}
+              highlightInfluencer={topInfluencerHighlight}
+              onBack={
+                previousView === 'my-saves' || previousView === 'my-saves-categories'
+                  ? () => setCurrentView(previousView as any)
+                  : undefined
+              }
+              backLabel={
+                previousView === 'my-saves' || previousView === 'my-saves-categories'
+                  ? 'Back to My Saves'
+                  : undefined
+              }
+            />
+          )}
           {currentView === 'my-saves' && (
             <MySavesView
               onNavigateToSection={(section) => {
@@ -184,16 +201,20 @@ const App: React.FC = () => {
                 };
                 setCurrentView(viewMap[section]);
               }}
+              onInfluencerClick={(influencer) => { setSelectedInfluencer(influencer); setPreviousView('my-saves'); setCurrentView('influencer-detail'); }}
+              onInfluencerPopupClick={(influencer) => setPopupInfluencer(influencer)}
+              onProCollectionClick={(name) => { setSelectedProCollection(name); setPreviousView('my-saves'); setCurrentView('pro-collection-detail'); }}
+              onCategoryClick={(name) => { setTopInfluencerCategory(name); setTopInfluencerHighlight(null); setPreviousView('my-saves'); setCurrentView('top-influencers'); }}
             />
           )}
           {currentView === 'my-saves-pro-collections' && (
-            <MySavesSectionView section="pro-collections" onBack={() => setCurrentView('my-saves')} />
+            <MySavesSectionView section="pro-collections" onBack={() => setCurrentView('my-saves')} onProCollectionClick={(name) => { setSelectedProCollection(name); setPreviousView('my-saves-pro-collections'); setCurrentView('pro-collection-detail'); }} />
           )}
           {currentView === 'my-saves-influencers' && (
-            <MySavesSectionView section="influencers" onBack={() => setCurrentView('my-saves')} />
+            <MySavesSectionView section="influencers" onBack={() => setCurrentView('my-saves')} onInfluencerClick={(influencer) => { setSelectedInfluencer(influencer); setPreviousView('my-saves-influencers'); setCurrentView('influencer-detail'); }} onInfluencerPopupClick={(influencer) => setPopupInfluencer(influencer)} />
           )}
           {currentView === 'my-saves-categories' && (
-            <MySavesSectionView section="categories" onBack={() => setCurrentView('my-saves')} />
+            <MySavesSectionView section="categories" onBack={() => setCurrentView('my-saves')} onCategoryClick={(name) => { setTopInfluencerCategory(name); setTopInfluencerHighlight(null); setPreviousView('my-saves-categories'); setCurrentView('top-influencers'); }} />
           )}
           {currentView === 'my-saves-lists' && (
             <MySavesSectionView section="lists" onBack={() => setCurrentView('my-saves')} />
@@ -202,7 +223,18 @@ const App: React.FC = () => {
           {currentView === 'pro-collection-detail' && (
             <ProCollectionDetailView
               collectionName={selectedProCollection || 'Collection'}
-              onBack={() => setCurrentView('pro-collections')}
+              onBack={() => {
+                if (previousView === 'my-saves' || previousView === 'my-saves-pro-collections') {
+                  setCurrentView(previousView as any);
+                } else {
+                  setCurrentView('pro-collections');
+                }
+              }}
+              backLabel={
+                previousView === 'my-saves' || previousView === 'my-saves-pro-collections'
+                  ? 'Back to My Saves'
+                  : undefined
+              }
             />
           )}
           {currentView === 'users' && <UsersView />}
@@ -254,6 +286,15 @@ const App: React.FC = () => {
               influencer={selectedInfluencer}
               onBack={handleInfluencerBack}
               onNavigateToCategory={handleNavigateToCategory}
+              backLabel={
+                previousView === 'my-saves' || previousView === 'my-saves-influencers'
+                  ? 'Back to My Saves'
+                  : previousView === 'dashboard'
+                  ? 'Back to Dashboard'
+                  : previousView === 'campaign-detail'
+                  ? 'Back to Campaign'
+                  : 'Back'
+              }
             />
           )}
         </div>
@@ -268,6 +309,14 @@ const App: React.FC = () => {
            </div>
         </footer>
       </main>
+
+      {/* Influencer Detail Popup - triggered by eye icon in My Saves */}
+      {popupInfluencer && (
+        <InfluencerDetailPopup
+          influencer={popupInfluencer}
+          onClose={() => setPopupInfluencer(null)}
+        />
+      )}
     </div>
   );
 };

@@ -61,6 +61,11 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
   // Platform filter for RATES section
   const [ratesPlatform, setRatesPlatform] = React.useState<'ALL' | 'IG' | 'YT' | 'TT'>('ALL');
 
+  // Media Kit uploads for RATES section
+  const [mediaKits, setMediaKits] = React.useState<{ id: string; name: string; size: string; uploadedDate: string }[]>([
+    { id: 'mk1', name: 'Bella_Varelis_MediaKit_2025.pdf', size: '2.4 MB', uploadedDate: 'Jan 15 2026' },
+  ]);
+
   // Influencer tags for this campaign
   const [assignedTags, setAssignedTags] = React.useState<string[]>([]);
   const [selectedTagToAdd, setSelectedTagToAdd] = React.useState('');
@@ -88,7 +93,8 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
   ];
 
   const totalAudience = influencer.totalAudience || influencer.stats || '261,265';
-  const totalValue = influencer.totalValue || influencer.value || '$4,559.08';
+  const rawTotalValue = influencer.totalValue || influencer.value || '$4,559.08';
+  const totalValue = rawTotalValue.startsWith('$') ? rawTotalValue : `$${rawTotalValue}`;
 
   // Mock Pricing Data
   const pricingData: PricingRow[] = [
@@ -97,19 +103,42 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
     { id: '3', currency: 'British pound', fee: '£100.00', detail: '1 video', platform: 'youtube' },
   ];
 
-  // Mock Ranking Data
-  const rankingList: RankingInfluencer[] = [
+  // Mock Ranking Data — the influencer's ranking position determines highlight behavior
+  const influencerRankPosition = influencer.ranking?.position || 2; // Default to rank 2 for demo
+  const isInfluencerInTopTen = influencerRankPosition <= 10;
+
+  const topTenList: RankingInfluencer[] = [
     { rank: 1, name: 'Edd Kimber', imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200', location: 'London, United Kingdom', category: 'Dessert Chef', followers: '517.1K Followers', badges: ['Top 10 Viewed', 'Top 10 Saved', 'Top 10 Viewed (London)', 'Top 10 Saved (London)'] },
-    { rank: 2, name: influencer.name, imageUrl: influencer.imageUrl, location: 'Sydney, Australia', category: influencer.category || 'Dessert Chef', followers: `${totalAudience} Followers`, badges: ['Top 10 Viewed', 'Top 10 Viewed', 'Top 10 Saved', 'Top 10 Viewed (Sydney)', 'Top 10 Saved (Sydney)'], isCurrent: true },
-    { rank: 3, name: 'Promotions Team', imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200', location: 'Australia', category: 'Dessert Chef', followers: '29 Followers', badges: ['Top 10 Viewed'] },
-    { rank: 4, name: 'Native Empire', imageUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200', location: 'Australia', category: 'Dessert Chef', followers: '6.4K Followers', badges: ['Top 10 Viewed'] },
+    { rank: 2, name: 'Claire Saffitz', imageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200', location: 'New York, United States', category: 'Dessert Chef', followers: '1.2M Followers', badges: ['Top 10 Viewed', 'Top 10 Saved'] },
+    { rank: 3, name: 'Promotions Team', imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200', location: 'Melbourne, Australia', category: 'Dessert Chef', followers: '29 Followers', badges: ['Top 10 Viewed'] },
+    { rank: 4, name: 'Native Empire', imageUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200', location: 'Sydney, Australia', category: 'Dessert Chef', followers: '6.4K Followers', badges: ['Top 10 Viewed'] },
+    { rank: 5, name: 'Nadiya Hussain', imageUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200', location: 'London, United Kingdom', category: 'Dessert Chef', followers: '892K Followers', badges: ['Top 10 Viewed', 'Top 10 Saved'] },
+    { rank: 6, name: 'Dominique Ansel', imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200', location: 'New York, United States', category: 'Dessert Chef', followers: '456K Followers', badges: ['Top 10 Viewed'] },
+    { rank: 7, name: 'Anna Polyviou', imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200', location: 'Sydney, Australia', category: 'Dessert Chef', followers: '312K Followers', badges: ['Top 10 Viewed', 'Top 10 Saved (Sydney)'] },
+    { rank: 8, name: 'Yotam Ottolenghi', imageUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200', location: 'London, United Kingdom', category: 'Dessert Chef', followers: '2.1M Followers', badges: ['Top 10 Viewed', 'Top 10 Saved'] },
+    { rank: 9, name: 'Adriano Zumbo', imageUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=200', location: 'Sydney, Australia', category: 'Dessert Chef', followers: '478K Followers', badges: ['Top 10 Viewed'] },
+    { rank: 10, name: 'Prue Leith', imageUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=200', location: 'London, United Kingdom', category: 'Dessert Chef', followers: '634K Followers', badges: ['Top 10 Viewed', 'Top 10 Saved'] },
   ];
+
+  // Insert the current influencer at their rank if they're in the top 10
+  const rankingList: RankingInfluencer[] = isInfluencerInTopTen
+    ? topTenList.map((item, idx) =>
+        idx === influencerRankPosition - 1
+          ? { rank: influencerRankPosition, name: influencer.name, imageUrl: influencer.imageUrl, location: 'Sydney, Australia', category: influencer.category || 'Dessert Chef', followers: `${totalAudience} Followers`, badges: ['Top 10 Viewed', 'Top 10 Saved', 'Top 10 Viewed (Sydney)', 'Top 10 Saved (Sydney)'], isCurrent: true }
+          : { ...item, rank: idx + 1 }
+      )
+    : topTenList;
+
+  // The current influencer's out-of-top-10 entry
+  const outOfTopInfluencer: RankingInfluencer | null = !isInfluencerInTopTen
+    ? { rank: influencerRankPosition, name: influencer.name, imageUrl: influencer.imageUrl, location: 'Sydney, Australia', category: influencer.category || 'Dessert Chef', followers: `${totalAudience} Followers`, badges: ['Top 10 Viewed (Sydney)'], isCurrent: true }
+    : null;
 
   // Mock Gallery Posts based on screenshots
   const galleryPosts: GalleryPost[] = [
-    { id: 'p1', imageUrl: 'https://images.unsplash.com/photo-1541821637466-5bc01cb4d75d?auto=format&fit=crop&q=80&w=600', caption: 'Well, it’s been just over a year since we decided to renovate our dilapidated house and we’ve been living with our amazing uncommon_projects kitchen for a good few months now. Read all about our design process at the link in my bio and in my stories 📸 by rutheward (except the picture of Wesley which I snuck in)', type: 'image' },
+    { id: 'p1', imageUrl: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=600', caption: 'Well, it’s been just over a year since we decided to renovate our dilapidated house and we’ve been living with our amazing uncommon_projects kitchen for a good few months now. Read all about our design process at the link in my bio and in my stories 📸 by rutheward (except the picture of Wesley which I snuck in)', type: 'image' },
     { id: 'p2', imageUrl: 'https://images.unsplash.com/photo-1516738901171-8eb4fc13bd20?auto=format&fit=crop&q=80&w=600', caption: 'It’s Valentine’s Day tomorrow so to make sure I’m compliment with all known laws, I have two chocolate recipes for you... 🍫✨', type: 'video' },
-    { id: 'p3', imageUrl: 'https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&q=80&w=600', caption: 'How To: Chocolate Ep 3 What’s one of your all time favourite flavours? Mine would probably be Tonka bean, a head...', type: 'video' },
+    { id: 'p3', imageUrl: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&q=80&w=600', caption: 'How To: Chocolate Ep 3 What’s one of your all time favourite flavours? Mine would probably be Tonka bean, a head...', type: 'video' },
     { id: 'p4', imageUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=600', caption: 'I’m going on a book tour! Can you believe this will actually be my first ever UK book tour? Very excited to hit the...', type: 'image' },
     { id: 'p5', imageUrl: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&q=80&w=600', caption: 'Do you want to win something amazing? The ultimate Chocolate Baking bundle? Well listen up! To celebrate there bein...', type: 'video' },
     { id: 'p6', imageUrl: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&q=80&w=600', caption: 'Do you want to win something amazing? The ultimate Chocolate Baking bundle? Well listen up! To celebrate there bein...', type: 'video' },
@@ -161,12 +190,9 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
           </div>
 
           <div className="w-full text-center mb-6 px-2">
-             <p className="text-[10px] font-semibold text-brand-gray leading-relaxed mb-2">
+             <p className="text-[10px] font-semibold text-brand-gray leading-relaxed">
                Founder @brand.wares ⚖️ Sales @agency.au Australian Brewers Cup Finalist 2020-2025 🏆
              </p>
-             <a href="#" className="text-[9px] font-black text-brand-accent hover:underline uppercase tracking-widest opacity-80">
-               Visit Website
-             </a>
           </div>
 
           <div className="w-full space-y-5 border-t border-gray-100 pt-6">
@@ -349,7 +375,6 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                     </div>
                   </div>
                   <div className="flex items-center gap-6">
-                    <button className="text-[11px] font-serif font-bold text-brand-dark border-b border-brand-dark/20 hover:border-brand-accent hover:text-brand-accent transition-all">How Ranking Works</button>
                     <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
                        <span className="text-[10px] font-bold text-brand-gray uppercase">Rank</span>
                        <svg className="w-3.5 h-3.5 text-brand-gray" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" /></svg>
@@ -357,28 +382,84 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                   </div>
                 </div>
 
+                {/* Out of Top 10 Card — shown when current influencer is ranked outside top 10 */}
+                {outOfTopInfluencer && (
+                  <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div className="bg-gradient-to-r from-[#FFF8F4] to-[#FFF1E8] border-2 border-brand-accent/30 rounded-2xl shadow-lg overflow-hidden relative">
+                      <div className="absolute top-0 left-0 w-1.5 h-full bg-brand-accent rounded-l-2xl" />
+                      <div className="flex items-center p-6 gap-6 min-h-[100px]">
+                        {/* Rank */}
+                        <div className="w-12 flex-shrink-0 text-center">
+                          <span className="text-2xl font-serif font-black text-brand-accent">#{outOfTopInfluencer.rank}</span>
+                        </div>
+
+                        {/* Avatar */}
+                        <div className="w-16 h-16 rounded-xl overflow-hidden shadow-md flex-shrink-0 border-2 border-brand-accent/30 ring-2 ring-white">
+                          <img src={outOfTopInfluencer.imageUrl} alt={outOfTopInfluencer.name} className="w-full h-full object-cover" />
+                        </div>
+
+                        {/* Details */}
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-lg font-serif font-black text-brand-accent">{outOfTopInfluencer.name}</h4>
+                          <div className="flex items-center gap-3 text-[11px] font-bold text-brand-gray mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                            <span className="flex items-center gap-1.5"><span className="text-base">🇦🇺</span> {outOfTopInfluencer.category}</span>
+                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                            <span>{outOfTopInfluencer.location}</span>
+                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                            <span>{outOfTopInfluencer.followers}</span>
+                          </div>
+                        </div>
+
+                        {/* Badges */}
+                        <div className="flex flex-wrap gap-x-2 gap-y-2 max-w-[280px] justify-end">
+                          {outOfTopInfluencer.badges.map((badge, idx) => {
+                            const isSaved = badge.includes('Saved');
+                            const bgColor = isSaved ? 'bg-[#82A3C4]' : 'bg-brand-accent';
+                            return (
+                              <span key={idx} className={`${bgColor} text-white px-3 py-1.5 rounded-lg text-[10px] font-bold tracking-tight whitespace-nowrap shadow-sm`}>
+                                {badge}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Separator */}
+                    <div className="flex items-center gap-4 my-6">
+                      <div className="h-px bg-brand-accent/20 flex-1"></div>
+                      <span className="text-[10px] font-black text-brand-accent uppercase tracking-widest whitespace-nowrap">Top 10 in {influencer.category || 'Dessert Chef'}</span>
+                      <div className="h-px bg-brand-accent/20 flex-1"></div>
+                    </div>
+                  </div>
+                )}
+
                 {/* Ranking List */}
                 <div className="bg-white border border-gray-100 rounded-2xl shadow-soft overflow-hidden">
                   <div className="divide-y divide-gray-100">
                     {rankingList.map((item) => (
                       <div key={item.rank} className="flex flex-col">
-                        <div 
-                          className={`flex items-center p-6 gap-6 transition-colors min-h-[100px] cursor-pointer ${item.isCurrent ? 'bg-orange-50/20' : 'hover:bg-gray-50'}`}
+                        <div
+                          className={`flex items-center p-6 gap-6 transition-colors min-h-[100px] cursor-pointer relative ${
+                            item.isCurrent
+                              ? 'bg-[#FFF8F4] border-l-4 border-l-brand-accent'
+                              : 'hover:bg-gray-50'
+                          }`}
                           onClick={() => toggleExpand(item.rank)}
                         >
                           {/* Rank */}
                           <div className="w-10 flex-shrink-0 text-center">
-                            <span className="text-lg font-serif font-black text-brand-dark">{item.rank}.</span>
+                            <span className={`text-lg font-serif font-black ${item.isCurrent ? 'text-brand-accent' : 'text-brand-dark'}`}>{item.rank}.</span>
                           </div>
-                          
+
                           {/* Avatar */}
-                          <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border-2 border-white ring-1 ring-gray-100">
+                          <div className={`w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border-2 ${item.isCurrent ? 'border-brand-accent/30 ring-2 ring-brand-accent/10' : 'border-white ring-1 ring-gray-100'}`}>
                             <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                           </div>
 
                           {/* Details */}
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-base font-serif font-black text-brand-dark hover:text-brand-accent transition-colors">{item.name}</h4>
+                            <h4 className={`text-base font-serif font-black transition-colors ${item.isCurrent ? 'text-brand-accent' : 'text-brand-dark hover:text-brand-accent'}`}>{item.name}{item.isCurrent ? ' (You)' : ''}</h4>
                             <div className="flex items-center gap-3 text-[11px] font-bold text-brand-gray mt-1 whitespace-nowrap overflow-hidden text-ellipsis">
                               <span className="flex items-center gap-1.5"><span className="text-base">🇦🇺</span> {item.category}</span>
                               <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
@@ -788,17 +869,20 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                     </div>
 
                     <div className="mt-auto pt-4 border-t border-gray-50 shrink-0">
-                      <div className="flex items-center gap-4 p-4 bg-orange-50/40 rounded-2xl border border-orange-100/50 shadow-sm">
-                        <div className="w-10 h-10 bg-brand-accent rounded-xl flex items-center justify-center text-white shrink-0 shadow-md shadow-orange-100">
+                      <div
+                        className="flex items-center gap-4 p-4 bg-orange-50/40 rounded-2xl border border-orange-100/50 shadow-sm cursor-pointer hover:bg-orange-50/70 hover:border-brand-accent/40 transition-all group/ranking"
+                        onClick={() => setActiveTab('RANKING')}
+                      >
+                        <div className="w-10 h-10 bg-brand-accent rounded-xl flex items-center justify-center text-white shrink-0 shadow-md shadow-orange-100 group-hover/ranking:scale-110 transition-transform">
                           <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z"/></svg>
                         </div>
                         <div className="flex-1">
                           <p className="text-[10px] font-serif font-black text-brand-accent uppercase tracking-widest leading-none mb-1">Mapkats Ranking</p>
                           <p className="text-sm font-serif font-black text-brand-dark leading-tight">
-                            #2 Top Influencer in <span className="text-brand-accent">{influencer.category || 'Dessert Chef'}</span>
+                            #{influencerRankPosition} Top Influencer in <span className="text-brand-accent">{influencer.category || 'Dessert Chef'}</span>
                           </p>
                         </div>
-                        <button onClick={() => setActiveTab('RANKING')} className="bg-white border border-orange-100 text-[10px] font-black text-brand-accent px-4 py-2 rounded-xl hover:bg-brand-accent hover:text-white transition-all shadow-sm uppercase">View Ranking</button>
+                        <span className="bg-white border border-orange-100 text-[10px] font-black text-brand-accent px-4 py-2 rounded-xl group-hover/ranking:bg-brand-accent group-hover/ranking:text-white transition-all shadow-sm uppercase">View Ranking</span>
                       </div>
                     </div>
                   </div>
@@ -836,7 +920,12 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                   <div className="flex items-center gap-6">
                     <div className="flex flex-col">
                        <span className="text-[9px] font-black text-brand-gray uppercase tracking-widest">Est. Media Value (MV)</span>
-                       <span className="text-sm font-black text-brand-dark">{totalValue}</span>
+                       <span className="text-sm font-black text-brand-dark">
+                         {ratesPlatform === 'ALL' ? totalValue
+                           : ratesPlatform === 'IG' ? (channelStats.find(c => c.platform === 'instagram')?.value || '$0.00')
+                           : ratesPlatform === 'YT' ? (channelStats.find(c => c.platform === 'youtube')?.value || '$0.00')
+                           : (channelStats.find(c => c.platform === 'tiktok')?.value || '$0.00')}
+                       </span>
                     </div>
                   </div>
                 </div>
@@ -855,6 +944,90 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                       </tbody>
                     </table>
                   </div>
+                </div>
+
+                {/* Media Kit Section */}
+                <div className="space-y-4 pt-4 border-t border-gray-50">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xs font-black uppercase tracking-[0.2em] text-brand-dark/40">Media Kit</h3>
+                    <label className="bg-brand-accent text-white px-5 py-2 rounded-lg shadow-md hover:brightness-110 transition-all cursor-pointer flex items-center gap-2">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                      <span className="text-[10px] font-black uppercase tracking-widest">Add Media Kit</span>
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const sizeKB = file.size / 1024;
+                            const sizeStr = sizeKB > 1024 ? `${(sizeKB / 1024).toFixed(1)} MB` : `${Math.round(sizeKB)} KB`;
+                            const now = new Date();
+                            const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                            setMediaKits(prev => [...prev, {
+                              id: `mk-${Date.now()}`,
+                              name: file.name,
+                              size: sizeStr,
+                              uploadedDate: dateStr,
+                            }]);
+                          }
+                          e.target.value = '';
+                        }}
+                      />
+                    </label>
+                  </div>
+
+                  {/* Upload Drop Zone */}
+                  {mediaKits.length === 0 && (
+                    <label className="bg-[#F8F6F4] border-2 border-dashed border-gray-200 rounded-2xl h-32 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-brand-accent transition-colors">
+                      <svg className="w-8 h-8 text-brand-gray/40" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                      <span className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Drop PDF here or click to upload</span>
+                      <input type="file" accept=".pdf" className="hidden" onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const sizeKB = file.size / 1024;
+                          const sizeStr = sizeKB > 1024 ? `${(sizeKB / 1024).toFixed(1)} MB` : `${Math.round(sizeKB)} KB`;
+                          const now = new Date();
+                          const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                          setMediaKits(prev => [...prev, { id: `mk-${Date.now()}`, name: file.name, size: sizeStr, uploadedDate: dateStr }]);
+                        }
+                        e.target.value = '';
+                      }} />
+                    </label>
+                  )}
+
+                  {/* Uploaded Media Kits List */}
+                  {mediaKits.length > 0 && (
+                    <div className="bg-[#FDFCFB] border border-gray-100 rounded-2xl overflow-hidden shadow-soft divide-y divide-gray-50">
+                      {mediaKits.map((kit) => (
+                        <div key={kit.id} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors group">
+                          {/* PDF Icon */}
+                          <div className="w-12 h-14 bg-red-50 border border-red-100 rounded-xl flex flex-col items-center justify-center flex-shrink-0">
+                            <svg className="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 2v6h6"/></svg>
+                            <span className="text-[7px] font-black text-red-500 uppercase mt-0.5">PDF</span>
+                          </div>
+                          {/* File Info */}
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-[13px] font-black text-brand-dark truncate group-hover:text-brand-accent transition-colors">{kit.name}</h4>
+                            <p className="text-[10px] font-bold text-brand-gray mt-0.5">{kit.size} &middot; Uploaded: {kit.uploadedDate}</p>
+                          </div>
+                          {/* Actions */}
+                          <div className="flex items-center gap-2 shrink-0">
+                            <button className="text-brand-gray hover:text-blue-500 transition-colors p-1.5" title="View / Download">
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
+                            </button>
+                            <button
+                              onClick={() => setMediaKits(prev => prev.filter(k => k.id !== kit.id))}
+                              className="text-brand-gray hover:text-red-500 transition-colors p-1.5"
+                              title="Remove"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ) : activeTab === 'SHIPPING' ? (
@@ -883,6 +1056,7 @@ const InfluencerDetailPopup: React.FC<InfluencerDetailPopupProps> = ({ influence
                   <h3 className="text-xs font-black uppercase tracking-[0.2em] text-brand-dark/40">Shipping Address</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4"><select className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold text-brand-dark outline-none appearance-none"><option>Australia</option><option>United States</option></select><input type="text" placeholder="State" className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold outline-none" /></div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4"><input type="text" placeholder="City" className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold outline-none" /><input type="text" placeholder="Post Code" className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold outline-none" /></div>
+                  <input type="text" placeholder="Street Address" className="w-full bg-[#F8F6F4] border-none rounded-xl py-2.5 px-4 text-[11px] font-bold outline-none" />
                   <button className="w-full bg-brand-dark text-white font-black py-2.5 rounded-xl text-[9px] tracking-widest uppercase hover:bg-brand-accent transition-all">Verify Address</button>
                 </div>
               </div>

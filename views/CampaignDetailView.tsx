@@ -314,7 +314,7 @@ const CampaignDetailView: React.FC<CampaignDetailViewProps> = ({ campaignName, o
       isGeocoded: false,
       followers: '32,338',
       estimatedValue: '$564.30',
-      ranking: { position: 4, category: 'Home Cooking' },
+      ranking: { position: 14, category: 'Home Cooking' },
     },
     {
       name: 'Reynold',

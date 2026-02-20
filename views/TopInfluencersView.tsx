@@ -26,9 +26,11 @@ interface RankedInfluencer {
 interface TopInfluencersViewProps {
   initialCategory?: string | null;
   highlightInfluencer?: { name: string; rank: number; imageUrl?: string; followers?: string; location?: string; country?: string; flag?: string; badges?: string[] } | null;
+  onBack?: () => void;
+  backLabel?: string;
 }
 
-const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory, highlightInfluencer }) => {
+const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory, highlightInfluencer, onBack, backLabel }) => {
   const [selectedCategory, setSelectedCategory] = useState<TopListCategory | null>(null);
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
   const [pageSize, setPageSize] = useState(50);
@@ -173,6 +175,18 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
       {/* Click-away to close campaign dropdown */}
       {addToCampaignRank !== null && (
         <div className="fixed inset-0 z-40" onClick={() => setAddToCampaignRank(null)} />
+      )}
+
+      {/* Back to My Saves (top) */}
+      {backLabel && onBack && (
+        <div className="mb-0">
+          <button onClick={onBack} className="text-sm font-semibold text-brand-gray hover:text-brand-accent transition-colors flex items-center gap-2">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            {backLabel}
+          </button>
+        </div>
       )}
 
       {/* Page Title */}
@@ -805,6 +819,18 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
             </div>
           );
         })()
+      )}
+
+      {/* Back to My Saves (bottom) */}
+      {backLabel && onBack && (
+        <div className="mt-6">
+          <button onClick={onBack} className="text-sm font-semibold text-brand-gray hover:text-brand-accent transition-colors flex items-center gap-2">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            {backLabel}
+          </button>
+        </div>
       )}
     </div>
   );

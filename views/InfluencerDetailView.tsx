@@ -19,6 +19,7 @@ interface InfluencerDetailViewProps {
   influencer: InfluencerData;
   onBack: () => void;
   onNavigateToCategory: (category: string) => void;
+  backLabel?: string;
 }
 
 // Extended data for the detail view
@@ -123,7 +124,7 @@ const getDetailData = (influencer: InfluencerData): DetailData => {
   };
 };
 
-const InfluencerDetailView: React.FC<InfluencerDetailViewProps> = ({ influencer, onBack, onNavigateToCategory }) => {
+const InfluencerDetailView: React.FC<InfluencerDetailViewProps> = ({ influencer, onBack, onNavigateToCategory, backLabel }) => {
   const [activeStatsTab, setActiveStatsTab] = useState<'Key Stats' | 'Audience' | 'Content'>('Key Stats');
   const [showCampaignDropdown, setShowCampaignDropdown] = useState(false);
   const [addedToCampaign, setAddedToCampaign] = useState<string[]>([]);
@@ -148,17 +149,32 @@ const InfluencerDetailView: React.FC<InfluencerDetailViewProps> = ({ influencer,
         <div className="fixed inset-0 z-40" onClick={() => setShowCampaignDropdown(false)} />
       )}
 
+      {/* Back Button (top) */}
+      {backLabel && (
+        <div className="mb-4">
+          <button
+            onClick={onBack}
+            className="text-sm font-semibold text-brand-gray hover:text-brand-accent transition-colors flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            {backLabel}
+          </button>
+        </div>
+      )}
+
       {/* Breadcrumb + Add to Campaign Button row */}
       <div className="mb-6 flex items-center justify-between">
-        <div className="text-sm">
+        <div className="flex items-center gap-3">
           <button
             onClick={() => onNavigateToCategory(influencer.category)}
-            className="text-brand-dark hover:text-brand-accent transition-colors font-medium underline"
+            className="text-3xl font-serif font-black tracking-tight text-brand-gray hover:text-brand-accent transition-colors"
           >
             {influencer.category}
           </button>
-          <span className="text-brand-gray mx-2">/</span>
-          <span className="font-bold text-brand-dark">{influencer.name}</span>
+          <span className="text-3xl font-serif font-black tracking-tight text-brand-gray">/</span>
+          <h1 className="text-3xl font-serif font-black tracking-tight text-brand-dark">{influencer.name}</h1>
         </div>
 
         {/* Add to Campaign Button */}
@@ -239,33 +255,35 @@ const InfluencerDetailView: React.FC<InfluencerDetailViewProps> = ({ influencer,
         </div>
       </div>
 
-      {/* Category Banner */}
-      <div className="bg-brand-accent rounded-t-2xl px-8 py-4 flex items-center justify-between">
-        <h2 className="text-white font-black text-xl font-serif">{influencer.category}</h2>
-        <div className="flex items-center gap-2">
-          <button className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center text-white hover:bg-white/30 transition-all">
-            <svg className="w-5 h-5" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-            </svg>
-          </button>
-          <button className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center text-white hover:bg-white/30 transition-all">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-            </svg>
-          </button>
-          <button className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center text-white hover:bg-white/30 transition-all">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-            </svg>
-          </button>
+      {/* Main Card Container */}
+      <div className="bg-white rounded-2xl shadow-panel border border-gray-100 overflow-hidden">
+        {/* Category Header */}
+        <div className="bg-gray-50 border-b border-gray-100 px-8 py-5 flex items-center justify-between">
+          <h2 className="text-lg font-serif font-black text-brand-dark">{influencer.category}</h2>
+          <div className="flex items-center gap-2">
+            <button className="w-9 h-9 bg-white rounded-lg border border-gray-200 flex items-center justify-center text-brand-gray hover:text-brand-accent hover:border-brand-accent/30 transition-all">
+              <svg className="w-4.5 h-4.5" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+              </svg>
+            </button>
+            <button className="w-9 h-9 bg-white rounded-lg border border-gray-200 flex items-center justify-center text-brand-gray hover:text-brand-accent hover:border-brand-accent/30 transition-all">
+              <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+            </button>
+            <button className="w-9 h-9 bg-white rounded-lg border border-gray-200 flex items-center justify-center text-brand-gray hover:text-brand-accent hover:border-brand-accent/30 transition-all">
+              <svg className="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
 
       {/* Main Content Area - Equal height row */}
       <div className="flex gap-0 items-stretch">
         {/* Left Column - Profile Card */}
         <div className="flex-1 min-w-0">
-          <div className="bg-white border border-gray-100 border-t-0 rounded-bl-2xl p-8 h-full flex flex-col">
+          <div className="p-8 h-full flex flex-col">
             <div className="flex gap-8 flex-1">
               {/* Profile Photo */}
               <div className="w-48 h-56 flex-shrink-0 rounded-xl overflow-hidden">
@@ -325,7 +343,7 @@ const InfluencerDetailView: React.FC<InfluencerDetailViewProps> = ({ influencer,
 
         {/* Right Column - Key Stats with tabs (matching popup design) */}
         <div className="w-[420px] flex-shrink-0 ml-0">
-          <div className="bg-white border border-gray-100 border-t-0 border-l-0 rounded-br-2xl p-6 h-full flex flex-col">
+          <div className="border-l border-gray-100 p-6 h-full flex flex-col">
             {/* Stats Tabs - pill style matching popup */}
             <div className="flex gap-1.5 mb-5">
               {(['Key Stats', 'Audience', 'Content'] as const).map((tab) => (
@@ -523,6 +541,7 @@ const InfluencerDetailView: React.FC<InfluencerDetailViewProps> = ({ influencer,
           </div>
         </div>
       </div>
+      </div>
 
       {/* Instagram Posts Section */}
       <div className="mt-6">
@@ -582,7 +601,7 @@ const InfluencerDetailView: React.FC<InfluencerDetailViewProps> = ({ influencer,
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Back to Search Results
+          {backLabel || 'Back'}
         </button>
       </div>
     </div>

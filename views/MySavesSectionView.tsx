@@ -38,18 +38,14 @@ interface SavedList {
 
 // ── Mock Data (expanded for pagination demo) ────────────────────────────
 const allSavedProCollections: SavedProCollection[] = [
-  { name: "UK's Best Home Bartenders", imageUrl: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=200', influencerCount: 10, combinedAudience: '668.7K', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
-  { name: "LA's Best Bartenders", imageUrl: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&q=80&w=200', influencerCount: 12, combinedAudience: '1.7M', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
+  { name: "Australia's Best Wellness Educators", imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=200', influencerCount: 9, combinedAudience: '4.1M', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
   { name: "New York's Best Bartenders", imageUrl: 'https://images.unsplash.com/photo-1574096079513-d8259312b785?auto=format&fit=crop&q=80&w=200', influencerCount: 9, combinedAudience: '153.8K', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
-  { name: "London's Best Tastemakers", imageUrl: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=200', influencerCount: 30, combinedAudience: '17.7M', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
-  { name: "Sydney's Top Food Bloggers", imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=200', influencerCount: 15, combinedAudience: '2.3M', createdDate: 'July 10 2025', savedDate: 'October 1 2025' },
-  { name: "Paris Mixology Masters", imageUrl: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&q=80&w=200', influencerCount: 8, combinedAudience: '890.2K', createdDate: 'August 5 2025', savedDate: 'October 15 2025' },
-  { name: "Tokyo Culinary Influencers", imageUrl: 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&q=80&w=200', influencerCount: 20, combinedAudience: '5.1M', createdDate: 'August 20 2025', savedDate: 'November 1 2025' },
-  { name: "Berlin Street Food Stars", imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=200', influencerCount: 11, combinedAudience: '1.2M', createdDate: 'September 1 2025', savedDate: 'November 10 2025' },
-  { name: "Dubai Luxury Dining", imageUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=200', influencerCount: 7, combinedAudience: '3.4M', createdDate: 'September 15 2025', savedDate: 'November 20 2025' },
-  { name: "Melbourne Coffee Culture", imageUrl: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=200', influencerCount: 14, combinedAudience: '780.5K', createdDate: 'October 1 2025', savedDate: 'December 1 2025' },
-  { name: "Barcelona Tapas Trail", imageUrl: 'https://images.unsplash.com/photo-1515443961218-a51367888e4b?auto=format&fit=crop&q=80&w=200', influencerCount: 6, combinedAudience: '445.3K', createdDate: 'October 20 2025', savedDate: 'December 10 2025' },
-  { name: "Bangkok Street Food Guide", imageUrl: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=200', influencerCount: 18, combinedAudience: '6.2M', createdDate: 'November 5 2025', savedDate: 'December 15 2025' },
+  { name: "LA's Best Bartenders", imageUrl: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&q=80&w=200', influencerCount: 12, combinedAudience: '1.7M', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
+  { name: "London's Best Bartenders", imageUrl: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=200', influencerCount: 12, combinedAudience: '593.1K', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
+  { name: "Sydney's Best Bartenders", imageUrl: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=200', influencerCount: 9, combinedAudience: '68.6K', createdDate: 'July 10 2025', savedDate: 'October 1 2025' },
+  { name: "Best Home Bartenders USA", imageUrl: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?auto=format&fit=crop&q=80&w=200', influencerCount: 12, combinedAudience: '21M', createdDate: 'August 5 2025', savedDate: 'October 15 2025' },
+  { name: "Best US No & Low Drink Makers", imageUrl: 'https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&q=80&w=200', influencerCount: 7, combinedAudience: '144.9K', createdDate: 'August 20 2025', savedDate: 'November 1 2025' },
+  { name: "Best Nordic Home Entertainers", imageUrl: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=200', influencerCount: 11, combinedAudience: '2.3M', createdDate: 'September 1 2025', savedDate: 'November 10 2025' },
 ];
 
 const allSavedInfluencers: SavedInfluencer[] = [
@@ -103,6 +99,10 @@ type SectionType = 'pro-collections' | 'influencers' | 'categories' | 'lists';
 interface MySavesSectionViewProps {
   section: SectionType;
   onBack: () => void;
+  onInfluencerClick?: (influencer: any) => void;
+  onInfluencerPopupClick?: (influencer: any) => void;
+  onProCollectionClick?: (name: string) => void;
+  onCategoryClick?: (name: string) => void;
 }
 
 // ── Pagination Component ────────────────────────────────────────────────
@@ -177,7 +177,7 @@ const Pagination: React.FC<{
 };
 
 // ── Main Component ──────────────────────────────────────────────────────
-const MySavesSectionView: React.FC<MySavesSectionViewProps> = ({ section, onBack }) => {
+const MySavesSectionView: React.FC<MySavesSectionViewProps> = ({ section, onBack, onInfluencerClick, onInfluencerPopupClick, onProCollectionClick, onCategoryClick }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -237,7 +237,7 @@ const MySavesSectionView: React.FC<MySavesSectionViewProps> = ({ section, onBack
 
   // ── Render Row Helpers ──────────────────────────────────────────────
   const renderProCollectionRow = (item: SavedProCollection, idx: number) => (
-    <div key={idx} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group">
+    <div key={idx} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group" onClick={() => onProCollectionClick?.(item.name)}>
       <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border border-gray-100">
         <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
       </div>
@@ -255,7 +255,18 @@ const MySavesSectionView: React.FC<MySavesSectionViewProps> = ({ section, onBack
   );
 
   const renderInfluencerRow = (item: SavedInfluencer, idx: number) => (
-    <div key={idx} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group">
+    <div key={idx} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group" onClick={() => onInfluencerClick?.({
+      id: `saved-inf-${idx}`,
+      name: item.name,
+      imageUrl: item.imageUrl,
+      category: item.category || 'Influencer',
+      followers: item.followers,
+      country: '',
+      flag: item.flag || '',
+      city: item.location || '',
+      bio: '',
+      platforms: ['instagram'] as ('instagram' | 'tiktok' | 'youtube')[],
+    })}>
       <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border border-gray-100">
         <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
       </div>
@@ -271,12 +282,18 @@ const MySavesSectionView: React.FC<MySavesSectionViewProps> = ({ section, onBack
           <p className="text-[10px] text-brand-gray mt-0.5">{item.location}</p>
         )}
       </div>
-      {renderActionButtons()}
+      {renderActionButtons(() => onInfluencerPopupClick?.({
+        name: item.name,
+        imageUrl: item.imageUrl,
+        category: item.category || 'Influencer',
+        stats: item.followers,
+        flag: item.flag || '',
+      }))}
     </div>
   );
 
   const renderCategoryRow = (item: SavedCategory, idx: number) => (
-    <div key={idx} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group">
+    <div key={idx} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group" onClick={() => onCategoryClick?.(item.name)}>
       <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border border-gray-100">
         <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
       </div>
@@ -308,11 +325,13 @@ const MySavesSectionView: React.FC<MySavesSectionViewProps> = ({ section, onBack
     </div>
   );
 
-  const renderActionButtons = () => (
+  const renderActionButtons = (onEyeClick?: () => void) => (
     <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
-      <button className="text-brand-gray hover:text-blue-500 transition-colors p-1.5" title="View">
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-      </button>
+      {onEyeClick && (
+        <button className="text-brand-gray hover:text-blue-500 transition-colors p-1.5" title="Quick View" onClick={onEyeClick}>
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+        </button>
+      )}
       <button className="text-brand-gray hover:text-teal-500 transition-colors p-1.5" title="Export">
         <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
       </button>

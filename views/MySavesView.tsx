@@ -36,10 +36,10 @@ interface SavedList {
 
 // ── Mock Data ───────────────────────────────────────────────────────────
 const savedProCollections: SavedProCollection[] = [
-  { name: "UK's Best Home Bartenders", imageUrl: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=200', influencerCount: 10, combinedAudience: '668.7K', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
-  { name: "LA's Best Bartenders", imageUrl: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&q=80&w=200', influencerCount: 12, combinedAudience: '1.7M', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
+  { name: "Australia's Best Wellness Educators", imageUrl: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=200', influencerCount: 9, combinedAudience: '4.1M', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
   { name: "New York's Best Bartenders", imageUrl: 'https://images.unsplash.com/photo-1574096079513-d8259312b785?auto=format&fit=crop&q=80&w=200', influencerCount: 9, combinedAudience: '153.8K', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
-  { name: "London's Best Tastemakers", imageUrl: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=200', influencerCount: 30, combinedAudience: '17.7M', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
+  { name: "LA's Best Bartenders", imageUrl: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&q=80&w=200', influencerCount: 12, combinedAudience: '1.7M', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
+  { name: "London's Best Bartenders", imageUrl: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=200', influencerCount: 12, combinedAudience: '593.1K', createdDate: 'June 23 2025', savedDate: 'September 24 2025' },
 ];
 
 const savedInfluencers: SavedInfluencer[] = [
@@ -61,9 +61,13 @@ const savedLists: SavedList[] = [
 // ── Component ───────────────────────────────────────────────────────────
 interface MySavesViewProps {
   onNavigateToSection?: (section: 'pro-collections' | 'influencers' | 'categories' | 'lists') => void;
+  onInfluencerClick?: (influencer: any) => void;
+  onInfluencerPopupClick?: (influencer: any) => void;
+  onProCollectionClick?: (name: string) => void;
+  onCategoryClick?: (name: string) => void;
 }
 
-const MySavesView: React.FC<MySavesViewProps> = ({ onNavigateToSection }) => {
+const MySavesView: React.FC<MySavesViewProps> = ({ onNavigateToSection, onInfluencerClick, onInfluencerPopupClick, onProCollectionClick, onCategoryClick }) => {
   return (
     <div className="space-y-8">
       {/* Page Title */}
@@ -92,7 +96,7 @@ const MySavesView: React.FC<MySavesViewProps> = ({ onNavigateToSection }) => {
         {/* List */}
         <div className="divide-y divide-gray-100">
           {savedProCollections.map((item, idx) => (
-            <div key={idx} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group">
+            <div key={idx} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group" onClick={() => onProCollectionClick?.(item.name)}>
               {/* Thumbnail */}
               <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border border-gray-100">
                 <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -111,9 +115,6 @@ const MySavesView: React.FC<MySavesViewProps> = ({ onNavigateToSection }) => {
 
               {/* Actions */}
               <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
-                <button className="text-brand-gray hover:text-blue-500 transition-colors p-1.5" title="View">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                </button>
                 <button className="text-brand-gray hover:text-teal-500 transition-colors p-1.5" title="Export">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </button>
@@ -156,7 +157,18 @@ const MySavesView: React.FC<MySavesViewProps> = ({ onNavigateToSection }) => {
         {/* List */}
         <div className="divide-y divide-gray-100">
           {savedInfluencers.map((inf, idx) => (
-            <div key={idx} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group">
+            <div key={idx} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group" onClick={() => onInfluencerClick?.({
+              id: `saved-inf-${idx}`,
+              name: inf.name,
+              imageUrl: inf.imageUrl,
+              category: inf.category || 'Influencer',
+              followers: inf.followers,
+              country: inf.flag ? '' : '',
+              flag: inf.flag || '',
+              city: '',
+              bio: '',
+              platforms: ['instagram'] as ('instagram' | 'tiktok' | 'youtube')[],
+            })}>
               {/* Avatar */}
               <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border border-gray-100">
                 <img src={inf.imageUrl} alt={inf.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -175,7 +187,13 @@ const MySavesView: React.FC<MySavesViewProps> = ({ onNavigateToSection }) => {
 
               {/* Actions */}
               <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
-                <button className="text-brand-gray hover:text-blue-500 transition-colors p-1.5" title="View">
+                <button className="text-brand-gray hover:text-blue-500 transition-colors p-1.5" title="Quick View" onClick={() => onInfluencerPopupClick?.({
+                  name: inf.name,
+                  imageUrl: inf.imageUrl,
+                  category: inf.category || 'Influencer',
+                  stats: inf.followers,
+                  flag: inf.flag || '',
+                })}>
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                 </button>
                 <button className="text-brand-gray hover:text-teal-500 transition-colors p-1.5" title="Export">
@@ -220,7 +238,7 @@ const MySavesView: React.FC<MySavesViewProps> = ({ onNavigateToSection }) => {
         {/* List */}
         <div className="divide-y divide-gray-100">
           {savedCategories.map((cat, idx) => (
-            <div key={idx} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group">
+            <div key={idx} className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group" onClick={() => onCategoryClick?.(cat.name)}>
               {/* Thumbnail */}
               <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border border-gray-100">
                 <img src={cat.imageUrl} alt={cat.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -236,9 +254,6 @@ const MySavesView: React.FC<MySavesViewProps> = ({ onNavigateToSection }) => {
 
               {/* Actions */}
               <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
-                <button className="text-brand-gray hover:text-blue-500 transition-colors p-1.5" title="View">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                </button>
                 <button className="text-brand-gray hover:text-teal-500 transition-colors p-1.5" title="Export">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </button>
@@ -300,9 +315,6 @@ const MySavesView: React.FC<MySavesViewProps> = ({ onNavigateToSection }) => {
 
               {/* Actions */}
               <div className="flex items-center gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
-                <button className="text-brand-gray hover:text-blue-500 transition-colors p-1.5" title="View">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                </button>
                 <button className="text-brand-gray hover:text-teal-500 transition-colors p-1.5" title="Export">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                 </button>

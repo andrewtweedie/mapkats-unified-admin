@@ -8,9 +8,10 @@ import InfluencerDetailPopup from '../components/InfluencerDetailPopup';
 interface ProCollectionDetailViewProps {
   collectionName: string;
   onBack: () => void;
+  backLabel?: string;
 }
 
-const ProCollectionDetailView: React.FC<ProCollectionDetailViewProps> = ({ collectionName, onBack }) => {
+const ProCollectionDetailView: React.FC<ProCollectionDetailViewProps> = ({ collectionName, onBack, backLabel }) => {
   const tabs = ['Profiles', 'Settings'];
   const [activeTab, setActiveTab] = useState('Profiles');
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
@@ -232,7 +233,7 @@ const ProCollectionDetailView: React.FC<ProCollectionDetailViewProps> = ({ colle
     <div className="space-y-8 animate-in fade-in duration-300">
       {/* Breadcrumb / Back */}
       <button onClick={onBack} className="text-xs font-bold text-brand-gray hover:text-brand-accent flex items-center gap-1 uppercase tracking-widest">
-        <span>←</span> Back to Pro Collections
+        <span>←</span> {backLabel || 'Back to Pro Collections'}
       </button>
 
       {/* Header & Tabs */}
@@ -1291,6 +1292,18 @@ const ProCollectionDetailView: React.FC<ProCollectionDetailViewProps> = ({ colle
           onClose={() => setSelectedInfluencer(null)}
         />
       )}
+
+      {/* Back to My Saves (bottom) */}
+      {backLabel && (
+        <div className="mt-2">
+          <button onClick={onBack} className="text-sm font-semibold text-brand-gray hover:text-brand-accent transition-colors flex items-center gap-2">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            {backLabel}
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -1465,6 +1478,7 @@ const ProCollectionInfluencerCard: React.FC<any> = ({ name, username, imageUrl, 
           </button>
         </div>
       </div>
+
     </div>
   );
 };
