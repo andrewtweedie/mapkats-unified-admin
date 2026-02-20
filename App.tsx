@@ -37,6 +37,7 @@ const App: React.FC = () => {
   const [selectedInfluencer, setSelectedInfluencer] = useState<any | null>(null);
   const [previousView, setPreviousView] = useState<string>('search');
   const [topInfluencerCategory, setTopInfluencerCategory] = useState<string | null>(null);
+  const [topInfluencerHighlight, setTopInfluencerHighlight] = useState<{ name: string; rank: number; imageUrl?: string; followers?: string; location?: string; country?: string; flag?: string; badges?: string[] } | null>(null);
   const [selectedProCollection, setSelectedProCollection] = useState<string | null>(null);
   const [selectedSubscriber, setSelectedSubscriber] = useState<any | null>(null);
   const [selectedPartner, setSelectedPartner] = useState<any | null>(null);
@@ -102,10 +103,16 @@ const App: React.FC = () => {
     setCurrentView('terms-condition-detail');
   };
 
-  const handleNavigateToCategory = (category: string) => {
+  const handleNavigateToCategory = (category: string, highlight?: { name: string; rank: number; imageUrl?: string; followers?: string; location?: string; country?: string; flag?: string; badges?: string[] }) => {
     setTopInfluencerCategory(category);
+    setTopInfluencerHighlight(highlight || null);
     setCurrentView('top-influencers');
     setSelectedInfluencer(null);
+    // Scroll to top of page when navigating to rankings
+    setTimeout(() => {
+      const mainEl = document.querySelector('main');
+      if (mainEl) mainEl.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 0);
   };
 
   return (
@@ -117,7 +124,7 @@ const App: React.FC = () => {
           if (view !== 'campaign-detail') setSelectedCampaign(null);
           if (view !== 'pro-collection-detail') setSelectedProCollection(null);
           if (view !== 'partner-detail') setSelectedPartner(null);
-          if (view === 'top-influencers') setTopInfluencerCategory(null);
+          if (view === 'top-influencers') { setTopInfluencerCategory(null); setTopInfluencerHighlight(null); }
         }}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -133,7 +140,7 @@ const App: React.FC = () => {
             if (view !== 'campaign-detail') setSelectedCampaign(null);
             if (view !== 'pro-collection-detail') setSelectedProCollection(null);
             if (view !== 'partner-detail') setSelectedPartner(null);
-            if (view === 'top-influencers') setTopInfluencerCategory(null);
+            if (view === 'top-influencers') { setTopInfluencerCategory(null); setTopInfluencerHighlight(null); }
           }}
         />
 
@@ -147,6 +154,7 @@ const App: React.FC = () => {
               onNavigateToProCollectionDetail={(name) => { setSelectedProCollection(name); setCurrentView('pro-collection-detail'); }}
               onNavigateToNewProCollection={(name) => { setSelectedProCollection(name); setCurrentView('pro-collection-detail'); }}
               onNavigateToInfluencerFullPage={(influencer) => { setSelectedInfluencer(influencer); setPreviousView('dashboard'); setCurrentView('influencer-detail'); }}
+              onNavigateToRanking={(category, highlight) => handleNavigateToCategory(category, highlight)}
             />
           )}
           {currentView === 'campaigns' && (
@@ -159,9 +167,10 @@ const App: React.FC = () => {
             <CampaignDetailView
               campaignName={selectedCampaign || 'Campaign'}
               onBack={() => setCurrentView('campaigns')}
+              onNavigateToRanking={(category, highlight) => handleNavigateToCategory(category, highlight)}
             />
           )}
-          {currentView === 'top-influencers' && <TopInfluencersView initialCategory={topInfluencerCategory} />}
+          {currentView === 'top-influencers' && <TopInfluencersView initialCategory={topInfluencerCategory} highlightInfluencer={topInfluencerHighlight} />}
           {currentView === 'pro-collections' && <ProCollectionsView onCollectionClick={handleProCollectionClick} />}
           {currentView === 'pro-collection-detail' && (
             <ProCollectionDetailView

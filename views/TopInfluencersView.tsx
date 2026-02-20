@@ -25,9 +25,10 @@ interface RankedInfluencer {
 
 interface TopInfluencersViewProps {
   initialCategory?: string | null;
+  highlightInfluencer?: { name: string; rank: number; imageUrl?: string; followers?: string; location?: string; country?: string; flag?: string; badges?: string[] } | null;
 }
 
-const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory }) => {
+const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory, highlightInfluencer }) => {
   const [selectedCategory, setSelectedCategory] = useState<TopListCategory | null>(null);
   const [hasAutoSelected, setHasAutoSelected] = useState(false);
   const [pageSize, setPageSize] = useState(50);
@@ -37,6 +38,9 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
   const [expandedSubTab, setExpandedSubTab] = useState<'Recent Posts' | 'Key Stats' | 'Audience' | 'Content'>('Recent Posts');
   const [addToCampaignRank, setAddToCampaignRank] = useState<number | null>(null);
   const [addedToCampaign, setAddedToCampaign] = useState<Record<string, string[]>>({});
+  const [expandedHighlight, setExpandedHighlight] = useState(false);
+  const [highlightSubTab, setHighlightSubTab] = useState<'Recent Posts' | 'Key Stats' | 'Audience' | 'Content'>('Recent Posts');
+  const [highlightActive, setHighlightActive] = useState(!!highlightInfluencer);
 
   // Available campaigns
   const campaigns = [
@@ -66,11 +70,27 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
     { id: 'pet-influencer', name: 'Pet Influencer', imageUrl: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&q=80&w=300', influencerCount: 14, combinedAudience: '3.1M', flag: '🌏' },
   ];
 
-  // Auto-select category when navigating from breadcrumb
+  // Map ranking categories to TopInfluencersView categories
+  const categoryNameMap: Record<string, string> = {
+    'lifestyle media': 'Lifestyle Creator',
+    'food': 'Food Blogger',
+    'celebrity': 'Beauty Influencer',
+    'home cooking': 'Home Cook',
+    'media': 'Lifestyle Creator',
+    'food & drink': 'Bartender',
+    'wellness': 'Wellness Guru',
+    'wellness lifestyle': 'Wellness Guru',
+  };
+
+  // Auto-select category when navigating from breadcrumb or ranking badge
   useEffect(() => {
     if (initialCategory && !hasAutoSelected) {
+      const normalizedInput = initialCategory.toLowerCase();
+      const mappedName = categoryNameMap[normalizedInput] || initialCategory;
+
       const matchedCategory = topListCategories.find(
-        cat => cat.name.toLowerCase() === initialCategory.toLowerCase()
+        cat => cat.name.toLowerCase() === mappedName.toLowerCase()
+          || cat.name.toLowerCase() === normalizedInput
       );
       if (matchedCategory) {
         setSelectedCategory(matchedCategory);
@@ -139,6 +159,7 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
 
   const toggleExpand = (rank: number) => {
     setAddToCampaignRank(null);
+    setExpandedHighlight(false); // collapse highlighted row when expanding a list row
     if (expandedRank === rank) {
       setExpandedRank(null);
     } else {
@@ -158,7 +179,7 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         {selectedCategory ? (
           <div className="flex items-center gap-3">
-            <button onClick={() => { setSelectedCategory(null); setExpandedRank(null); }} className="text-3xl font-serif font-black tracking-tight text-brand-gray hover:text-brand-accent transition-colors">
+            <button onClick={() => { setSelectedCategory(null); setExpandedRank(null); setHighlightActive(false); setExpandedHighlight(false); }} className="text-3xl font-serif font-black tracking-tight text-brand-gray hover:text-brand-accent transition-colors">
               Top Influencers
             </button>
             <span className="text-3xl font-serif font-black tracking-tight text-brand-gray">/</span>
@@ -205,7 +226,7 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
             {paginatedCategories.map((cat) => (
               <div
                 key={cat.id}
-                onClick={() => { setSelectedCategory(cat); setExpandedRank(null); setCurrentPage(1); }}
+                onClick={() => { setSelectedCategory(cat); setExpandedRank(null); setCurrentPage(1); setHighlightActive(false); setExpandedHighlight(false); }}
                 className="flex items-center px-6 py-5 gap-5 hover:bg-gray-50/50 transition-colors cursor-pointer group"
               >
                 {/* Thumbnail */}
@@ -281,6 +302,18 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
            ═══════════════════════════════════════════════════════ */
         (() => {
           const rankedInfluencers = getRankedInfluencers(selectedCategory);
+
+          // Highlight logic — only active when navigating from a ranking badge click, not from category home page
+          const isHighlighted = (item: RankedInfluencer) => {
+            if (!highlightActive || !highlightInfluencer) return false;
+            // If rank ≤ 10, highlight the matching rank position in the list
+            if (highlightInfluencer.rank <= 10) {
+              return item.rank === highlightInfluencer.rank;
+            }
+            return false;
+          };
+          const isOutOfTopList = highlightActive && highlightInfluencer && highlightInfluencer.rank > 10;
+
           return (
             <div className="bg-white rounded-2xl border border-gray-100 shadow-soft overflow-hidden">
               {/* Header */}
@@ -309,27 +342,207 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
                 </div>
               </div>
 
+              {/* Out-of-top-list highlighted influencer */}
+              {isOutOfTopList && highlightInfluencer && (
+                <div className="flex flex-col">
+                  <div
+                    onClick={() => { setExpandedHighlight(!expandedHighlight); setHighlightSubTab('Recent Posts'); setExpandedRank(null); }}
+                    className="bg-[#FFF8F4] border-l-4 border-l-brand-accent px-6 py-5 flex items-center gap-5 cursor-pointer hover:bg-[#FFF3EC] transition-colors"
+                  >
+                    {/* Rank */}
+                    <div className="w-8 flex-shrink-0 text-center">
+                      <span className="text-lg font-serif font-black text-brand-accent">{highlightInfluencer.rank}.</span>
+                    </div>
+
+                    {/* Avatar */}
+                    <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border-2 border-orange-200 ring-1 ring-orange-100">
+                      {highlightInfluencer.imageUrl ? (
+                        <img src={highlightInfluencer.imageUrl} alt={highlightInfluencer.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-orange-100 to-orange-50 flex items-center justify-center">
+                          <span className="text-lg font-black text-brand-accent">{highlightInfluencer.name.charAt(0)}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Details */}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-[14px] font-serif font-black text-brand-accent">{highlightInfluencer.name}</h4>
+                      <div className="flex items-center gap-2.5 text-[11px] font-bold text-brand-gray mt-1 flex-wrap">
+                        <span className="flex items-center gap-1"><span className="text-base">{highlightInfluencer.flag || '🌏'}</span> {selectedCategory.name}</span>
+                        <span className="w-1 h-1 bg-gray-200 rounded-full" />
+                        <span>{highlightInfluencer.location || 'Unknown'}</span>
+                        <span className="w-1 h-1 bg-gray-200 rounded-full" />
+                        <span>{highlightInfluencer.followers || '—'} Followers</span>
+                      </div>
+                    </div>
+
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-1.5 max-w-[380px] justify-end shrink-0">
+                      {(highlightInfluencer.badges || []).map((badge, idx) => {
+                        const isSaved = badge.includes('Saved');
+                        return (
+                          <span key={idx} className={`${isSaved ? 'bg-[#82A3C4]' : 'bg-[#404040]'} text-white px-2.5 py-1 rounded-lg text-[9px] font-bold tracking-tight whitespace-nowrap shadow-sm`}>
+                            {badge}
+                          </span>
+                        );
+                      })}
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="flex items-center gap-2 ml-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+                      <button className="text-brand-gray hover:text-brand-accent transition-colors p-1.5" title="Save">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2v16z"/></svg>
+                      </button>
+                      <button className="text-brand-gray hover:text-brand-accent transition-colors p-1.5" title="Add to list">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+                        </svg>
+                      </button>
+                      <button className="text-brand-gray hover:text-brand-accent transition-colors p-1.5" title="Share">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                        </svg>
+                      </button>
+                      <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg shadow-sm active:scale-95 transition-all bg-emerald-500 text-white hover:bg-emerald-600" title="Add to campaign">
+                        <PlusIcon className="w-3.5 h-3.5" />
+                        <span className="text-[10px] font-black uppercase tracking-wider">Campaign</span>
+                      </button>
+                    </div>
+
+                    {/* Subtle 'Your Influencer' indicator */}
+                    <div className="flex items-center shrink-0 ml-1">
+                      <div className="border border-orange-200 text-brand-accent px-2.5 py-1 rounded-lg text-[9px] font-bold tracking-tight whitespace-nowrap flex items-center gap-1 bg-white/60">
+                        <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
+                        Your Influencer
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Expanded Detail Area for highlighted influencer */}
+                  {expandedHighlight && (
+                    <div className="bg-[#FDFCFB] border-t border-orange-100 border-l-4 border-l-brand-accent px-8 py-6 animate-in slide-in-from-top-4 duration-300">
+                      {/* Sub-tabs */}
+                      <div className="flex gap-3 mb-5">
+                        {(['Recent Posts', 'Key Stats', 'Audience', 'Content'] as const).map((sub) => (
+                          <button
+                            key={sub}
+                            onClick={(e) => { e.stopPropagation(); setHighlightSubTab(sub); }}
+                            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all ${
+                              highlightSubTab === sub
+                                ? 'bg-brand-accent text-white shadow-sm'
+                                : 'bg-white border border-gray-200 text-brand-gray hover:text-brand-accent hover:border-brand-accent'
+                            }`}
+                          >
+                            {sub}
+                          </button>
+                        ))}
+                      </div>
+
+                      {highlightSubTab === 'Recent Posts' && (
+                        <div className="grid grid-cols-4 gap-3">
+                          {[
+                            'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=300',
+                            'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&q=80&w=300',
+                            'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=300',
+                            'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&q=80&w=300',
+                          ].map((url, idx) => (
+                            <div key={idx} className="aspect-square rounded-xl overflow-hidden shadow-sm border border-gray-100">
+                              <img src={url} alt={`Post ${idx + 1}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {highlightSubTab === 'Key Stats' && (
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="bg-white rounded-xl border border-gray-100 p-4">
+                            <p className="text-[10px] font-black text-brand-gray uppercase tracking-widest mb-1">Total Followers</p>
+                            <p className="text-[18px] font-black text-brand-dark">{highlightInfluencer.followers || '—'}</p>
+                          </div>
+                          <div className="bg-white rounded-xl border border-gray-100 p-4">
+                            <p className="text-[10px] font-black text-brand-gray uppercase tracking-widest mb-1">Engagement Rate</p>
+                            <p className="text-[18px] font-black text-brand-dark">{(2.1 + (highlightInfluencer.rank % 10) * 0.3).toFixed(1)}%</p>
+                          </div>
+                          <div className="bg-white rounded-xl border border-gray-100 p-4">
+                            <p className="text-[10px] font-black text-brand-gray uppercase tracking-widest mb-1">Ranking Badges</p>
+                            <p className="text-[18px] font-black text-brand-dark">{(highlightInfluencer.badges || []).length}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {highlightSubTab === 'Audience' && (
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="bg-white rounded-xl border border-gray-100 p-4">
+                            <p className="text-[10px] font-black text-brand-gray uppercase tracking-widest mb-3">Gender Split</p>
+                            <div className="flex items-center gap-3">
+                              <div className="flex-1 bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                                <div className="bg-blue-400 h-full rounded-full" style={{ width: '42%' }} />
+                              </div>
+                              <span className="text-[11px] font-bold text-brand-gray">42% M / 58% F</span>
+                            </div>
+                          </div>
+                          <div className="bg-white rounded-xl border border-gray-100 p-4">
+                            <p className="text-[10px] font-black text-brand-gray uppercase tracking-widest mb-3">Top Location</p>
+                            <div className="flex items-center gap-2">
+                              <span className="text-base">{highlightInfluencer.flag || '🌏'}</span>
+                              <span className="text-[13px] font-bold text-brand-dark">{highlightInfluencer.location || 'Unknown'}</span>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {highlightSubTab === 'Content' && (
+                        <div className="grid grid-cols-3 gap-4">
+                          <div className="bg-white rounded-xl border border-gray-100 p-4">
+                            <p className="text-[10px] font-black text-brand-gray uppercase tracking-widest mb-1">Avg. Likes</p>
+                            <p className="text-[18px] font-black text-brand-dark">{Math.round(12400 / Math.max(1, highlightInfluencer.rank % 10 || 1)).toLocaleString()}</p>
+                          </div>
+                          <div className="bg-white rounded-xl border border-gray-100 p-4">
+                            <p className="text-[10px] font-black text-brand-gray uppercase tracking-widest mb-1">Avg. Comments</p>
+                            <p className="text-[18px] font-black text-brand-dark">{Math.round(840 / Math.max(1, highlightInfluencer.rank % 10 || 1)).toLocaleString()}</p>
+                          </div>
+                          <div className="bg-white rounded-xl border border-gray-100 p-4">
+                            <p className="text-[10px] font-black text-brand-gray uppercase tracking-widest mb-1">Post Frequency</p>
+                            <p className="text-[18px] font-black text-brand-dark">{Math.max(1, 5 - Math.floor((highlightInfluencer.rank % 10) / 3))}x / week</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Separator label */}
+                  <div className="bg-gray-50 px-6 py-2.5 border-t border-orange-100 border-b border-b-gray-100">
+                    <p className="text-[10px] font-black text-brand-gray uppercase tracking-widest">Top {rankedInfluencers.length} in {selectedCategory.name}</p>
+                  </div>
+                </div>
+              )}
+
               {/* Ranked List */}
               <div className="divide-y divide-gray-100">
                 {rankedInfluencers.map((item) => (
                   <div key={item.rank} className="flex flex-col">
                     <div
                       onClick={() => toggleExpand(item.rank)}
-                      className="flex items-center px-6 py-5 gap-5 transition-colors cursor-pointer hover:bg-gray-50/50 group"
+                      className={`flex items-center px-6 py-5 gap-5 transition-colors cursor-pointer group ${
+                        isHighlighted(item)
+                          ? 'bg-[#FFF8F4] border-l-4 border-l-brand-accent hover:bg-[#FFF3EC]'
+                          : 'hover:bg-gray-50/50'
+                      }`}
                     >
                       {/* Rank */}
                       <div className="w-8 flex-shrink-0 text-center">
-                        <span className="text-lg font-serif font-black text-brand-dark">{item.rank}.</span>
+                        <span className={`text-lg font-serif font-black ${isHighlighted(item) ? 'text-brand-accent' : 'text-brand-dark'}`}>{item.rank}.</span>
                       </div>
 
                       {/* Avatar */}
-                      <div className="w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border-2 border-white ring-1 ring-gray-100">
+                      <div className={`w-14 h-14 rounded-xl overflow-hidden shadow-sm flex-shrink-0 border-2 ring-1 ${isHighlighted(item) ? 'border-orange-200 ring-orange-100' : 'border-white ring-gray-100'}`}>
                         <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                       </div>
 
                       {/* Details */}
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-[14px] font-serif font-black text-brand-dark group-hover:text-brand-accent transition-colors">{item.name}</h4>
+                        <h4 className={`text-[14px] font-serif font-black transition-colors ${isHighlighted(item) ? 'text-brand-accent' : 'text-brand-dark group-hover:text-brand-accent'}`}>{item.name}</h4>
                         <div className="flex items-center gap-2.5 text-[11px] font-bold text-brand-gray mt-1 flex-wrap">
                           <span className="flex items-center gap-1"><span className="text-base">{item.flag}</span> {item.category}</span>
                           <span className="w-1 h-1 bg-gray-200 rounded-full" />
@@ -340,7 +553,7 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
                       </div>
 
                       {/* Badges */}
-                      <div className="flex flex-wrap gap-1.5 max-w-[320px] justify-end shrink-0">
+                      <div className="flex flex-wrap gap-1.5 max-w-[380px] justify-end shrink-0">
                         {item.badges.map((badge, idx) => {
                           const isSaved = badge.includes('Saved');
                           return (
@@ -452,6 +665,16 @@ const TopInfluencersView: React.FC<TopInfluencersViewProps> = ({ initialCategory
                           );
                         })()}
                       </div>
+
+                      {/* Subtle 'Your Influencer' indicator for in-list highlighted rows */}
+                      {isHighlighted(item) && (
+                        <div className="flex items-center shrink-0 ml-1">
+                          <div className="border border-orange-200 text-brand-accent px-2.5 py-1 rounded-lg text-[9px] font-bold tracking-tight whitespace-nowrap flex items-center gap-1 bg-white/60">
+                            <svg className="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24"><path d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
+                            Your Influencer
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Expanded Detail Area */}
